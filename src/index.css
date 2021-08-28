@@ -2,16 +2,19 @@
 
 @layer base {
     h1 {
-      @apply text-2xl;
+      @apply text-4xl font-bold;
     }
     h2 {
-      @apply text-xl;
+      @apply text-2xl font-bold;
     }
     h3 {
-      @apply text-lg;
+      @apply text-lg font-bold;
     }
     a {
       @apply text-indigo-200 underline;
+    }
+    ul > li {
+      @apply list-disc list-outside
     }
   }
 

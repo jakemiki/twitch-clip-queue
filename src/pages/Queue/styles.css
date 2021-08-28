@@ -33,7 +33,7 @@
 .clip {
   min-width: 15.25rem;
   width: calc(20% - 0.75rem);
-  @apply bg-gray-100 text-black font-bold border-b-4 border-gray-700 rounded;
+  @apply bg-gray-50 text-black font-bold rounded;
 }
 
 .clip .clip-buttons {
@@ -41,7 +41,7 @@
 }
 
 .clip:hover {
-  @apply bg-gray-400 border-gray-500;
+  @apply bg-gray-200;
 }
 
 .clip:hover .clip-buttons {
@@ -49,15 +49,7 @@
 }
 
 .clip:hover > img {
-  opacity: 0.8;
-}
-
-.clip:active {
-  @apply border-b-0 mt-1;
-}
-
-.cliproll {
-  margin-left: -0.75rem;
+  opacity: 0.9;
 }
 
 .player {

@@ -15,10 +15,10 @@ export interface ClipCardProps {
 
 function ClipCard({ id, provider, thumbnailUrl, title, submitter, submitterCount = 0, channel, game }: ClipCardProps) {
   return (
-    <div className="clip max-w-sm rounded overflow-hidden ml-3 mb-3 flex flex-col">
+    <div className="clip max-w-sm rounded overflow-hidden flex flex-col mb-4">
       {thumbnailUrl && <img className="w-full" src={thumbnailUrl} alt={title} />}
       <div className="h-full w-full relative">
-        <div className="absolute flex right-0 bottom-0 clip-buttons">
+        <div className="absolute flex right-1 bottom-1 clip-buttons space-x-1">
           <button className="btn-play" onClick={() => selectCurrentClip({ id, provider })}>
             &raquo;
           </button>

@@ -8,7 +8,7 @@ export interface ClipRollProps {
 
 function ClipRoll({ clips, clipLimit = 19 }: ClipRollProps) {
   return (
-    <div className="cliproll flex flex-wrap w-full">
+    <div className="cliproll flex flex-wrap w-full justify-between">
       {clips.length ? (
         <>
           {clips.slice(0, clipLimit).map((clip) => (

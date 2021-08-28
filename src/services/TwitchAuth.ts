@@ -5,16 +5,18 @@ import { logIn } from '../store/user';
 const TWITCH_CLIENT_ID = process.env.REACT_APP_TWITCH_CLIENT_ID;
 const TWITCH_REDIRECT_URI = process.env.REACT_APP_TWITCH_REDIRECT_URI;
 
-const redirectToLogin = (): void => {
-  window.location.assign(
-    encodeURI(
-      `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}` +
-        `&redirect_uri=${TWITCH_REDIRECT_URI}` +
-        `&response_type=token id_token` +
-        `&scope=openid chat:read` +
-        `&claims={"id_token":{"preferred_username":null}}`
-    )
+const getLoginUrl = (): string => {
+  return encodeURI(
+    `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}` +
+      `&redirect_uri=${TWITCH_REDIRECT_URI}` +
+      `&response_type=token id_token` +
+      `&scope=openid chat:read` +
+      `&claims={"id_token":{"preferred_username":null}}`
   );
+};
+
+const redirectToLogin = (): void => {
+  window.location.assign(getLoginUrl());
 };
 
 const processAuth = (): void => {
@@ -64,6 +66,7 @@ function parseJwt(token: string) {
 }
 
 const TwitchAuth = {
+  getLoginUrl,
   redirectToLogin,
   processAuth,
   revokeToken,

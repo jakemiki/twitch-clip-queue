@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import TwitchAuth from './services/TwitchAuth';
 import { isLoggedIn, logOut } from './store/user';
 
 const HomePage = React.lazy(() => import('./pages/Home/HomePage'));
@@ -11,13 +12,15 @@ function App() {
   return (
     <>
       <header className="flex">
-        <h1 className="mb-4 text-2xl md:text-3xl lg:text-5xl font-black leading-tight">Twitch Clip Queue</h1>
+        <h1 className="mb-4">Twitch Clip Queue</h1>
         <div className="flex-grow"></div>
-        {loggedIn && (
-          <div>
+        <div>
+          {loggedIn ? (
             <button onClick={() => logOut()}>Logout</button>
-          </div>
-        )}
+          ) : (
+            <button onClick={() => TwitchAuth.redirectToLogin()}>Login with Twitch</button>
+          )}
+        </div>
       </header>
       <Suspense fallback={<div></div>}>
         <Router basename={process.env.REACT_APP_BASEPATH}>
