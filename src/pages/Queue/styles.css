@@ -1,0 +1,58 @@
+.btn-skip {
+  @apply bg-yellow-500 text-white border-yellow-700;
+}
+
+.btn-skip:hover {
+  @apply bg-yellow-400 border-yellow-500;
+}
+
+.btn-clear {
+  @apply bg-red-500 text-white border-red-700;
+}
+
+.btn-clear:hover {
+  @apply bg-red-400 border-red-500;
+}
+
+.btn-play {
+  @apply bg-green-500 text-white border-green-700;
+}
+
+.btn-play:hover {
+  @apply bg-green-400 border-green-500;
+}
+
+.btn-pause {
+  @apply bg-green-600 text-white border-green-800;
+}
+
+.btn-pause:hover {
+  @apply bg-green-500 border-green-600;
+}
+
+.clip {
+  min-width: 15.25rem;
+  width: calc(20% - 0.75rem);
+  @apply bg-gray-100 text-black font-bold border-b-4 border-gray-700 rounded;
+}
+
+.clip:hover {
+  @apply bg-gray-400 border-gray-500;
+}
+
+.clip:hover > img {
+  opacity: 0.8;
+}
+
+.clip:active {
+  @apply border-b-0 mt-1;
+}
+
+.cliproll {
+  margin-left: -0.75rem;
+}
+
+.player {
+  aspect-ratio: 16 / 9;
+  @apply w-full h-auto bg-black;
+}

@@ -1,0 +1,32 @@
+@tailwind base;
+
+@layer base {
+    h1 {
+      @apply text-2xl;
+    }
+    h2 {
+      @apply text-xl;
+    }
+    h3 {
+      @apply text-lg;
+    }
+    a {
+      @apply text-indigo-200 underline;
+    }
+  }
+
+@tailwind components;
+
+@tailwind utilities;
+
+button {
+  @apply font-bold py-2 px-4 border-b-4 rounded bg-purple-500 text-white border-purple-700;;
+}
+
+button:active {
+  @apply border-b-0 mt-1;
+}
+
+button:hover {
+  @apply bg-purple-400 border-purple-500;
+}
