@@ -3,14 +3,30 @@ import { getGameName } from '../../store/dictionaries';
 import { getMemorizedClip } from '../../store/queue';
 import TwitchApi from '../TwitchApi';
 
+const canHandle = (url: string): boolean => {
+  const uri = new URL(url);
+  if (uri.hostname === 'clips.twitch.tv') {
+    return true;
+  }
+
+  if (uri.hostname.endsWith('twitch.tv')) {
+    if (uri.pathname.includes('/clip/')) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 const tryGetClip = async (url: string): Promise<Clip | undefined> => {
   try {
     const uri = new URL(url);
-    if (uri.hostname !== 'clips.twitch.tv') {
+    if (!canHandle(url)) {
       return;
     }
 
-    const id = uri.pathname.split('?')[0].slice(1);
+    const idStart = uri.pathname.lastIndexOf('/');
+    const id = uri.pathname.slice(idStart).split('?')[0].slice(1);
 
     const fromMemory = getMemorizedClip({
       provider: 'twitch-clip',
@@ -37,6 +53,7 @@ const tryGetClip = async (url: string): Promise<Clip | undefined> => {
 };
 
 const TwitchClipProvider: Provider = {
+  canHandle,
   tryGetClip,
 };
 

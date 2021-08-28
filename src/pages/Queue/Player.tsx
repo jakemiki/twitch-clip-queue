@@ -8,6 +8,7 @@ export interface PlayerProps {
   game?: string;
   submitter?: string;
   submitterCount?: number;
+  startTime?: string;
 }
 
 function Player(props: PlayerProps) {
@@ -48,6 +49,16 @@ function PlayerSwitch({ provider, ...props }: PlayerProps) {
       return (
         <iframe
           src={`https://clips.twitch.tv/embed?clip=${props.id}&autoplay=true&parent=${window.location.hostname}`}
+          height="100%"
+          width="100%"
+          allowFullScreen={true}
+          title={props.title}
+        ></iframe>
+      );
+    case 'youtube':
+      return (
+        <iframe
+          src={`https://www.youtube.com/embed/${props.id}?autoplay=1&start=${props.startTime ?? ''}`}
           height="100%"
           width="100%"
           allowFullScreen={true}

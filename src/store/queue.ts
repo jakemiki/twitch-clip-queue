@@ -53,6 +53,18 @@ export const getQueuedClip = (clip: Clip): Clip | undefined => {
   return queue?.find((c) => same(c, clip)) ?? undefined;
 };
 
+export const selectCurrentClip = (clip: Clip): void => {
+  const queued = getQueuedClip(clip);
+  if (queued) {
+    currentClip.set(queued);
+    removeClip(queued);
+  }
+};
+
+export const removeClip = (clip: Clip): void => {
+  clipQueue.set(queue => queue.filter(c => !same(c, clip)));
+};
+
 export const clearQueue = (): void => {
   clipQueue.set([]);
   currentClip.set({});

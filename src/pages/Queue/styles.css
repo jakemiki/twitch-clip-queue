@@ -36,8 +36,16 @@
   @apply bg-gray-100 text-black font-bold border-b-4 border-gray-700 rounded;
 }
 
+.clip .clip-buttons {
+  opacity: 0;
+}
+
 .clip:hover {
   @apply bg-gray-400 border-gray-500;
+}
+
+.clip:hover .clip-buttons {
+  opacity: 1;
 }
 
 .clip:hover > img {

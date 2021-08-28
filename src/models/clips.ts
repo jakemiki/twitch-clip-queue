@@ -10,4 +10,6 @@ export interface Clip {
   submitters?: string[];
 
   thumbnailUrl?: string;
+
+  startTime?: string;
 }
