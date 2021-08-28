@@ -1,2 +1,0 @@
-(this["webpackJsonptwitch-clip-queue"]=this["webpackJsonptwitch-clip-queue"]||[]).push([[4],{75:function(e,t,c){"use strict";c.r(t);c(0);var i=c(19),n=c(1);t.default=function(){return Object(n.jsxs)(n.Fragment,{children:[Object(n.jsx)("section",{className:"mb-4",children:Object(n.jsx)("p",{children:"Some info"})}),Object(n.jsx)("section",{children:Object(n.jsx)("button",{onClick:function(){return i.a.redirectToLogin()},children:"Login with Twitch"})})]})}}}]);
-//# sourceMappingURL=4.2fcf03c3.chunk.js.map
