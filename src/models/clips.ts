@@ -9,6 +9,7 @@ export interface Clip {
   submitter?: string;
   submitters?: string[];
 
+  url?: string;
   thumbnailUrl?: string;
 
   startTime?: string;

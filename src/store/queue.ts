@@ -1,9 +1,11 @@
+import { entity } from 'simpler-state';
 import { Clip } from '../models';
 import { createEntity, same } from './helpers';
 
 export const currentClip = createEntity('currentClip', {} as Clip);
 export const clipQueue = createEntity('clipQueue', [] as Clip[]);
 export const clipMemory = createEntity('clipMemory', [] as Clip[]);
+export const acceptingClips = entity(false);
 
 export const addClip = (clip: Clip): void => {
   const queued = getQueuedClip(clip);
@@ -73,3 +75,7 @@ export const clearQueue = (): void => {
 export const clearMemory = (): void => {
   clipMemory.set([...(clipQueue.get() ?? [])]);
 };
+
+export const acceptClips = (accept: boolean): void => {
+  acceptingClips.set(accept);
+}

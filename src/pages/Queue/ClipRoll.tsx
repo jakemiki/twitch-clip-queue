@@ -1,4 +1,5 @@
 import React from 'react';
+import { acceptingClips } from '../../store/queue';
 import ClipCard from './ClipCard';
 
 export interface ClipRollProps {
@@ -7,6 +8,8 @@ export interface ClipRollProps {
 }
 
 function ClipRoll({ clips, clipLimit = 19 }: ClipRollProps) {
+  const isAcceptingClip = acceptingClips.use();
+
   return (
     <div className="cliproll flex flex-wrap w-full justify-between">
       {clips.length ? (
@@ -21,7 +24,7 @@ function ClipRoll({ clips, clipLimit = 19 }: ClipRollProps) {
           )}
         </>
       ) : (
-        <div className="pl-3 text-lg font-bold">Waiting for some clips from chat...</div>
+        isAcceptingClip && <div className="text-lg font-bold">Waiting for some clips from chat...</div>
       )}
     </div>
   );

@@ -15,7 +15,7 @@ function HomePage() {
           Simply <a href={TwitchAuth.getLoginUrl()}>Login with Twitch</a>. You'll be redirected to Twitch and asked to
           allow the application to get your username and read chat. Any information received from Twitch is not sent
           anywhere but Twitch. By default you'll join your channel's chat, but you can change the channel afterwards. The
-          only thing left to do is to wait for some clips to be posted in chat.
+          only thing left to do is to open the clip floodgates and wait for some to be posted in chat.
         </p>
       </section>
       <section className="mb-4 leading-relaxed">

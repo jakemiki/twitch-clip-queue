@@ -26,6 +26,7 @@ const findByUrl = async (url: string): Promise<Clip | undefined> => {
   if (clip) {
     console.log('adding clip', clip);
     clip.submitter = s;
+    clip.url = u;
     addClip(clip);
   }
 };

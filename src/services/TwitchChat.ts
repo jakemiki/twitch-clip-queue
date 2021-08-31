@@ -1,4 +1,4 @@
-import { addClip } from '../store/queue';
+import { acceptingClips, addClip } from '../store/queue';
 import { accessToken, userChannel, userName } from '../store/user';
 import ClipFinder from './ClipFinder';
 
@@ -80,6 +80,10 @@ const connect = () => {
     const message = parseMessage(data);
 
     if (message.command === 'PRIVMSG' && message.message) {
+      if (!acceptingClips.get()) {
+        return;
+      }
+
       const urlStart = message.message.indexOf('http');
 
       if (urlStart >= 0) {
@@ -89,6 +93,7 @@ const connect = () => {
 
         ClipFinder.findByUrl(url).then((clip) => {
           if (clip) {
+            clip.url = url;
             clip.submitter = message.user;
             addClip(clip);
           }

@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import Button from './components/Button';
 import TwitchAuth from './services/TwitchAuth';
 import { isLoggedIn, logOut } from './store/user';
 
@@ -16,9 +17,9 @@ function App() {
         <div className="flex-grow"></div>
         <div>
           {loggedIn ? (
-            <button onClick={() => logOut()}>Logout</button>
+            <Button onClick={() => logOut()}>Logout</Button>
           ) : (
-            <button onClick={() => TwitchAuth.redirectToLogin()}>Login with Twitch</button>
+            <Button onClick={() => TwitchAuth.redirectToLogin()}>Login with Twitch</Button>
           )}
         </div>
       </header>
@@ -34,8 +35,14 @@ function App() {
           </Switch>
         </Router>
       </Suspense>
+      <div className="flex-grow"></div>
       <footer className="text-xs mt-4">
-        Created by <span className="font-bold">JakeMiki</span>
+        Created by{' '}
+        <span className="font-bold">
+          <a href="https://github.com/JakeMiki" target="_blank" rel="noreferrer">
+            JakeMiki
+          </a>
+        </span>
       </footer>
     </>
   );
