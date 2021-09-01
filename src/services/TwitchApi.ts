@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { TwitchClip, TwitchGame } from '../models';
+import { TwitchClip, TwitchGame, TwitchVideo } from '../models';
 import { accessToken } from '../store/user';
 
 const TWITCH_CLIENT_ID = process.env.REACT_APP_TWITCH_CLIENT_ID;
@@ -21,6 +21,16 @@ const getClip = async (id: string): Promise<TwitchClip> => {
   return data.data[0];
 };
 
+const getVideo = async (id: string): Promise<TwitchVideo> => {
+  const { data } = await TwitchApiClient.get<{ data: TwitchVideo[] }>(`videos?id=${id}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken.get()}`,
+    },
+  });
+
+  return data.data[0];
+};
+
 const getGame = async (id: string): Promise<TwitchGame> => {
   const { data } = await TwitchApiClient.get<{ data: TwitchGame[] }>(`games?id=${id}`, {
     headers: {
@@ -33,6 +43,7 @@ const getGame = async (id: string): Promise<TwitchGame> => {
 
 const TwitchApi = {
   getClip,
+  getVideo,
   getGame,
 };
 

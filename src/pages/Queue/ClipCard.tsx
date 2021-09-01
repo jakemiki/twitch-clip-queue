@@ -15,9 +15,19 @@ export interface ClipCardProps {
   thumbnailUrl?: string;
 }
 
-function ClipCard({ id, provider, url, thumbnailUrl, title, submitter, submitterCount = 0, channel, game }: ClipCardProps) {
+function ClipCard({
+  id,
+  provider,
+  url,
+  thumbnailUrl,
+  title,
+  submitter,
+  submitterCount = 0,
+  channel,
+  game,
+}: ClipCardProps) {
   return (
-    <div className="clip max-w-sm rounded overflow-hidden flex flex-col mb-4">
+    <div className={'clip max-w-sm rounded overflow-hidden flex flex-col'}>
       {thumbnailUrl && <img className="w-full" src={thumbnailUrl} alt={title} />}
       <div className="h-full w-full relative">
         <div className="absolute flex right-1 bottom-1 clip-buttons space-x-1">
@@ -29,7 +39,11 @@ function ClipCard({ id, provider, url, thumbnailUrl, title, submitter, submitter
           </Button>
         </div>
         <div className="px-2 py-1">
-          <h4 className="font-bold text-sm mb-1"><a className="text-black no-underline" href={url} target="_blank" rel="noreferrer">{title}</a></h4>
+          <h4 className="font-bold text-sm mb-1">
+            <a className="text-black no-underline" href={url} target="_blank" rel="noreferrer">
+              {title}
+            </a>
+          </h4>
           <p className="text-gray-700 text-xs mb-1 font-normal">
             <span className="font-bold">{channel} </span>
             {game && (

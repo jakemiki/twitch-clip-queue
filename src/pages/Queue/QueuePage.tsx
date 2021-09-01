@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Button from '../../components/Button';
 import Toggle from '../../components/Toggle';
+import ClipFinder from '../../services/ClipFinder';
 import TwitchChat from '../../services/TwitchChat';
 import {
   acceptClips,
   acceptingClips,
+  addClip,
   clearMemory,
   clearQueue,
   clipMemory,
@@ -45,7 +47,7 @@ function QueuePage() {
 
         <div className="flex-grow" />
         <Button colour="red" className="mr-2" onClick={() => clearQueue()}>
-          &times; Clear queue ({clips.length})
+          &times; Clear queue <em>({clips.length})</em>
         </Button>
         <Toggle pressed={advancedVisible} colour="red" onClick={() => setAdvancedVisible(!advancedVisible)}>
           ⚙️
@@ -63,13 +65,30 @@ function QueuePage() {
               }
             }}
           >
-            Change channel ({channel})
+            Change channel <em>({channel})</em>
+          </Button>
+          <Button
+            className="mr-2"
+            onClick={() => {
+              const url = prompt('Enter clip url', '');
+              if (url) {
+                ClipFinder.findByUrl(url).then((clip) => {
+                  if (clip) {
+                    clip.url = url;
+                    clip.submitter = userName.get() ?? undefined;
+                    addClip(clip);
+                  }
+                });
+              }
+            }}
+          >
+           + Add cilp
           </Button>
           <Button
             onClick={() => clearMemory()}
             title="Remove all clips from permanent memory, allow all clips to be posted and queued again"
           >
-            &times; Purge memory ({clipMem.length})
+            &times; Purge memory <em>({clipMem.length})</em>
           </Button>
         </div>
       )}

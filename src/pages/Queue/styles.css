@@ -31,8 +31,6 @@
 }
 
 .clip {
-  min-width: 15.25rem;
-  width: calc(20% - 0.75rem);
   @apply bg-gray-50 text-black font-bold rounded;
 }
 

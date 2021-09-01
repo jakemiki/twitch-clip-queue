@@ -55,6 +55,16 @@ function PlayerSwitch({ provider, ...props }: PlayerProps) {
           title={props.title}
         ></iframe>
       );
+    case 'twitch-vod':
+      return (
+        <iframe
+          src={`https://player.twitch.tv/?video=${props.id}&autoplay=true&parent=${window.location.hostname}&time=${props.startTime}`}
+          height="100%"
+          width="100%"
+          allowFullScreen={true}
+          title={props.title}
+        ></iframe>
+      );
     case 'youtube':
       return (
         <iframe

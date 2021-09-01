@@ -36,6 +36,20 @@ export interface TwitchClip {
   duration: number;
 }
 
+export interface TwitchVideo {
+  id: string;
+  url: string;
+  embed_url: string;
+  user_id: string;
+  user_name: string;
+  language: string;
+  title: string;
+  view_count: number;
+  created_at: string;
+  thumbnail_url: string;
+  duration: number;
+}
+
 export interface TwitchGame {
   box_art_url: string;
   id: string;

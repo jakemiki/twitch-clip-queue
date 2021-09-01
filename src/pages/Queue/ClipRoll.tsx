@@ -11,20 +11,20 @@ function ClipRoll({ clips, clipLimit = 19 }: ClipRollProps) {
   const isAcceptingClip = acceptingClips.use();
 
   return (
-    <div className="cliproll flex flex-wrap w-full justify-between">
+    <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 w-full">
       {clips.length ? (
         <>
           {clips.slice(0, clipLimit).map((clip) => (
             <ClipCard key={`${clip.provider}:${clip.id}`} {...clip} submitterCount={clip.submitters?.length} />
           ))}
           {clips.length > clipLimit && (
-            <div className="clip max-w-sm rounded overflow-hidden ml-3 mb-3 text-3xl flex">
-              <div className="mx-auto my-auto">+{clips.length - clipLimit}</div>
+            <div className="clip max-w-sm rounded overflow-hidden text-3xl flex py-4">
+              <div className="mx-auto my-auto">+{clips.length - clipLimit} more</div>
             </div>
           )}
         </>
       ) : (
-        isAcceptingClip && <div className="text-lg font-bold">Waiting for some clips from chat...</div>
+        isAcceptingClip && <div className="col-span-full text-lg font-bold">Waiting for some clips from chat...</div>
       )}
     </div>
   );
