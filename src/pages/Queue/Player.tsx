@@ -51,6 +51,7 @@ function PlayerSwitch({ provider, ...props }: PlayerProps) {
           src={`https://clips.twitch.tv/embed?clip=${props.id}&autoplay=true&parent=${window.location.hostname}`}
           height="100%"
           width="100%"
+          className="player"
           allowFullScreen={true}
           title={props.title}
         ></iframe>
@@ -61,6 +62,7 @@ function PlayerSwitch({ provider, ...props }: PlayerProps) {
           src={`https://player.twitch.tv/?video=${props.id}&autoplay=true&parent=${window.location.hostname}&time=${props.startTime}`}
           height="100%"
           width="100%"
+          className="player"
           allowFullScreen={true}
           title={props.title}
         ></iframe>
@@ -71,6 +73,7 @@ function PlayerSwitch({ provider, ...props }: PlayerProps) {
           src={`https://www.youtube.com/embed/${props.id}?autoplay=1&start=${props.startTime ?? ''}`}
           height="100%"
           width="100%"
+          className="player"
           allowFullScreen={true}
           title={props.title}
         ></iframe>
