@@ -109,12 +109,12 @@ const disconnect = () => {
 
 const joinChannel = (channel: string) => {
   console.log('[TwitchChat] Joining channel', channel);
-  send(`JOIN #${channel}`);
+  send(`JOIN #${channel.toLowerCase()}`);
 };
 
 const leaveChannel = (channel: string) => {
   console.log('[TwitchChat] Leaving channel', channel);
-  send(`PART #${channel}`);
+  send(`PART #${channel.toLowerCase()}`);
 
 };
 

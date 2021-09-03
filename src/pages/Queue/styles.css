@@ -52,6 +52,6 @@
 
 .player {
   aspect-ratio: 16 / 9;
-  @apply w-full h-auto bg-black;
+  @apply w-full h-auto bg-black mx-auto;
   max-height: 77vh;
 }
