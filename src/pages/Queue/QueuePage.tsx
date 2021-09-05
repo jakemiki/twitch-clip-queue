@@ -44,8 +44,6 @@ function QueuePage() {
         <Toggle pressed={isAcceptingClips} className="mr-2" onClick={() => acceptClips(!isAcceptingClips)}>
           {isAcceptingClips ? <>Close the floodgates! 🌊</> : <>Open the floodgates! 🚪</>}
         </Toggle>
-
-        <div className="flex-grow" />
         <Button colour="red" className="mr-2" onClick={() => clearQueue()}>
           &times; Clear queue <em>({clips.length})</em>
         </Button>
@@ -55,7 +53,6 @@ function QueuePage() {
       </div>
       {advancedVisible && (
         <div className="mt-2 flex w-full">
-          <div className="flex-grow" />
           <Button
             className="mr-2"
             onClick={() => {
