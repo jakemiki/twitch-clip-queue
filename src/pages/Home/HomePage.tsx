@@ -1,5 +1,6 @@
 import React from 'react';
 import TwitchAuth from '../../services/TwitchAuth';
+import { umami } from '../../umami';
 import screenshot from './screenshot.png';
 import './styles.css';
 

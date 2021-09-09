@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import Button from './components/Button';
 import TwitchAuth from './services/TwitchAuth';
 import { isLoggedIn, logOut } from './store/user';
+import { umami } from './umami';
 
 const HomePage = React.lazy(() => import('./pages/Home/HomePage'));
 const QueuePage = React.lazy(() => import('./pages/Queue/QueuePage'));
@@ -19,7 +20,11 @@ function App() {
           {loggedIn ? (
             <Button onClick={() => logOut()}>Logout</Button>
           ) : (
-            <Button onClick={() => TwitchAuth.redirectToLogin()}>Login with Twitch</Button>
+            <Button
+              onClick={() => TwitchAuth.redirectToLogin()}
+            >
+              Login with Twitch
+            </Button>
           )}
         </div>
       </header>

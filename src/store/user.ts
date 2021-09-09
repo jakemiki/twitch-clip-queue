@@ -1,6 +1,7 @@
 import { entity } from "simpler-state";
 import TwitchAuth from "../services/TwitchAuth";
 import TwitchChat from "../services/TwitchChat";
+import { umami } from "../umami";
 
 export const isLoggedIn = entity<boolean>(false);
 
@@ -16,6 +17,7 @@ export const logIn = (auth: string, id: string, username: string): void => {
   userName.set(username);
   userChannel.set(username);
   isLoggedIn.set(true);
+  umami('user-logged-in');
 }
 
 export const logOut = async (): Promise<void> => {
@@ -28,10 +30,12 @@ export const logOut = async (): Promise<void> => {
   if (token) {
     await TwitchAuth.revokeToken(token);
   }
+  umami('user-logged-out');
 }
 
 export const changeChannel = (channel: string) => {
   TwitchChat.leaveChannel(userChannel.get() as string);
   userChannel.set(channel);
   TwitchChat.joinChannel(channel);
+  umami('channel-changed');
 };

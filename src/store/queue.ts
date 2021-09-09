@@ -1,5 +1,6 @@
 import { entity } from 'simpler-state';
 import { Clip } from '../models';
+import { umami } from '../umami';
 import { createEntity, same } from './helpers';
 
 export const currentClip = createEntity('currentClip', {} as Clip);
@@ -31,6 +32,8 @@ export const addClip = (clip: Clip): void => {
 
   clipMemory.set((memory) => [...(memory ?? []), clip]);
   clipQueue.set((queue) => [...(queue ?? []), clip]);
+
+  umami('clip-added');
 };
 
 export const nextClip = (): void => {
@@ -70,10 +73,12 @@ export const removeClip = (clip: Clip): void => {
 export const clearQueue = (): void => {
   clipQueue.set([]);
   currentClip.set({});
+  umami('clear-queue');
 };
 
 export const clearMemory = (): void => {
   clipMemory.set([...(clipQueue.get() ?? [])]);
+  umami('purge-memory');
 };
 
 export const acceptClips = (accept: boolean): void => {
