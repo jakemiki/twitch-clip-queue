@@ -1,12 +1,12 @@
-import { entity } from 'simpler-state';
+import { createState } from '@hookstate/core';
 import { Clip } from '../models';
 import { umami } from '../umami';
-import { createEntity, same } from './helpers';
+import { createPersistentState, same } from './helpers';
 
-export const currentClip = createEntity('currentClip', {} as Clip);
-export const clipQueue = createEntity('clipQueue', [] as Clip[]);
-export const clipMemory = createEntity('clipMemory', [] as Clip[]);
-export const acceptingClips = entity(false);
+export const currentClip = createState({} as Clip);
+export const clipQueue = createPersistentState('clipQueue', [] as Clip[]);
+export const clipMemory = createPersistentState('clipMemory', [] as Clip[]);
+export const acceptingClips = createState(false);
 
 export const addClip = (clip: Clip): void => {
   const queued = getQueuedClip(clip);

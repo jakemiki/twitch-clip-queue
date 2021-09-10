@@ -1,3 +1,4 @@
+import { useState } from '@hookstate/core';
 import React from 'react';
 import { acceptingClips } from '../../store/queue';
 import ClipCard from './ClipCard';
@@ -8,7 +9,7 @@ export interface ClipRollProps {
 }
 
 function ClipRoll({ clips, clipLimit = 19 }: ClipRollProps) {
-  const isAcceptingClip = acceptingClips.use();
+  const isAcceptingClip = useState(acceptingClips);
 
   return (
     <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 w-full">
@@ -24,7 +25,7 @@ function ClipRoll({ clips, clipLimit = 19 }: ClipRollProps) {
           )}
         </>
       ) : (
-        isAcceptingClip && <div className="col-span-full text-lg font-bold">Waiting for some clips from chat...</div>
+        isAcceptingClip.get() && <div className="col-span-full text-lg font-bold">Waiting for some clips from chat...</div>
       )}
     </div>
   );

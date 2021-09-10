@@ -1,7 +1,7 @@
 import TwitchApi from "../services/TwitchApi";
-import { createEntity } from "./helpers";
+import { createPersistentState } from "./helpers";
 
-const gamesDictionary = createEntity('gamesDictionary', {} as Record<string, string>);
+const gamesDictionary = createPersistentState('gamesDictionary', {} as Record<string, string>);
 
 export const getGameName = async (id: string): Promise<string> => {
   const dict = gamesDictionary.get();

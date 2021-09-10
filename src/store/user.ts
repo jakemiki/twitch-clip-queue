@@ -1,15 +1,15 @@
-import { entity } from "simpler-state";
 import TwitchAuth from "../services/TwitchAuth";
 import TwitchChat from "../services/TwitchChat";
 import { umami } from "../umami";
+import { createPersistentState } from "./helpers";
 
-export const isLoggedIn = entity<boolean>(false);
+export const isLoggedIn = createPersistentState<boolean>('isLoggedIn', false);
 
-export const accessToken = entity<string | null>(null);
-export const idToken = entity<string | null>(null);
+export const accessToken = createPersistentState<string | null>('accessToken', null);
+export const idToken = createPersistentState<string | null>('idToken', null);
 
-export const userName = entity<string | null>(null);
-export const userChannel = entity<string | null>(null);
+export const userName = createPersistentState<string | null>('userName', null);
+export const userChannel = createPersistentState<string | null>('userChannel', null);
 
 export const logIn = (auth: string, id: string, username: string): void => {
   accessToken.set(auth);

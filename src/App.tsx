@@ -1,15 +1,15 @@
+import { useState } from '@hookstate/core';
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import Button from './components/Button';
 import TwitchAuth from './services/TwitchAuth';
 import { isLoggedIn, logOut } from './store/user';
-import { umami } from './umami';
 
 const HomePage = React.lazy(() => import('./pages/Home/HomePage'));
 const QueuePage = React.lazy(() => import('./pages/Queue/QueuePage'));
 
 function App() {
-  const loggedIn = isLoggedIn.use();
+  const loggedIn = useState(isLoggedIn);
 
   return (
     <>
@@ -17,8 +17,8 @@ function App() {
         <h1 className="mb-4">Twitch Clip Queue</h1>
         <div className="flex-grow"></div>
         <div>
-          {loggedIn ? (
-            <Button onClick={() => logOut()}>Logout</Button>
+          {loggedIn.get() ? (
+            <Button onClick={async () => await logOut()}>Logout</Button>
           ) : (
             <Button
               onClick={() => TwitchAuth.redirectToLogin()}
@@ -32,7 +32,7 @@ function App() {
         <Router basename={process.env.REACT_APP_BASEPATH}>
           <Switch>
             <Route exact={true} path="/">
-              {!loggedIn ? <HomePage /> : <QueuePage />}
+              {!loggedIn.get() ? <HomePage /> : <QueuePage />}
             </Route>
             <Route path="*">
               <Redirect to="/" />
