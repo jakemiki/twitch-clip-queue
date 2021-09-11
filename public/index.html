@@ -7,7 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Twitch Clip Queue</title>
 
+  <% if (process.env.REACT_APP_UMAMI_SRC && process.env.REACT_APP_UMAMI_WEBSITE_ID) { %>
   <script async defer data-website-id="%REACT_APP_UMAMI_WEBSITE_ID%" src="%REACT_APP_UMAMI_SRC%"></script>
+  <% } %>
 </head>
 
 <body class="bg-gray-900 text-indigo-50">

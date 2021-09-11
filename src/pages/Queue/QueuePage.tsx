@@ -33,7 +33,7 @@ function QueuePage() {
 
   useEffect(() => {
     TwitchChat.connect();
-    return () => TwitchChat.disconnect();
+    return () => { TwitchChat.disconnect() };
   }, [tokenValue]);
 
   return (

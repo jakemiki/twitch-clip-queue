@@ -1,6 +1,6 @@
+import { trace } from "../common/analytics";
 import TwitchAuth from "../services/TwitchAuth";
 import TwitchChat from "../services/TwitchChat";
-import { umami } from "../umami";
 import { createPersistentState } from "./helpers";
 
 export const isLoggedIn = createPersistentState<boolean>('isLoggedIn', false);
@@ -17,7 +17,8 @@ export const logIn = (auth: string, id: string, username: string): void => {
   userName.set(username);
   userChannel.set(username);
   isLoggedIn.set(true);
-  umami('user-logged-in');
+
+  trace('user-logged-in');
 }
 
 export const logOut = async (): Promise<void> => {
@@ -30,12 +31,14 @@ export const logOut = async (): Promise<void> => {
   if (token) {
     await TwitchAuth.revokeToken(token);
   }
-  umami('user-logged-out');
+
+  trace('user-logged-out');
 }
 
 export const changeChannel = (channel: string) => {
   TwitchChat.leaveChannel(userChannel.get() as string);
   userChannel.set(channel);
   TwitchChat.joinChannel(channel);
-  umami('channel-changed');
+
+  trace('channel-changed');
 };

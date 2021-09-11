@@ -1,121 +1,84 @@
+import { createLogger } from '../common/logging';
 import { acceptingClips, addClip } from '../store/queue';
 import { accessToken, userChannel, userName } from '../store/user';
+import { Client, Userstate } from 'tmi.js';
 import ClipFinder from './ClipFinder';
 
-let socket: WebSocket;
+const logger = createLogger('Twitch Chat');
 
-const send = (message: string) => {
-  socket.send(message);
-};
+let client: Client;
 
-const parseMessage = (raw: string) => {
-  const tagEnd = raw[0] === '@' ? raw.indexOf(' ') : -1;
-  const userEnd = raw.indexOf(' ', tagEnd + 1);
-  const commandEnd = raw.indexOf(' ', userEnd + 1);
-
-  const tags =
-    tagEnd > 0
-      ? raw
-          .slice(1, tagEnd)
-          .split(';')
-          .reduce((t, c) => {
-            const parts = c.split('=', 2);
-            t[parts[0]] = parts[1];
-            return t;
-          }, {} as Record<string, string>)
-      : {};
-
-  const user = raw.slice(tagEnd + 2, raw.indexOf('!', tagEnd + 2));
-  const command = raw.slice(userEnd + 1, commandEnd);
-
-  if (command === 'PRIVMSG') {
-    const channelEnd = raw.indexOf(' ', commandEnd + 1);
-    const messageStart = raw.indexOf(':', channelEnd + 1);
-    const channel = raw.slice(commandEnd + 2, channelEnd);
-    const message = raw.slice(messageStart + 1).trim();
-    return {
-      channel,
-      user: tags['display-name'] || user,
-      command,
-      message,
-      tags,
-    };
+const handleMessage = (userstate: Userstate, message: string) => {
+  if (!acceptingClips.get()) {
+    return;
   }
 
-  return {
-    raw,
-    user: tags['display-name'] || user,
-    command,
-    tags,
-  };
+  const urlStart = message.indexOf('http');
+
+  if (urlStart >= 0) {
+    const urlEnd = message.indexOf(' ', urlStart);
+    const url = message.slice(urlStart, urlEnd > 0 ? urlEnd : undefined);
+    logger.debug('Found url:', url);
+
+    ClipFinder.findByUrl(url).then((clip) => {
+      if (clip) {
+        clip.url = url;
+        clip.submitter = userstate['display-name'] || userstate.username;
+        addClip(clip);
+      }
+    });
+  }
 };
 
 const connect = () => {
-  socket = new WebSocket('wss://irc-ws.chat.twitch.tv:443', 'irc');
+  client = new Client({
+    options: {
+      debug: process.env.REACT_APP_LOG_LEVEL === 'debug',
+      skipUpdatingEmotesets: true,
+      skipMembership: true,
+    } as any,
+    logger: {
+      error: logger.error.bind(logger),
+      info: logger.info.bind(logger),
+      warn: logger.warn.bind(logger),
+    },
+    identity: {
+      username: userName.get() as string,
+      password: `oauth:${accessToken.get()}`,
+    },
+    connection: {
+      reconnect: true,
+      secure: true,
+    },
+  });
 
-  socket.onopen = () => {
-    if (socket !== null && socket.readyState === 1) {
-      console.log('[TwitchChat] Connecting and authenticating...');
-
-      send('CAP REQ :twitch.tv/tags');
-      send(`PASS oauth:${accessToken.get()}`);
-      send(`NICK ${userName.get()}`);
+  logger.info('Connecting and authenticating...');
+  client
+    .connect()
+    .then(() => {
+      logger.info('Connected.');
       joinChannel(userChannel.get() as string);
-    }
-  };
+    })
+    .catch(logger.error.bind(logger));
 
-  socket.onclose = () => {
-    console.log('[TwitchChat] Disconnected');
-  };
-
-  socket.onerror = (error) => {
-    console.warn('[TwitchChat] Error:', error);
-  };
-
-  socket.onmessage = ({ data }: MessageEvent<string>) => {
-    if (data.startsWith('PING')) {
-      send('PONG :tmi.twitch.tv');
-    }
-
-    const message = parseMessage(data);
-
-    if (message.command === 'PRIVMSG' && message.message) {
-      if (!acceptingClips.get()) {
-        return;
-      }
-
-      const urlStart = message.message.indexOf('http');
-
-      if (urlStart >= 0) {
-        const urlEnd = message.message.indexOf(' ', urlStart);
-        const url = message.message.slice(urlStart, urlEnd > 0 ? urlEnd : undefined);
-        console.log('[TwitchChat] Found url:', url);
-
-        ClipFinder.findByUrl(url).then((clip) => {
-          if (clip) {
-            clip.url = url;
-            clip.submitter = message.user;
-            addClip(clip);
-          }
-        });
-      }
-    }
-  };
+  client.on('disconnected', (reason) => logger.info('Disconnected:', reason));
+  client.on('message', (_channel, userstate, message, self) => self || handleMessage(userstate, message));
+  client.on('messagedeleted', (_channel, _username, message) => {});
+  client.on('timeout', (_channel, username) => {})
 };
 
-const disconnect = () => {
-  socket.close();
+const disconnect = async () => {
+  await client?.disconnect();
 };
 
-const joinChannel = (channel: string) => {
-  console.log('[TwitchChat] Joining channel', channel);
-  send(`JOIN #${channel.toLowerCase()}`);
+const joinChannel = async (channel: string) => {
+  logger.info('Joining channel', channel);
+  await client.join(channel.toLowerCase());
 };
 
-const leaveChannel = (channel: string) => {
-  console.log('[TwitchChat] Leaving channel', channel);
-  send(`PART #${channel.toLowerCase()}`);
-
+const leaveChannel = async (channel: string) => {
+  logger.info('Leaving channel', channel);
+  await client.part(channel.toLowerCase());
 };
 
 const TwitchChat = {
