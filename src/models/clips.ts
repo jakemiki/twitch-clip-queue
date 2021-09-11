@@ -1,3 +1,8 @@
+export interface ClipSubmitter {
+  displayName?: string;
+  userName: string;
+}
+
 export interface Clip {
   provider?: string;
   id?: string;
@@ -6,8 +11,8 @@ export interface Clip {
   channel?: string;
   game?: string;
 
-  submitter?: string;
-  submitters?: string[];
+  submitter?: ClipSubmitter;
+  submitters?: ClipSubmitter[];
 
   url?: string;
   thumbnailUrl?: string;

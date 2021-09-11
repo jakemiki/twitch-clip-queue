@@ -1,33 +1,81 @@
 import { createLogger } from '../common/logging';
-import { acceptingClips, addClip } from '../store/queue';
+import { acceptingClips, addClip, clipQueue, removeClip } from '../store/queue';
 import { accessToken, userChannel, userName } from '../store/user';
 import { Client, Userstate } from 'tmi.js';
 import ClipFinder from './ClipFinder';
+import { none } from '@hookstate/core';
 
 const logger = createLogger('Twitch Chat');
 
 let client: Client;
+
+const getUrlFromMessage = (message: string) => {
+
+  const urlStart = message.indexOf('http');
+  if (urlStart >= 0) {
+    const urlEnd = message.indexOf(' ', urlStart);
+    const url = message.slice(urlStart, urlEnd > 0 ? urlEnd : undefined);
+    return url;
+  }
+
+  return undefined;
+};
 
 const handleMessage = (userstate: Userstate, message: string) => {
   if (!acceptingClips.get()) {
     return;
   }
 
-  const urlStart = message.indexOf('http');
+  const url = getUrlFromMessage(message);
 
-  if (urlStart >= 0) {
-    const urlEnd = message.indexOf(' ', urlStart);
-    const url = message.slice(urlStart, urlEnd > 0 ? urlEnd : undefined);
-    logger.debug('Found url:', url);
+  if (url) {
+    logger.debug('[handleMessage] Found url:', url);
 
     ClipFinder.findByUrl(url).then((clip) => {
       if (clip) {
         clip.url = url;
-        clip.submitter = userstate['display-name'] || userstate.username;
+        clip.submitter = {
+          userName: userstate.username,
+          displayName: userstate['display-name']
+        };
         addClip(clip);
       }
     });
   }
+};
+
+const handleMessageDeleted = (message: string) => {
+  const url = getUrlFromMessage(message);
+
+  if (url) {
+    logger.debug('[handleMessageDeleted] Found url:', url);
+
+    ClipFinder.findByUrl(url).then((clip) => {
+      if (clip) {
+        removeClip(clip);
+      }
+    });
+  }
+}
+
+const handleTimeout = (username: string) => {
+  const clipsFromUser = clipQueue.filter((clip) => clip.submitter.get()?.userName === username || clip.submitters.get()?.some(s => s.userName === username));
+
+  clipsFromUser.forEach(clip => {
+    if (clip.submitter.get()?.userName === username) {
+      if (!clip.submitters.get()?.length) {
+        clip.set(none);
+      } else {
+        clip.submitter.set(clip.submitters.get()?.[0]);
+        clip.submitters.set(submitters => {
+          submitters?.shift();
+          return submitters;
+        })
+      }
+    } else {
+      clip.submitters.set(submitters => submitters?.filter(s => s.userName !== username));
+    }
+  });
 };
 
 const connect = () => {
@@ -63,8 +111,8 @@ const connect = () => {
 
   client.on('disconnected', (reason) => logger.info('Disconnected:', reason));
   client.on('message', (_channel, userstate, message, self) => self || handleMessage(userstate, message));
-  client.on('messagedeleted', (_channel, _username, message) => {});
-  client.on('timeout', (_channel, username) => {})
+  client.on('messagedeleted', (_channel, _username, message) => handleMessageDeleted(message));
+  client.on('timeout', (_channel, username) => handleTimeout(username))
 };
 
 const disconnect = async () => {

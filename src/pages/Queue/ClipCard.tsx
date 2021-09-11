@@ -1,12 +1,13 @@
 import React from 'react';
 import Button from '../../components/Button';
+import { ClipSubmitter } from '../../models';
 import { removeClip, selectCurrentClip } from '../../store/queue';
 
 export interface ClipCardProps {
   id: string;
   provider: string;
   title?: string;
-  submitter?: string;
+  submitter?: ClipSubmitter;
   submitterCount?: number;
   channel?: string;
   game?: string;
@@ -55,7 +56,7 @@ function ClipCard({
           <p className="text-gray-700 text-xs font-normal">
             {submitter && (
               <>
-                Submitted by <span className="font-bold">{submitter}</span>
+                Submitted by <span className="font-bold">{submitter.displayName ?? submitter.userName}</span>
               </>
             )}
             <span className="text-xs">{submitterCount > 0 && ' +' + submitterCount}</span>

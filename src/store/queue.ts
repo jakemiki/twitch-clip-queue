@@ -1,6 +1,6 @@
-import { createState } from '@hookstate/core';
+import { createState, none } from '@hookstate/core';
 import { trace } from '../common/analytics';
-import { Clip } from '../models';
+import { Clip, ClipSubmitter } from '../models';
 import { createPersistentState, same } from './helpers';
 
 export const currentClip = createState({} as Clip);
@@ -9,20 +9,17 @@ export const clipMemory = createPersistentState('clipMemory', [] as Clip[]);
 export const acceptingClips = createState(false);
 
 export const addClip = (clip: Clip): void => {
-  const queued = getQueuedClip(clip);
+  const queuedState = clipQueue.find((c) => same(c.get(), clip));
+  const queued = queuedState?.get();
+
   if (queued) {
     const sameSubmitter =
-      queued.submitter === clip.submitter || (queued.submitters?.includes(clip.submitter as string) ?? false);
+      queued.submitter?.userName === clip.submitter?.userName ||
+      (queued.submitters?.find((s) => s.userName === clip.submitter?.userName) ?? false);
+
     if (!sameSubmitter) {
-      const newQueued = {
-        ...queued,
-        submitters: [...(queued?.submitters ?? []), clip.submitter as string],
-      };
-      clipQueue.set((queue) =>
-        queue
-          .map((c) => (same(c, newQueued) ? newQueued : c))
-          .sort((a, b) => (b.submitters?.length ?? 0) - (a.submitters?.length ?? 0))
-      );
+      queuedState?.submitters.set((submitters) => [...(submitters ?? []), clip.submitter as ClipSubmitter]);
+      clipQueue.set((queue) => queue.sort((a, b) => (b.submitters?.length ?? 0) - (a.submitters?.length ?? 0)));
     }
 
     return;
@@ -37,27 +34,20 @@ export const addClip = (clip: Clip): void => {
 };
 
 export const nextClip = (): void => {
-  clipQueue.set((queue) => {
-    const next = (queue ?? []).shift();
+  currentClip.set(JSON.parse(JSON.stringify(clipQueue[0]?.get() ?? {})));
+  clipQueue[0].set(none);
 
-    currentClip.set(next ?? {});
-
-    trace('next-clip');
-
-    return [...queue];
-  });
+  trace('next-clip');
 };
 
 export const getMemorizedClip = (clip: Clip): Clip | undefined => {
-  const memory = clipMemory.get();
-
-  return memory?.find((c) => same(c, clip)) ?? undefined;
+  const memory = clipMemory.find((c) => same(c.get(), clip));
+  return memory?.get();
 };
 
 export const getQueuedClip = (clip: Clip): Clip | undefined => {
-  const queue = clipQueue.get();
-
-  return queue?.find((c) => same(c, clip)) ?? undefined;
+  const queue = clipQueue.find((c) => same(c.get(), clip));
+  return queue?.get();
 };
 
 export const selectCurrentClip = (clip: Clip): void => {
@@ -69,7 +59,8 @@ export const selectCurrentClip = (clip: Clip): void => {
 };
 
 export const removeClip = (clip: Clip): void => {
-  clipQueue.set(queue => queue.filter(c => !same(c, clip)));
+  const index = clipQueue.findIndex((c) => same(c.get(), clip));
+  clipQueue[index].set(none);
 };
 
 export const clearQueue = (): void => {
@@ -89,4 +80,4 @@ export const acceptClips = (accept: boolean): void => {
   acceptingClips.set(accept);
 
   trace(`accept-clips-${accept}`);
-}
+};

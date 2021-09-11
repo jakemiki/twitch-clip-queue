@@ -33,7 +33,9 @@ function QueuePage() {
 
   useEffect(() => {
     TwitchChat.connect();
-    return () => { TwitchChat.disconnect() };
+    return () => {
+      TwitchChat.disconnect();
+    };
   }, [tokenValue]);
 
   return (
@@ -74,14 +76,14 @@ function QueuePage() {
                 ClipFinder.findByUrl(url).then((clip) => {
                   if (clip) {
                     clip.url = url;
-                    clip.submitter = userName.get() ?? undefined;
+                    clip.submitter = { userName: userName.get() ?? '', displayName: userName.get() ?? '' };
                     addClip(clip);
                   }
                 });
               }
             }}
           >
-           + Add cilp
+            + Add cilp
           </Button>
           <Button
             onClick={() => clearMemory()}

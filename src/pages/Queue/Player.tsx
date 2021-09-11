@@ -1,4 +1,5 @@
 import React from 'react';
+import { ClipSubmitter } from '../../models';
 
 export interface PlayerProps {
   title?: string;
@@ -6,7 +7,7 @@ export interface PlayerProps {
   id?: string;
   channel?: string;
   game?: string;
-  submitter?: string;
+  submitter?: ClipSubmitter;
   submitterCount?: number;
   startTime?: string;
 }
@@ -29,7 +30,7 @@ function Player(props: PlayerProps) {
                   &nbsp;playing&nbsp;<span className="font-bold">{game}</span>
                 </span>
               )}
-              , submitted by <span className="font-bold">{submitter}</span>
+              , submitted by <span className="font-bold">{submitter?.displayName ?? submitter?.userName}</span>
               {submitterCount > 0 && <> and {submitterCount} other(s)</>}
             </>
           ) : (
