@@ -48,6 +48,11 @@ function HomePage() {
             </p>
           </li>
           <li>
+            <strong><span className="text-purple-400">NEW</span> Handles deleted messages and timed out users</strong>
+            <p>when a message with clip link is deleted from chat it is removed from the queue as well</p>
+            <p>if a user that submitted clips is timed out their clips are removed from the queue (unless someone else submitted the as well)</p>
+          </li>
+          <li>
             <strong>Respects privacy</strong>
             <p>does not store any personal data, does not communicate with any third party services</p>
             <p>requires permission only to get your username and read chat</p>
