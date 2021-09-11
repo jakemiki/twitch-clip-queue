@@ -42,6 +42,8 @@ export const nextClip = (): void => {
 
     currentClip.set(next ?? {});
 
+    trace('next-clip');
+
     return [...queue];
   });
 };
@@ -85,4 +87,6 @@ export const clearMemory = (): void => {
 
 export const acceptClips = (accept: boolean): void => {
   acceptingClips.set(accept);
+
+  trace(`accept-clips-${accept}`);
 }

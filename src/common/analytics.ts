@@ -8,14 +8,16 @@ const eventQueue: { type: string; value: string; }[] = [];
 export function trace(value: string, type = 'custom') {
   logger.debug(`${type}: ${value}`);
 
-  eventQueue.push({ type, value });
+  try {
+    eventQueue.push({ type, value });
 
-  if (umami) {
-    let e;
+    if (umami) {
+      let e;
 
-    // eslint-disable-next-line
-    while (e = eventQueue.shift()) {
-      umami.trackEvent(e.value, e.type);
+      // eslint-disable-next-line
+      while (e = eventQueue.shift()) {
+        umami.trackEvent(e.value, e.type);
+      }
     }
-  }
+  } catch {}
 }
