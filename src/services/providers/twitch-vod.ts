@@ -42,6 +42,7 @@ const tryGetClip = async (url: string): Promise<Clip | undefined> => {
         thumbnailUrl: clipInfo.thumbnail_url.replace('%{width}x%{height}', '480x272'),
         title: clipInfo.title,
         startTime: uri.searchParams.get('t') ?? undefined,
+        timestamp: clipInfo.created_at,
       };
     }
   } catch {}

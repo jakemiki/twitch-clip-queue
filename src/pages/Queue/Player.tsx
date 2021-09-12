@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatDistanceToNow, parseISO } from 'date-fns';
 import { ClipSubmitter } from '../../models';
 
 export interface PlayerProps {
@@ -7,13 +8,15 @@ export interface PlayerProps {
   id?: string;
   channel?: string;
   game?: string;
+  timestamp?: string;
   submitter?: ClipSubmitter;
   submitterCount?: number;
   startTime?: string;
 }
 
 function Player(props: PlayerProps) {
-  const { game, channel, title, submitter, submitterCount = 0 } = props;
+  const { game, channel, title, timestamp, submitter, submitterCount = 0 } = props;
+  console.log(timestamp);
   return (
     <>
       <div className="player">
@@ -32,6 +35,11 @@ function Player(props: PlayerProps) {
               )}
               , submitted by <span className="font-bold">{submitter?.displayName ?? submitter?.userName}</span>
               {submitterCount > 0 && <> and {submitterCount} other(s)</>}
+              {timestamp && (
+                <span>
+                  , created {formatDistanceToNow(parseISO(timestamp))} ago
+                </span>
+              )}
             </>
           ) : (
             <>&nbsp;</>

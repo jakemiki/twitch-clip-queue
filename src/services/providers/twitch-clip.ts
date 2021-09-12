@@ -47,6 +47,7 @@ const tryGetClip = async (url: string): Promise<Clip | undefined> => {
         provider: 'twitch-clip',
         thumbnailUrl: clipInfo.thumbnail_url,
         title: clipInfo.title,
+        timestamp: clipInfo.created_at,
       };
     }
   } catch {}

@@ -10,6 +10,7 @@ export interface Clip {
   title?: string;
   channel?: string;
   game?: string;
+  timestamp?: string;
 
   submitter?: ClipSubmitter;
   submitters?: ClipSubmitter[];
