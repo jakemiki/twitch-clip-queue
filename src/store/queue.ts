@@ -53,7 +53,7 @@ export const getQueuedClip = (clip: Clip): Clip | undefined => {
 export const selectCurrentClip = (clip: Clip): void => {
   const queued = getQueuedClip(clip);
   if (queued) {
-    currentClip.set(queued);
+    currentClip.set(JSON.parse(JSON.stringify(queued)));
     removeClip(queued);
   }
 };
