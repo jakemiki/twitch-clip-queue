@@ -1,32 +1,36 @@
-import { useState } from '@hookstate/core';
 import React from 'react';
-import { acceptingClips } from '../../store/queue';
+import { Clip } from '../../models';
 import ClipCard from './ClipCard';
+import { AutoSizer, List, ListRowRenderer } from 'react-virtualized';
 
 export interface ClipRollProps {
-  clips: any[];
+  clips: Clip[];
   clipLimit?: number;
 }
 
-function ClipRoll({ clips, clipLimit = 19 }: ClipRollProps) {
-  const isAcceptingClip = useState(acceptingClips);
+function ClipRoll({ clips }: ClipRollProps) {
+
+  const clipRenderer: ListRowRenderer = ({ index, key }) => (
+    <div key={key} className="mb-4">
+      <ClipCard clip={clips[index]} />
+    </div>
+  );
 
   return (
-    <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 w-full">
-      {clips.length ? (
-        <>
-          {clips.slice(0, clipLimit).map((clip) => (
-            <ClipCard key={`${clip.provider}:${clip.id}`} {...clip} submitterCount={clip.submitters?.length} />
-          ))}
-          {clips.length > clipLimit && (
-            <div className="clip max-w-sm rounded overflow-hidden text-3xl flex py-4">
-              <div className="mx-auto my-auto">+{clips.length - clipLimit} more</div>
-            </div>
-          )}
-        </>
-      ) : (
-        isAcceptingClip.get() && <div className="col-span-full text-lg font-bold">Waiting for some clips from chat...</div>
-      )}
+    <div className="w-full h-full">
+      <AutoSizer>
+        {({ width, height }) => (
+          <List
+            className="custom-scroll"
+            height={height}
+            rowCount={clips.length}
+            rowHeight={256}
+            rowRenderer={clipRenderer}
+            noRowsRenderer={() => (<strong>No clips in queue. Send some in chat!</strong>)}
+            width={width}
+          />
+        )}
+      </AutoSizer>
     </div>
   );
 }

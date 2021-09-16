@@ -1,57 +1,77 @@
-.btn-skip {
-  @apply bg-yellow-500 text-white border-yellow-700;
+.queue-page {
+  display: grid;
+  grid-template-columns: auto 20em;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    'player nextup'
+    'title nextup'
+    'buttons nextup';
+  grid-column-gap: 1em;
+  grid-row-gap: 1em;
+  justify-items: stretch;
+  max-height: calc(100vh - 7rem);
 }
 
-.btn-skip:hover {
-  @apply bg-yellow-400 border-yellow-500;
+.player-container {
+  grid-area: player;
 }
 
-.btn-clear {
-  @apply bg-red-500 text-white border-red-700;
+.player-title-container {
+  grid-area: title;
 }
 
-.btn-clear:hover {
-  @apply bg-red-400 border-red-500;
+.buttons-container {
+  grid-area: buttons;
 }
 
-.btn-play {
-  @apply bg-green-500 text-white border-green-700;
+.nextup-container {
+  grid-area: nextup;
 }
 
-.btn-play:hover {
-  @apply bg-green-400 border-green-500;
-}
-
-.btn-pause {
-  @apply bg-green-600 text-white border-green-800;
-}
-
-.btn-pause:hover {
-  @apply bg-green-500 border-green-600;
+.bottom-container {
+  grid-area: bottom;
 }
 
 .clip {
-  @apply bg-gray-50 text-black font-bold rounded;
+  @apply bg-indigo-50 text-black font-bold rounded;
 }
 
 .clip .clip-buttons {
   opacity: 0;
 }
 
-.clip:hover {
-  @apply bg-gray-200;
+.clip:hover,
+.clip:focus {
+  @apply bg-indigo-200;
 }
 
-.clip:hover .clip-buttons {
+.clip:hover .clip-buttons,
+.clip:focus .clip-buttons {
   opacity: 1;
 }
 
-.clip:hover > img {
+.clip:hover > img,
+.clip:focus > img {
   opacity: 0.9;
 }
 
 .player {
   aspect-ratio: 16 / 9;
   @apply w-full h-auto bg-black;
-  max-height: 77vh;
+  max-height: 82vh;
+}
+
+.custom-scroll::-webkit-scrollbar {
+    width: 0.25em;
+    @apply bg-purple-600;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    @apply bg-purple-100;
+}
+
+.custom-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: thin;
+    @apply pr-2;
 }

@@ -1,28 +1,22 @@
 import React from 'react';
 import { formatDistanceToNow, parseISO } from 'date-fns';
-import { ClipSubmitter } from '../../models';
+import { Clip } from '../../models';
+import { CommonProps } from '../../common/props';
 
-export interface PlayerProps {
-  title?: string;
-  provider?: string;
-  id?: string;
-  channel?: string;
-  game?: string;
-  timestamp?: string;
-  submitter?: ClipSubmitter;
-  submitterCount?: number;
-  startTime?: string;
+export interface PlayerProps extends CommonProps {
+  clip: Clip;
 }
 
 function Player(props: PlayerProps) {
-  const { game, channel, title, timestamp, submitter, submitterCount = 0 } = props;
-  console.log(timestamp);
+  const { clip: { channel, title, timestamp, game, submitter, submitters } } = props;
+  const submitterCount = submitters?.length ?? 0;
+
   return (
     <>
-      <div className="player">
+      <div className="player player-container">
         <PlayerSwitch {...props} />
       </div>
-      <div className="pt-2">
+      <div className="player-title-container">
         <h2 className="font-bold mb-1">{title ?? <>&nbsp;</>}</h2>
         <p className="text-gray-500 text-sm font-normal">
           {channel ? (
@@ -34,12 +28,8 @@ function Player(props: PlayerProps) {
                 </span>
               )}
               , submitted by <span className="font-bold">{submitter?.displayName ?? submitter?.userName}</span>
-              {submitterCount > 0 && <> and {submitterCount} other(s)</>}
-              {timestamp && (
-                <span>
-                  , created {formatDistanceToNow(parseISO(timestamp))} ago
-                </span>
-              )}
+              {submitterCount > 0 && <span> and {submitterCount} other(s)</span>}
+              {timestamp && <span>, created {formatDistanceToNow(parseISO(timestamp))} ago</span>}
             </>
           ) : (
             <>&nbsp;</>
@@ -50,46 +40,46 @@ function Player(props: PlayerProps) {
   );
 }
 
-function PlayerSwitch({ provider, ...props }: PlayerProps) {
-  switch (provider) {
+function PlayerSwitch({ clip }: PlayerProps) {
+  switch (clip.provider) {
     case undefined:
       return <></>;
     case 'twitch-clip':
       return (
         <iframe
-          src={`https://clips.twitch.tv/embed?clip=${props.id}&autoplay=true&parent=${window.location.hostname}`}
+          src={`https://clips.twitch.tv/embed?clip=${clip.id}&autoplay=true&parent=${window.location.hostname}`}
           height="100%"
           width="100%"
           className="player"
           allowFullScreen={true}
-          title={props.title}
+          title={clip.title}
         ></iframe>
       );
     case 'twitch-vod':
       return (
         <iframe
-          src={`https://player.twitch.tv/?video=${props.id}&autoplay=true&parent=${window.location.hostname}&time=${props.startTime}`}
+          src={`https://player.twitch.tv/?video=${clip.id}&autoplay=true&parent=${window.location.hostname}&time=${clip.startTime}`}
           height="100%"
           width="100%"
           className="player"
           allowFullScreen={true}
-          title={props.title}
+          title={clip.title}
         ></iframe>
       );
     case 'youtube':
       return (
         <iframe
-          src={`https://www.youtube.com/embed/${props.id}?autoplay=1&start=${props.startTime ?? ''}`}
+          src={`https://www.youtube.com/embed/${clip.id}?autoplay=1&start=${clip.startTime ?? ''}`}
           height="100%"
           width="100%"
           className="player"
           allowFullScreen={true}
-          title={props.title}
+          title={clip.title}
         ></iframe>
       );
   }
 
-  return <span>Provider not supported: {provider}</span>;
+  return <span>Provider not supported: {clip.provider}</span>;
 }
 
 export default Player;

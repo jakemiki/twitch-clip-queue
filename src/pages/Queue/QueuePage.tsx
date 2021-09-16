@@ -15,88 +15,105 @@ import {
   currentClip,
   nextClip,
 } from '../../store/queue';
-import { changeChannel, userChannel, userName } from '../../store/user';
+import { accessToken, changeChannel, userChannel, userName } from '../../store/user';
 import ClipRoll from './ClipRoll';
 import Player from './Player';
 import './styles.css';
+import Page from '../Page';
 
 function QueuePage() {
   const [advancedVisible, setAdvancedVisible] = useState(false);
-  const isAcceptingClips = useHookState(acceptingClips);
-  const clips = useHookState(clipQueue);
-  const clipMem = useHookState(clipMemory);
-  const current = useHookState(currentClip);
 
-  const token = useHookState(userName);
-  const channel = useHookState(userChannel);
-  const tokenValue = token.get();
+  const isAcceptingClips = useHookState(acceptingClips).get();
+  const clips = useHookState(clipQueue).get();
+  const clipMem = useHookState(clipMemory).get();
+  const current = useHookState(currentClip).get();
+
+  const token = useHookState(accessToken).get();
+  const name = useHookState(userName).get();
+  const channel = useHookState(userChannel).get();
 
   useEffect(() => {
     TwitchChat.connect();
     return () => {
       TwitchChat.disconnect();
     };
-  }, [tokenValue]);
+  }, [token]);
 
   return (
-    <>
-      <Player {...current.get()} submitterCount={current.submitters.get()?.length} />
-      <div className="mt-4 flex w-full">
-        <Button colour="green" className="mr-2" onClick={() => nextClip()}>
-          Next &raquo;
-        </Button>
-        <Toggle pressed={isAcceptingClips.get()} className="mr-2" onClick={() => acceptClips(!isAcceptingClips.get())}>
-          {isAcceptingClips.get() ? <>Close the floodgates! 🌊</> : <>Open the floodgates! 🚪</>}
-        </Toggle>
-        <Button colour="red" className="mr-2" onClick={() => clearQueue()}>
-          &times; Clear queue <em>({clips.length})</em>
-        </Button>
-        <Toggle pressed={advancedVisible} colour="red" onClick={() => setAdvancedVisible(!advancedVisible)}>
-          ⚙️
-        </Toggle>
-      </div>
-      {advancedVisible && (
-        <div className="mt-2 flex w-full">
-          <Button
-            className="mr-2"
-            onClick={() => {
-              const newChannel = prompt('Enter channel to read chat from', channel.get() as string);
-              if (newChannel && newChannel !== channel.get()) {
-                changeChannel(newChannel);
-              }
-            }}
-          >
-            Change channel <em>({channel.get()})</em>
-          </Button>
-          <Button
-            className="mr-2"
-            onClick={() => {
-              const url = prompt('Enter clip url', '');
-              if (url) {
-                ClipFinder.findByUrl(url).then((clip) => {
-                  if (clip) {
-                    clip.url = url;
-                    clip.submitter = { userName: userName.get() ?? '', displayName: userName.get() ?? '' };
-                    addClip(clip);
+    <Page fullWidth={true}>
+      <div className="w-full queue-page">
+        <Player clip={current} />
+        <div className="buttons-container">
+          <div className="flex w-full">
+            <Button colour="green" className="mr-2" onClick={() => nextClip()}>
+              Next &raquo;
+            </Button>
+            <Toggle pressed={isAcceptingClips} className="mr-2" onClick={() => acceptClips(!isAcceptingClips)}>
+              {isAcceptingClips ? <>Close the floodgates! 🌊</> : <>Open the floodgates! 🚪</>}
+            </Toggle>
+            <Button colour="red" className="mr-2" onClick={() => clearQueue()}>
+              &times; Clear queue <em>({clips.length})</em>
+            </Button>
+            <Toggle pressed={advancedVisible} colour="red" onClick={() => setAdvancedVisible(!advancedVisible)}>
+              ⚙️
+            </Toggle>
+
+            <div className="ml-4 font-bold text-xl leading-loose">
+              {isAcceptingClips
+                ? 'Clip submissions are open. Send some clips in chat!'
+                : "Clip submissions are closed."}
+            </div>
+          </div>
+          {advancedVisible && (
+            <div className="flex w-full">
+              <Button
+                className="mr-2"
+                onClick={() => {
+                  const newChannel = prompt('Enter channel to read chat from', channel as string);
+                  if (newChannel && newChannel !== channel) {
+                    changeChannel(newChannel);
                   }
-                });
-              }
-            }}
-          >
-            + Add cilp
-          </Button>
-          <Button
-            onClick={() => clearMemory()}
-            title="Remove all clips from permanent memory, allow all clips to be posted and queued again"
-          >
-            &times; Purge memory <em>({clipMem.length})</em>
-          </Button>
+                }}
+              >
+                Change channel <em>({channel})</em>
+              </Button>
+              <Button
+                className="mr-2"
+                onClick={() => {
+                  const url = prompt('Enter clip url', '');
+                  if (url) {
+                    ClipFinder.findByUrl(url).then((clip) => {
+                      if (clip) {
+                        clip.url = url;
+                        clip.submitter = { userName: name ?? '', displayName: name ?? '' };
+                        addClip(clip);
+                      }
+                    });
+                  }
+                }}
+              >
+                + Add cilp
+              </Button>
+              <Button
+                onClick={() => clearMemory()}
+                title="Remove all clips from permanent memory, allow all clips to be posted and queued again"
+              >
+                &times; Purge memory <em>({clipMem.length})</em>
+              </Button>
+            </div>
+          )}
         </div>
-      )}
-      <div className="mt-4">
-        <ClipRoll clips={clips.get()} />
+        <div className="nextup-container">
+          <div className="w-full flex border-b-2 mb-2 align-text-bottom">
+            <h2>Next up</h2>
+            <div className="flex-grow"></div>
+            <h2>{clips.length}</h2>
+          </div>
+          <ClipRoll clips={clips} />
+        </div>
       </div>
-    </>
+    </Page>
   );
 }
 

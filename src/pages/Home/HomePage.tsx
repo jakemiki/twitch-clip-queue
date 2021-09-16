@@ -1,11 +1,12 @@
 import React from 'react';
+import Page from '../Page';
 import TwitchAuth from '../../services/TwitchAuth';
 import screenshot from './screenshot.png';
 import './styles.css';
 
 function HomePage() {
   return (
-    <>
+    <Page>
       <section className="mb-4">
         <p>Enqueue and play clips from your Twitch Chat using nothing more than your web browser</p>
       </section>
@@ -65,7 +66,7 @@ function HomePage() {
           <img src={screenshot} alt="Screenshot" />
         </a>
       </section>
-    </>
+    </Page>
   );
 }
 
