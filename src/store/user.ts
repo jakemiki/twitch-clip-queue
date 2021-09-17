@@ -3,6 +3,7 @@ import { trace } from "../common/analytics";
 import TwitchAuth from "../services/TwitchAuth";
 import TwitchChat from "../services/TwitchChat";
 import { createPersistentState } from "./helpers";
+import { currentClip } from "./queue";
 
 export const isLoggedIn = createState<boolean>(false);
 
@@ -24,6 +25,21 @@ export const logIn = (auth: string, id: string, username: string): void => {
   isLoggedIn.set(true);
 
   trace('user-logged-in');
+
+  // temp easter egg
+  if (username.toLowerCase() === 'wolfabelle' && (new Date()).getDay() === 5) {
+    currentClip.set({
+      title: 'ITS FRIDAY THEN, ITS SATURDAY, SUNDAY! GO MUFASA!',
+      channel: 'MUFASA',
+      id: '1TewCPi92ro',
+      provider: 'youtube',
+      thumbnailUrl: 'https://i.ytimg.com/vi/1TewCPi92ro/hqdefault.jpg',
+      submitter: { displayName: 'Friday', userName: '' },
+      submitters: new Array(69420),
+      game: 'Friday',
+    })
+  }
+  //
 }
 
 export const logOut = async (): Promise<void> => {
