@@ -1,15 +1,17 @@
 .queue-page {
   display: grid;
-  grid-template-columns: auto 20em;
+  grid-template-columns: auto 20rem;
   grid-template-rows: auto auto auto;
   grid-template-areas:
     'player nextup'
     'title nextup'
     'buttons nextup';
-  grid-column-gap: 1em;
-  grid-row-gap: 1em;
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
   justify-items: stretch;
+  height: calc(100vh - 7rem);
   max-height: calc(100vh - 7rem);
+  overflow-y: hidden;
 }
 
 .player-container {
@@ -26,6 +28,8 @@
 
 .nextup-container {
   grid-area: nextup;
+  height: calc(100vh - 8rem);
+  max-height: calc(100vh - 8rem);
 }
 
 .bottom-container {
@@ -58,11 +62,11 @@
 .player {
   aspect-ratio: 16 / 9;
   @apply w-full h-auto bg-black;
-  max-height: 82vh;
+  max-height: calc(100vh - 16rem);
 }
 
 .custom-scroll::-webkit-scrollbar {
-    width: 0.25em;
+    width: 0.25rem;
     @apply bg-purple-600;
 }
 

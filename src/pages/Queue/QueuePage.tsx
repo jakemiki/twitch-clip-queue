@@ -44,7 +44,7 @@ function QueuePage() {
     <Page fullWidth={true}>
       <div className="w-full queue-page">
         <Player clip={current} />
-        <div className="buttons-container">
+        <div className="buttons-container relative">
           <div className="flex w-full">
             <Button colour="green" className="mr-2" onClick={() => nextClip()}>
               Next &raquo;
@@ -66,7 +66,7 @@ function QueuePage() {
             </div>
           </div>
           {advancedVisible && (
-            <div className="flex w-full">
+            <div className="absolute flex w-full -top-14">
               <Button
                 className="mr-2"
                 onClick={() => {
