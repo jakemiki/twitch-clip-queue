@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import Footer from './Footer';
 import Header from './Header';
 
 interface PageProps {
@@ -14,7 +13,6 @@ function Page({ children, fullWidth = false }: PageProps) {
     <>
       <Header />
       <div className={klass}>{children}</div>
-      <Footer />
     </>
   );
 }

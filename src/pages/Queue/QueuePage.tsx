@@ -14,12 +14,14 @@ import {
   clipQueue,
   currentClip,
   nextClip,
+  reloadClip,
 } from '../../store/queue';
 import { accessToken, changeChannel, userChannel, userName } from '../../store/user';
 import ClipRoll from './ClipRoll';
 import Player from './Player';
 import './styles.css';
 import Page from '../Page';
+import { getUrlFromMessage } from '../../common/utils';
 
 function QueuePage() {
   const [advancedVisible, setAdvancedVisible] = useState(false);
@@ -43,7 +45,7 @@ function QueuePage() {
   return (
     <Page fullWidth={true}>
       <div className="w-full queue-page">
-        <Player clip={current} />
+        <Player clip={current} key={current.hash} />
         <div className="buttons-container relative">
           <div className="flex w-full">
             <Button colour="green" className="mr-2" onClick={() => nextClip()}>
@@ -81,10 +83,12 @@ function QueuePage() {
               <Button
                 className="mr-2"
                 onClick={() => {
-                  const url = prompt('Enter clip url', '');
+                  const message = prompt('Enter clip url', '');
+                  const url = getUrlFromMessage(message ?? '');
                   if (url) {
                     ClipFinder.findByUrl(url).then((clip) => {
                       if (clip) {
+                        clip.hash = Date.now().toString();
                         clip.url = url;
                         clip.submitter = { userName: name ?? '', displayName: name ?? '' };
                         addClip(clip);
@@ -94,6 +98,11 @@ function QueuePage() {
                 }}
               >
                 + Add cilp
+              </Button>
+              <Button
+                className="mr-2"
+                onClick={() => reloadClip()}>
+                ♻️
               </Button>
               <Button
                 onClick={() => clearMemory()}

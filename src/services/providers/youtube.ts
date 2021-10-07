@@ -53,7 +53,7 @@ const tryGetClip = async (url: string): Promise<Clip | undefined> => {
       thumbnailUrl: clipInfo?.thumbnail_url ?? `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
       provider: 'youtube',
       title: clipInfo?.title ?? id,
-      startTime,
+      startTime: startTime?.replace(/[^0-9]/g, ''),
     };
   } catch {}
 };

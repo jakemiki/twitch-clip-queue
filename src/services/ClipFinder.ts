@@ -14,6 +14,7 @@ const findByUrl = async (url: string): Promise<Clip | undefined> => {
     const clip = await provider.tryGetClip(url);
 
     if (clip) {
+      clip.hash = Date.now().toString();
       return clip;
     }
   }

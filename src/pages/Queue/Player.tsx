@@ -2,13 +2,16 @@ import React from 'react';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { Clip } from '../../models';
 import { CommonProps } from '../../common/props';
+import { reloadClip } from '../../store/queue';
 
 export interface PlayerProps extends CommonProps {
   clip: Clip;
 }
 
 function Player(props: PlayerProps) {
-  const { clip: { channel, title, timestamp, game, submitter, submitters } } = props;
+  const {
+    clip: { channel, title, timestamp, startTime, game, submitter, submitters },
+  } = props;
   const submitterCount = submitters?.length ?? 0;
 
   return (
@@ -17,7 +20,18 @@ function Player(props: PlayerProps) {
         <PlayerSwitch {...props} />
       </div>
       <div className="player-title-container">
-        <h2 className="font-bold mb-1">{title ?? <>&nbsp;</>}</h2>
+        <h2 className="font-bold mb-1">
+          {title ?? <>&nbsp;</>}
+          {startTime && (
+            <small className="text-gray-700">
+              {' ('}start at{' '}
+              <span className="cursor-pointer underline" onClick={() => reloadClip()}>
+                {startTime}
+              </span>
+              {')'}
+            </small>
+          )}
+        </h2>
         <p className="text-gray-500 text-sm font-normal">
           {channel ? (
             <>

@@ -81,3 +81,7 @@ export const acceptClips = (accept: boolean): void => {
 
   trace(`accept-clips-${accept}`);
 };
+
+export const reloadClip = (): void => {
+  currentClip.hash.set(() => Date.now().toString());
+};

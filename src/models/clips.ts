@@ -4,6 +4,8 @@ export interface ClipSubmitter {
 }
 
 export interface Clip {
+  hash?: string;
+
   provider?: string;
   id?: string;
 

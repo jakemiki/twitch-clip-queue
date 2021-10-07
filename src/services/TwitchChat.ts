@@ -1,4 +1,5 @@
 import { createLogger } from '../common/logging';
+import { getUrlFromMessage } from '../common/utils';
 import { acceptingClips, addClip, clipQueue, removeClip } from '../store/queue';
 import { accessToken, userChannel, userName } from '../store/user';
 import { Client, Userstate } from 'tmi.js';
@@ -8,18 +9,6 @@ import { none } from '@hookstate/core';
 const logger = createLogger('Twitch Chat');
 
 let client: Client;
-
-const getUrlFromMessage = (message: string) => {
-
-  const urlStart = message.indexOf('http');
-  if (urlStart >= 0) {
-    const urlEnd = message.indexOf(' ', urlStart);
-    const url = message.slice(urlStart, urlEnd > 0 ? urlEnd : undefined);
-    return url;
-  }
-
-  return undefined;
-};
 
 const handleMessage = (userstate: Userstate, message: string) => {
   if (!acceptingClips.get()) {
