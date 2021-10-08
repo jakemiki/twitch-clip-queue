@@ -68,7 +68,7 @@ function QueuePage() {
             </div>
           </div>
           {advancedVisible && (
-            <div className="absolute flex w-full -top-14">
+            <div className="absolute flex -top-20 pb-1 pt-7 bg-gray-900 bg-opacity-70">
               <Button
                 className="mr-2"
                 onClick={() => {
