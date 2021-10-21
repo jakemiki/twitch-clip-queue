@@ -49,7 +49,7 @@ function HomePage() {
             </p>
           </li>
           <li>
-            <strong><span className="text-purple-400">NEW</span> Handles deleted messages and timed out users</strong>
+            <strong>Handles deleted messages and timed out users</strong>
             <p>when a message with clip link is deleted from chat it is removed from the queue as well</p>
             <p>if a user that submitted clips is timed out their clips are removed from the queue (unless someone else submitted the as well)</p>
           </li>
@@ -57,6 +57,16 @@ function HomePage() {
             <strong>Respects privacy</strong>
             <p>does not store any personal data, does not communicate with any third party services</p>
             <p>requires permission only to get your username and read chat</p>
+          </li>
+          <li>
+            <strong><span className="text-purple-400">NEW</span> Allows mods to control the queue using chat commands</strong>
+            <p>
+              <code>!queuenext</code> - next clip<br />
+              <code>!queueopen</code> - opens the queue to accept submissions<br />
+              <code>!queueclose</code> - closes the queue for new submissions<br />
+              <code>!queueclear</code> - clears the queue<br />
+              <code>!queuepurgememory</code> - purges the permanent clip memory
+            </p>
           </li>
         </ul>
       </section>
