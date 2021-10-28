@@ -3,8 +3,8 @@
     "main.css": "/twitch-clip-queue/static/css/main.fb38061a.chunk.css",
     "main.js": "/twitch-clip-queue/static/js/main.db3f4c90.chunk.js",
     "main.js.map": "/twitch-clip-queue/static/js/main.db3f4c90.chunk.js.map",
-    "runtime-main.js": "/twitch-clip-queue/static/js/runtime-main.d011dd61.js",
-    "runtime-main.js.map": "/twitch-clip-queue/static/js/runtime-main.d011dd61.js.map",
+    "runtime-main.js": "/twitch-clip-queue/static/js/runtime-main.bef6d4ed.js",
+    "runtime-main.js.map": "/twitch-clip-queue/static/js/runtime-main.bef6d4ed.js.map",
     "static/js/2.707a8406.chunk.js": "/twitch-clip-queue/static/js/2.707a8406.chunk.js",
     "static/js/2.707a8406.chunk.js.map": "/twitch-clip-queue/static/js/2.707a8406.chunk.js.map",
     "static/js/3.364d31e5.chunk.js": "/twitch-clip-queue/static/js/3.364d31e5.chunk.js",
@@ -13,8 +13,8 @@
     "static/js/4.f062fcd0.chunk.js": "/twitch-clip-queue/static/js/4.f062fcd0.chunk.js",
     "static/js/4.f062fcd0.chunk.js.map": "/twitch-clip-queue/static/js/4.f062fcd0.chunk.js.map",
     "static/css/5.07cd5777.chunk.css": "/twitch-clip-queue/static/css/5.07cd5777.chunk.css",
-    "static/js/5.ac9f0c37.chunk.js": "/twitch-clip-queue/static/js/5.ac9f0c37.chunk.js",
-    "static/js/5.ac9f0c37.chunk.js.map": "/twitch-clip-queue/static/js/5.ac9f0c37.chunk.js.map",
+    "static/js/5.6d7baa4f.chunk.js": "/twitch-clip-queue/static/js/5.6d7baa4f.chunk.js",
+    "static/js/5.6d7baa4f.chunk.js.map": "/twitch-clip-queue/static/js/5.6d7baa4f.chunk.js.map",
     "static/js/6.e7256bcd.chunk.js": "/twitch-clip-queue/static/js/6.e7256bcd.chunk.js",
     "static/js/6.e7256bcd.chunk.js.map": "/twitch-clip-queue/static/js/6.e7256bcd.chunk.js.map",
     "index.html": "/twitch-clip-queue/index.html",
@@ -25,7 +25,7 @@
     "static/media/screenshot.bd045114.png": "/twitch-clip-queue/static/media/screenshot.bd045114.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.d011dd61.js",
+    "static/js/runtime-main.bef6d4ed.js",
     "static/js/2.707a8406.chunk.js",
     "static/css/main.fb38061a.chunk.css",
     "static/js/main.db3f4c90.chunk.js"
