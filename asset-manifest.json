@@ -1,33 +1,33 @@
 {
   "files": {
     "main.css": "/twitch-clip-queue/static/css/main.fb38061a.chunk.css",
-    "main.js": "/twitch-clip-queue/static/js/main.d295173b.chunk.js",
-    "main.js.map": "/twitch-clip-queue/static/js/main.d295173b.chunk.js.map",
-    "runtime-main.js": "/twitch-clip-queue/static/js/runtime-main.11e640f7.js",
-    "runtime-main.js.map": "/twitch-clip-queue/static/js/runtime-main.11e640f7.js.map",
-    "static/js/2.bbd1c816.chunk.js": "/twitch-clip-queue/static/js/2.bbd1c816.chunk.js",
-    "static/js/2.bbd1c816.chunk.js.map": "/twitch-clip-queue/static/js/2.bbd1c816.chunk.js.map",
+    "main.js": "/twitch-clip-queue/static/js/main.15860957.chunk.js",
+    "main.js.map": "/twitch-clip-queue/static/js/main.15860957.chunk.js.map",
+    "runtime-main.js": "/twitch-clip-queue/static/js/runtime-main.d011dd61.js",
+    "runtime-main.js.map": "/twitch-clip-queue/static/js/runtime-main.d011dd61.js.map",
+    "static/js/2.707a8406.chunk.js": "/twitch-clip-queue/static/js/2.707a8406.chunk.js",
+    "static/js/2.707a8406.chunk.js.map": "/twitch-clip-queue/static/js/2.707a8406.chunk.js.map",
     "static/js/3.364d31e5.chunk.js": "/twitch-clip-queue/static/js/3.364d31e5.chunk.js",
     "static/js/3.364d31e5.chunk.js.map": "/twitch-clip-queue/static/js/3.364d31e5.chunk.js.map",
     "static/css/4.badf518a.chunk.css": "/twitch-clip-queue/static/css/4.badf518a.chunk.css",
-    "static/js/4.c9342217.chunk.js": "/twitch-clip-queue/static/js/4.c9342217.chunk.js",
-    "static/js/4.c9342217.chunk.js.map": "/twitch-clip-queue/static/js/4.c9342217.chunk.js.map",
+    "static/js/4.f062fcd0.chunk.js": "/twitch-clip-queue/static/js/4.f062fcd0.chunk.js",
+    "static/js/4.f062fcd0.chunk.js.map": "/twitch-clip-queue/static/js/4.f062fcd0.chunk.js.map",
     "static/css/5.07cd5777.chunk.css": "/twitch-clip-queue/static/css/5.07cd5777.chunk.css",
-    "static/js/5.cb713651.chunk.js": "/twitch-clip-queue/static/js/5.cb713651.chunk.js",
-    "static/js/5.cb713651.chunk.js.map": "/twitch-clip-queue/static/js/5.cb713651.chunk.js.map",
+    "static/js/5.ac9f0c37.chunk.js": "/twitch-clip-queue/static/js/5.ac9f0c37.chunk.js",
+    "static/js/5.ac9f0c37.chunk.js.map": "/twitch-clip-queue/static/js/5.ac9f0c37.chunk.js.map",
     "static/js/6.e7256bcd.chunk.js": "/twitch-clip-queue/static/js/6.e7256bcd.chunk.js",
     "static/js/6.e7256bcd.chunk.js.map": "/twitch-clip-queue/static/js/6.e7256bcd.chunk.js.map",
     "index.html": "/twitch-clip-queue/index.html",
     "static/css/4.badf518a.chunk.css.map": "/twitch-clip-queue/static/css/4.badf518a.chunk.css.map",
     "static/css/5.07cd5777.chunk.css.map": "/twitch-clip-queue/static/css/5.07cd5777.chunk.css.map",
     "static/css/main.fb38061a.chunk.css.map": "/twitch-clip-queue/static/css/main.fb38061a.chunk.css.map",
-    "static/js/2.bbd1c816.chunk.js.LICENSE.txt": "/twitch-clip-queue/static/js/2.bbd1c816.chunk.js.LICENSE.txt",
+    "static/js/2.707a8406.chunk.js.LICENSE.txt": "/twitch-clip-queue/static/js/2.707a8406.chunk.js.LICENSE.txt",
     "static/media/screenshot.bd045114.png": "/twitch-clip-queue/static/media/screenshot.bd045114.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.11e640f7.js",
-    "static/js/2.bbd1c816.chunk.js",
+    "static/js/runtime-main.d011dd61.js",
+    "static/js/2.707a8406.chunk.js",
     "static/css/main.fb38061a.chunk.css",
-    "static/js/main.d295173b.chunk.js"
+    "static/js/main.15860957.chunk.js"
   ]
 }
