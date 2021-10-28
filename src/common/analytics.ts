@@ -16,7 +16,11 @@ export function trace(value: string, type = 'custom') {
 
       // eslint-disable-next-line
       while (e = eventQueue.shift()) {
-        umami.trackEvent(e.value, e.type);
+        if (e.type === 'view') {
+          umami.trackView(`${process.env.REACT_APP_BASEPATH}${e.value}`);
+        } else {
+          umami.trackEvent(e.value, e.type);
+        }
       }
     }
   } catch {}

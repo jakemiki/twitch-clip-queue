@@ -44,6 +44,7 @@ export const nextClip = (): void => {
   clipQueue[0].set(none);
 
   trace('next-clip');
+  trace('?visit-time-extender', 'view');
 };
 
 export const getMemorizedClip = (clip: Clip): Clip | undefined => {
