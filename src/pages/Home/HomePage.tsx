@@ -65,7 +65,8 @@ function HomePage() {
               <code>!queueopen</code> - opens the queue to accept submissions<br />
               <code>!queueclose</code> - closes the queue for new submissions<br />
               <code>!queueclear</code> - clears the queue<br />
-              <code>!queuepurgememory</code> - purges the permanent clip memory
+              <code>!queuepurgememory</code> - purges the permanent clip memory<br />
+              <code>!queuesoftlimit [number]</code> - sets soft clip limit to [number]
             </p>
           </li>
         </ul>

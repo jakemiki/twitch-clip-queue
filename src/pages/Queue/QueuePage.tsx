@@ -15,6 +15,9 @@ import {
   currentClip,
   nextClip,
   reloadClip,
+  setSoftClipLimit,
+  softClipCount,
+  softClipLimit,
 } from '../../store/queue';
 import { accessToken, changeChannel, userChannel, userName } from '../../store/user';
 import ClipRoll from './ClipRoll';
@@ -34,6 +37,16 @@ function QueuePage() {
   const token = useHookState(accessToken).get();
   const name = useHookState(userName).get();
   const channel = useHookState(userChannel).get();
+  const softLimit = useHookState(softClipLimit).get();
+
+  const limitReached = useHookState(softClipCount).get() >= softLimit;
+
+  let statusText = 'Clip submissions are open. Send some clips in chat!';
+  if (!isAcceptingClips) {
+    statusText = 'Clip submissions are closed.';
+  } else if (softLimit > 0 && limitReached) {
+    statusText = 'Clip limit reached. Keep sending queued clips to get them to the top 👆';
+  }
 
   useEffect(() => {
     TwitchChat.connect();
@@ -62,15 +75,14 @@ function QueuePage() {
             </Toggle>
 
             <div className="ml-4 font-bold text-xl leading-loose">
-              {isAcceptingClips
-                ? 'Clip submissions are open. Send some clips in chat!'
-                : "Clip submissions are closed."}
+              {statusText}
             </div>
           </div>
           {advancedVisible && (
             <div className="absolute flex -top-20 pb-1 pt-7 bg-gray-900 bg-opacity-70">
               <Button
                 className="mr-2"
+                title="Change channel to read clips from"
                 onClick={() => {
                   const newChannel = prompt('Enter channel to read chat from', channel as string);
                   if (newChannel && newChannel !== channel) {
@@ -82,6 +94,22 @@ function QueuePage() {
               </Button>
               <Button
                 className="mr-2"
+                title="Soft clip limit - after set value no new clips are accepted, current clips can still be voted on"
+                onClick={() => {
+                  const newLimit = prompt(
+                    'Set a soft limit after which no new clips will be accepted (0 to disable)',
+                    softLimit.toString()
+                  );
+                  if (newLimit !== null && Number.isInteger(+newLimit)) {
+                    setSoftClipLimit(+newLimit);
+                  }
+                }}
+              >
+                Soft limit <em>({softLimit})</em>
+              </Button>
+              <Button
+                className="mr-2"
+                title="Add clip from url"
                 onClick={() => {
                   const message = prompt('Enter clip url', '');
                   const url = getUrlFromMessage(message ?? '');
@@ -97,11 +125,9 @@ function QueuePage() {
                   }
                 }}
               >
-                + Add cilp
+                +
               </Button>
-              <Button
-                className="mr-2"
-                onClick={() => reloadClip()}>
+              <Button className="mr-2" title="Reload current clip" onClick={() => reloadClip()}>
                 ♻️
               </Button>
               <Button
