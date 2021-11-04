@@ -1,10 +1,10 @@
 {
   "files": {
     "main.css": "/twitch-clip-queue/static/css/main.fb38061a.chunk.css",
-    "main.js": "/twitch-clip-queue/static/js/main.8e62e493.chunk.js",
-    "main.js.map": "/twitch-clip-queue/static/js/main.8e62e493.chunk.js.map",
-    "runtime-main.js": "/twitch-clip-queue/static/js/runtime-main.971df642.js",
-    "runtime-main.js.map": "/twitch-clip-queue/static/js/runtime-main.971df642.js.map",
+    "main.js": "/twitch-clip-queue/static/js/main.8cc56846.chunk.js",
+    "main.js.map": "/twitch-clip-queue/static/js/main.8cc56846.chunk.js.map",
+    "runtime-main.js": "/twitch-clip-queue/static/js/runtime-main.3c27277a.js",
+    "runtime-main.js.map": "/twitch-clip-queue/static/js/runtime-main.3c27277a.js.map",
     "static/js/2.e0d016ae.chunk.js": "/twitch-clip-queue/static/js/2.e0d016ae.chunk.js",
     "static/js/2.e0d016ae.chunk.js.map": "/twitch-clip-queue/static/js/2.e0d016ae.chunk.js.map",
     "static/js/3.c99ae963.chunk.js": "/twitch-clip-queue/static/js/3.c99ae963.chunk.js",
@@ -13,8 +13,8 @@
     "static/js/4.f062fcd0.chunk.js": "/twitch-clip-queue/static/js/4.f062fcd0.chunk.js",
     "static/js/4.f062fcd0.chunk.js.map": "/twitch-clip-queue/static/js/4.f062fcd0.chunk.js.map",
     "static/css/5.07cd5777.chunk.css": "/twitch-clip-queue/static/css/5.07cd5777.chunk.css",
-    "static/js/5.6d7baa4f.chunk.js": "/twitch-clip-queue/static/js/5.6d7baa4f.chunk.js",
-    "static/js/5.6d7baa4f.chunk.js.map": "/twitch-clip-queue/static/js/5.6d7baa4f.chunk.js.map",
+    "static/js/5.f8e8dafa.chunk.js": "/twitch-clip-queue/static/js/5.f8e8dafa.chunk.js",
+    "static/js/5.f8e8dafa.chunk.js.map": "/twitch-clip-queue/static/js/5.f8e8dafa.chunk.js.map",
     "static/js/6.e7256bcd.chunk.js": "/twitch-clip-queue/static/js/6.e7256bcd.chunk.js",
     "static/js/6.e7256bcd.chunk.js.map": "/twitch-clip-queue/static/js/6.e7256bcd.chunk.js.map",
     "index.html": "/twitch-clip-queue/index.html",
@@ -25,9 +25,9 @@
     "static/media/screenshot.bd045114.png": "/twitch-clip-queue/static/media/screenshot.bd045114.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.971df642.js",
+    "static/js/runtime-main.3c27277a.js",
     "static/js/2.e0d016ae.chunk.js",
     "static/css/main.fb38061a.chunk.css",
-    "static/js/main.8e62e493.chunk.js"
+    "static/js/main.8cc56846.chunk.js"
   ]
 }
