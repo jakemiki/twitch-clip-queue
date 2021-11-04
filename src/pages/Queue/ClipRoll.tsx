@@ -1,7 +1,6 @@
 import React from 'react';
 import { Clip } from '../../models';
 import ClipCard from './ClipCard';
-import { AutoSizer, List, ListRowRenderer } from 'react-virtualized';
 import { useState } from '@hookstate/core';
 import { acceptingClips } from '../../store/queue';
 
@@ -13,27 +12,17 @@ export interface ClipRollProps {
 function ClipRoll({ clips }: ClipRollProps) {
   const isAcceptingClips = useState(acceptingClips).get();
 
-  const clipRenderer: ListRowRenderer = ({ index, key }) => (
-    <div key={key} className="mb-4">
-      <ClipCard clip={clips[index]} />
-    </div>
-  );
-
   return (
-    <div className="w-full h-full">
-      <AutoSizer>
-        {({ width, height }) => (
-          <List
-            className="custom-scroll"
-            height={height}
-            rowCount={clips.length}
-            rowHeight={256}
-            rowRenderer={clipRenderer}
-            noRowsRenderer={() => <strong>No clips in queue. {isAcceptingClips && <>Send some in chat!</>}</strong>}
-            width={width}
-          />
-        )}
-      </AutoSizer>
+    <div className="w-full overflow-y-scroll h-full">
+      {!clips.length && (
+        <strong>No clips in queue. {isAcceptingClips && <>Send some in chat!</>}</strong>
+      )}
+      {clips.slice(0, 100).map((clip) => (
+        <div key={`${clip.provider}_${clip.id}`} className="mb-4">
+          <ClipCard clip={clip} />
+        </div>
+      ))}
+      <div className="mb-16"></div>
     </div>
   );
 }
