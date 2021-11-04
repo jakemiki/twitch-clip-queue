@@ -64,19 +64,17 @@ function QueuePage() {
             <Button colour="green" className="mr-2" onClick={() => nextClip()}>
               Next &raquo;
             </Button>
+            <Button colour="red" className="mr-2" onClick={() => nextClip(true)} title="Skipping a clip opens up a slot for another clip to be posted if gates are still open">
+              &times; Skip
+            </Button>
             <Toggle pressed={isAcceptingClips} className="mr-2" onClick={() => acceptClips(!isAcceptingClips)}>
               {isAcceptingClips ? <>Close the floodgates! 🌊</> : <>Open the floodgates! 🚪</>}
             </Toggle>
-            <Button colour="red" className="mr-2" onClick={() => clearQueue()}>
-              &times; Clear queue <em>({clips.length})</em>
-            </Button>
-            <Toggle pressed={advancedVisible} colour="red" onClick={() => setAdvancedVisible(!advancedVisible)}>
+            <Toggle pressed={advancedVisible} onClick={() => setAdvancedVisible(!advancedVisible)}>
               ⚙️
             </Toggle>
 
-            <div className="ml-4 font-bold text-xl leading-loose">
-              {statusText}
-            </div>
+            <div className="ml-4 font-bold text-xl leading-loose">{statusText}</div>
           </div>
           {advancedVisible && (
             <div className="absolute flex -top-20 pb-1 pt-7 bg-gray-900 bg-opacity-70">
@@ -130,9 +128,12 @@ function QueuePage() {
               <Button className="mr-2" title="Reload current clip" onClick={() => reloadClip()}>
                 ♻️
               </Button>
+              <Button className="mr-2" onClick={() => clearQueue()} title="Clear current queue">
+                &times; Clear queue <em>({clips.length})</em>
+              </Button>
               <Button
                 onClick={() => clearMemory()}
-                title="Remove all clips from permanent memory, allow all clips to be posted and queued again"
+                title="Remove all clips from permanent memory, allow all clips to be queued again"
               >
                 &times; Purge memory <em>({clipMem.length})</em>
               </Button>

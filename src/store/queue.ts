@@ -39,9 +39,13 @@ export const addClip = (clip: Clip): void => {
   trace('clip-added');
 };
 
-export const nextClip = (): void => {
+export const nextClip = (uncount = false): void => {
   currentClip.set(JSON.parse(JSON.stringify(clipQueue[0]?.get() ?? {})));
   clipQueue[0].set(none);
+
+  if (uncount) {
+    softClipCount.set((c) => Math.max(c - 1, 0));
+  }
 
   trace('next-clip');
   trace('?visit-time-extender', 'view');
