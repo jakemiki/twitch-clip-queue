@@ -64,9 +64,16 @@ function QueuePage() {
             <Button colour="green" className="mr-2" onClick={() => nextClip()}>
               Next &raquo;
             </Button>
-            <Button colour="red" className="mr-2" onClick={() => nextClip(true)} title="Skipping a clip opens up a slot for another clip to be posted if gates are still open">
-              &times; Skip
-            </Button>
+            {!!softLimit && (
+              <Button
+                colour="red"
+                className="mr-2"
+                onClick={() => nextClip(true)}
+                title="Skipping a clip opens up a slot for another clip to be posted if gates are still open"
+              >
+                &times; Skip
+              </Button>
+            )}
             <Toggle pressed={isAcceptingClips} className="mr-2" onClick={() => acceptClips(!isAcceptingClips)}>
               {isAcceptingClips ? <>Close the floodgates! 🌊</> : <>Open the floodgates! 🚪</>}
             </Toggle>
