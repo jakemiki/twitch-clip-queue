@@ -45,7 +45,7 @@ function QueuePage() {
   if (!isAcceptingClips) {
     statusText = 'Clip submissions are closed.';
   } else if (softLimit > 0 && limitReached) {
-    statusText = 'Clip limit reached. Keep sending queued clips to get them to the top 👆';
+    statusText = 'Clip limit reached. Send clips queued by others to boost them to the top 👆';
   }
 
   useEffect(() => {
