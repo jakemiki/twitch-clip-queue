@@ -8,6 +8,9 @@ const canHandle = (url: string): boolean => {
     if (uri.pathname.includes('/videos/')) {
       return true;
     }
+    if (uri.pathname.includes('/video/')) {
+      return true;
+    }
   }
 
   return false;
