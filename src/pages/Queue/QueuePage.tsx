@@ -8,6 +8,7 @@ import {
   acceptClips,
   acceptingClips,
   addClip,
+  autoplay,
   clearMemory,
   clearQueue,
   clipMemory,
@@ -18,6 +19,8 @@ import {
   setSoftClipLimit,
   softClipCount,
   softClipLimit,
+  toggleAutoplay,
+  useReactPlayer,
 } from '../../store/queue';
 import { accessToken, changeChannel, userChannel, userName } from '../../store/user';
 import ClipRoll from './ClipRoll';
@@ -38,6 +41,8 @@ function QueuePage() {
   const name = useHookState(userName).get();
   const channel = useHookState(userChannel).get();
   const softLimit = useHookState(softClipLimit).get();
+  const autoplayEnabled = useHookState(autoplay).get();
+  const reactPlayer = useHookState(useReactPlayer).get();
 
   const limitReached = useHookState(softClipCount).get() >= softLimit;
 
@@ -58,12 +63,25 @@ function QueuePage() {
   return (
     <Page fullWidth={true}>
       <div className="w-full queue-page">
-        <Player clip={current} key={current.hash} />
+        <Player
+          clip={current}
+          key={current.hash}
+          useReactPlayer={reactPlayer}
+          onEnded={() => autoplayEnabled && setTimeout(() => autoplay.get() && clips.length > 0 && nextClip(), 3000)}
+        />
         <div className="buttons-container relative">
           <div className="flex w-full">
             <Button colour="green" className="mr-2" onClick={() => nextClip()}>
               Next &raquo;
             </Button>
+            <Toggle
+              pressed={autoplayEnabled}
+              colour="green"
+              className="mr-2"
+              onClick={() => toggleAutoplay(!autoplayEnabled)}
+            >
+              Autoplay is {autoplayEnabled ? <>on</> : <>off</>}
+            </Toggle>
             {!!softLimit && (
               <Button
                 colour="red"
@@ -110,7 +128,7 @@ function QueuePage() {
                   }
                 }}
               >
-                Soft limit <em>({softLimit})</em>
+                Clip limit <em>({softLimit})</em>
               </Button>
               <Button
                 className="mr-2"
@@ -130,10 +148,10 @@ function QueuePage() {
                   }
                 }}
               >
-                +
+                + Add clip
               </Button>
               <Button className="mr-2" title="Reload current clip" onClick={() => reloadClip()}>
-                ♻️
+                ♻️ Reload clip
               </Button>
               <Button className="mr-2" onClick={() => clearQueue()} title="Clear current queue">
                 &times; Clear queue <em>({clips.length})</em>

@@ -19,6 +19,7 @@ export interface Clip {
 
   url?: string;
   thumbnailUrl?: string;
+  videoUrl?: string;
 
   startTime?: string;
 }

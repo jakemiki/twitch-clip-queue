@@ -9,6 +9,8 @@ export const clipMemory = createPersistentState('clipMemory', [] as Clip[]);
 export const acceptingClips = createState(false);
 export const softClipLimit = createPersistentState('softClipLimit', 0);
 export const softClipCount = createState(0);
+export const autoplay = createPersistentState('autoplay', false);
+export const useReactPlayer = createState(false);
 
 export const addClip = (clip: Clip): void => {
   const queuedState = clipQueue.find((c) => same(c.get(), clip));
@@ -26,9 +28,9 @@ export const addClip = (clip: Clip): void => {
     }
 
     return;
-  } else if (getMemorizedClip(clip)) {
-    return;
   } else if (limit && softClipCount.get() >= limit) {
+    return;
+  } else if (getMemorizedClip(clip)) {
     return;
   }
 
@@ -47,6 +49,8 @@ export const nextClip = (uncount = false): void => {
     softClipCount.set((c) => Math.max(c - 1, 0));
   }
 
+  useReactPlayer.set(autoplay.get());
+
   trace('next-clip');
   trace('?visit-time-extender', 'view');
 };
@@ -64,6 +68,7 @@ export const getQueuedClip = (clip: Clip): Clip | undefined => {
 export const selectCurrentClip = (clip: Clip): void => {
   const queued = getQueuedClip(clip);
   if (queued) {
+    useReactPlayer.set(autoplay.get());
     currentClip.set(JSON.parse(JSON.stringify(queued)));
     removeClip(queued);
   }
@@ -106,4 +111,15 @@ export const setSoftClipLimit = (limit: number): void => {
   softClipLimit.set(limit);
 
   trace('set-soft-limit');
-}
+};
+
+export const toggleAutoplay = (ap?: boolean): void => {
+  ap = ap ?? !autoplay.get();
+  autoplay.set(ap);
+
+  if (ap) {
+    useReactPlayer.set(true);
+  }
+
+  trace(`toggle-autoplay-${ap}`);
+};

@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactPlayer from 'react-player';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { Clip } from '../../models';
 import { CommonProps } from '../../common/props';
@@ -6,11 +7,13 @@ import { reloadClip } from '../../store/queue';
 
 export interface PlayerProps extends CommonProps {
   clip: Clip;
+  useReactPlayer?: boolean;
+  onEnded?: () => void;
 }
 
 function Player(props: PlayerProps) {
   const {
-    clip: { channel, title, timestamp, startTime, game, submitter, submitters },
+    clip: { channel, title, timestamp, startTime, game, submitter, submitters, url },
   } = props;
   const submitterCount = submitters?.length ?? 0;
 
@@ -30,6 +33,21 @@ function Player(props: PlayerProps) {
               </span>
               {')'}
             </small>
+          )}
+          {url && (
+            <span>
+              &nbsp;
+              <sup>
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-700 no-underline hover:text-gray-200"
+                >
+                  &#x1F5D7;
+                </a>
+              </sup>
+            </span>
           )}
         </h2>
         <p className="text-gray-500 text-sm font-normal">
@@ -54,7 +72,14 @@ function Player(props: PlayerProps) {
   );
 }
 
-function PlayerSwitch({ clip }: PlayerProps) {
+function PlayerSwitch({ clip, useReactPlayer, onEnded }: PlayerProps) {
+  if (useReactPlayer) {
+    const url = clip.videoUrl ?? clip.url;
+    if (url && ReactPlayer.canPlay(url)) {
+      return <ReactPlayer url={url} height="100%" width="100%" className="player" controls playing onEnded={onEnded} />;
+    }
+  }
+
   switch (clip.provider) {
     case undefined:
       return <></>;

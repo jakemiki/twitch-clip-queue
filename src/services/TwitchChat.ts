@@ -1,11 +1,12 @@
 import { createLogger } from '../common/logging';
 import { getUrlFromMessage } from '../common/utils';
-import { acceptingClips, addClip, clipQueue, removeClip } from '../store/queue';
+import { acceptingClips, addClip, clipMemory, clipQueue, removeClip } from '../store/queue';
 import { accessToken, userChannel, userName } from '../store/user';
 import { Client, Userstate } from 'tmi.js';
 import ClipFinder from './ClipFinder';
 import { none } from '@hookstate/core';
 import { commands } from '../common/commands';
+import { same } from '../store/helpers';
 
 const logger = createLogger('Twitch Chat');
 let client: Client;
@@ -71,6 +72,8 @@ const handleTimeout = (username: string) => {
   clipsFromUser.forEach((clip) => {
     if (clip.submitter.get()?.userName === username) {
       if (!clip.submitters.get()?.length) {
+        const memory = clipMemory.find((c) => same(c.get(), clip.get()));
+        memory?.set(none);
         clip.set(none);
       } else {
         clip.submitter.set(clip.submitters.get()?.[0]);
@@ -107,20 +110,23 @@ const connect = () => {
     },
   });
 
-  logger.info('Connecting and authenticating...');
-  client
-    .connect()
-    .then(() => {
-      logger.info('Connected.');
-      joinChannel(userChannel.get() as string);
-    })
-    .catch(logger.error.bind(logger));
-
   client.on('disconnected', (reason) => logger.info('Disconnected:', reason));
   client.on('message', (_channel, userstate, message, self) => handleMessage(userstate, message, self));
   client.on('messagedeleted', (_channel, _username, message) => handleMessageDeleted(message));
   client.on('timeout', (_channel, username) => handleTimeout(username));
   client.on('ban', (_channel, username) => handleTimeout(username));
+
+  logger.info('Connecting and authenticating...');
+  client
+    .connect()
+    .then(() => {
+      logger.info('Connected.');
+      joinChannel(userChannel.get() ?? userName.get() ?? '');
+    })
+    .catch((error) => {
+      logger.error(error);
+      setTimeout(() => connect(), 5000);
+    });
 };
 
 const disconnect = async () => {

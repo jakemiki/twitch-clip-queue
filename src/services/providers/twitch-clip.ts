@@ -46,6 +46,7 @@ const tryGetClip = async (url: string): Promise<Clip | undefined> => {
         game: await getGameName(clipInfo.game_id),
         provider: 'twitch-clip',
         thumbnailUrl: clipInfo.thumbnail_url,
+        videoUrl: clipInfo.thumbnail_url.split('-preview-')[0] + '.mp4',
         title: clipInfo.title,
         timestamp: clipInfo.created_at,
       };
