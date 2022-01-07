@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/pages/Home/styles.css"],"names":[],"mappings":"AAAA,YACE,wDAAqD,CAArD,gDACF","file":"4.badf518a.chunk.css","sourcesContent":[".screenshot {\r\n  clip-path: polygon(15% 0%, 85% 0%, 85% 100%, 15% 100%)\r\n}\r\n"]}
