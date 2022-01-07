@@ -1,5 +1,6 @@
 import React from 'react';
 import Page from '../Page';
+import { GitHubLogo, TwitchLogo } from '../../components/Logos';
 import TwitchAuth from '../../services/TwitchAuth';
 import screenshot from './screenshot.png';
 import './styles.css';
@@ -9,6 +10,16 @@ function HomePage() {
     <Page>
       <section className="mb-4">
         <p>Enqueue and play clips from your Twitch Chat using nothing more than your web browser</p>
+        <p>
+          Created by{' '}
+          <GitHubLogo className="inline-block" href="https://github.com/JakeMiki">
+            JakeMiki
+          </GitHubLogo>{' '}
+          /{' '}
+          <TwitchLogo className="inline-block" href="https://twitch.tv/SirMuffin9">
+            SirMuffin9
+          </TwitchLogo>
+        </p>
       </section>
       <section className="mb-4 leading-relaxed">
         <h2>Quickstart</h2>
@@ -62,9 +73,7 @@ function HomePage() {
             <p>requires permission only to get your username and read chat</p>
           </li>
           <li>
-            <strong>
-              Allows mods to control the queue using chat commands
-            </strong>
+            <strong>Allows mods to control the queue using chat commands</strong>
             <p>
               <code>!queuenext</code> - next clip
               <br />
@@ -77,7 +86,9 @@ function HomePage() {
               <code>!queuepurgememory</code> - purges the permanent clip memory
               <br />
               <code>!queueautoplay [on/off]</code> - switches autoplay on/off{' '}
-              <strong><span className="text-purple-400">NEW</span></strong>
+              <strong>
+                <span className="text-purple-400">NEW</span>
+              </strong>
               <br />
               <code>!queuesoftlimit [number]</code> - sets soft clip limit to [number]
             </p>
