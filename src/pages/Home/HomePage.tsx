@@ -10,16 +10,16 @@ function HomePage() {
     <Page>
       <section className="mb-4">
         <p>Enqueue and play clips from your Twitch Chat using nothing more than your web browser</p>
-        <p>
-          Created by{' '}
-          <GitHubLogo className="inline-block" href="https://github.com/JakeMiki">
-            JakeMiki
-          </GitHubLogo>{' '}
-          /{' '}
-          <TwitchLogo className="inline-block" href="https://twitch.tv/SirMuffin9">
-            SirMuffin9
-          </TwitchLogo>
-        </p>
+      </section>
+      <section className="mb-4">
+        Created by{' '}
+        <GitHubLogo className="inline-block" href="https://github.com/JakeMiki">
+          JakeMiki
+        </GitHubLogo>{' '}
+        /{' '}
+        <TwitchLogo className="inline-block" href="https://twitch.tv/SirMuffin9">
+          SirMuffin9
+        </TwitchLogo>
       </section>
       <section className="mb-4 leading-relaxed">
         <h2>Quickstart</h2>

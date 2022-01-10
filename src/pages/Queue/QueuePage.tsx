@@ -14,6 +14,7 @@ import {
   clipMemory,
   clipQueue,
   currentClip,
+  delayedNextClip,
   nextClip,
   reloadClip,
   setSoftClipLimit,
@@ -67,7 +68,7 @@ function QueuePage() {
           clip={current}
           key={current.hash}
           useReactPlayer={reactPlayer}
-          onEnded={() => autoplayEnabled && setTimeout(() => autoplay.get() && clips.length > 0 && nextClip(), 3000)}
+          onEnded={() => autoplayEnabled && delayedNextClip()}
         />
         <div className="buttons-container relative">
           <div className="flex w-full">

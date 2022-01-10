@@ -11,6 +11,7 @@ export const softClipLimit = createPersistentState('softClipLimit', 0);
 export const softClipCount = createState(0);
 export const autoplay = createPersistentState('autoplay', false);
 export const useReactPlayer = createState(false);
+export const autoplayTimeoutHandle = createState(-1);
 
 export const addClip = (clip: Clip): void => {
   const queuedState = clipQueue.find((c) => same(c.get(), clip));
@@ -42,7 +43,8 @@ export const addClip = (clip: Clip): void => {
 };
 
 export const nextClip = (uncount = false): void => {
-  currentClip.set(JSON.parse(JSON.stringify(clipQueue[0]?.get() ?? {})));
+  const next = clipQueue[0]?.get();
+  currentClip.set(JSON.parse(JSON.stringify(next ?? {})));
   clipQueue[0].set(none);
 
   if (uncount) {
@@ -50,9 +52,12 @@ export const nextClip = (uncount = false): void => {
   }
 
   useReactPlayer.set(autoplay.get());
+  cancelDelayedNextClip();
 
-  trace('next-clip');
-  trace('?visit-time-extender', 'view');
+  if (next) {
+    trace('next-clip');
+    trace('?visit-time-extender', 'view');
+  }
 };
 
 export const getMemorizedClip = (clip: Clip): Clip | undefined => {
@@ -119,7 +124,23 @@ export const toggleAutoplay = (ap?: boolean): void => {
 
   if (ap) {
     useReactPlayer.set(true);
+  } else {
+    cancelDelayedNextClip();
   }
 
   trace(`toggle-autoplay-${ap}`);
+};
+
+export const delayedNextClip = (): void => {
+  cancelDelayedNextClip();
+
+  const timeoutHandle = setTimeout(() => nextClip(), 1000) as unknown as number;
+  autoplayTimeoutHandle.set(timeoutHandle);
+};
+
+export const cancelDelayedNextClip = (): void => {
+  let timeoutHandle = autoplayTimeoutHandle.get();
+  if (timeoutHandle) {
+    clearTimeout(timeoutHandle);
+  }
 };
