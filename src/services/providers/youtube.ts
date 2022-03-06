@@ -23,7 +23,7 @@ const tryGetClip = async (url: string): Promise<Clip | undefined> => {
     }
 
     let id: string | undefined = undefined;
-    if (uri.hostname === 'youtu.be') {
+    if (uri.hostname === 'youtu.be' || uri.pathname.includes('shorts')) {
       const idStart = uri.pathname.lastIndexOf('/') + 1;
       id = uri.pathname.slice(idStart).split('?')[0];
     } else if (uri.hostname.endsWith('youtube.com')) {
