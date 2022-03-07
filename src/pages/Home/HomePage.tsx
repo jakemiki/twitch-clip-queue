@@ -85,12 +85,14 @@ function HomePage() {
               <br />
               <code>!queuepurgememory</code> - purges the permanent clip memory
               <br />
-              <code>!queueautoplay [on/off]</code> - switches autoplay on/off{' '}
+              <code>!queueautoplay [on/off]</code> - switches autoplay on/off
+              <br />
+              <code>!queuesoftlimit [number]</code> - sets soft clip limit to [number]
+              <br />
+              <code>!queueremove [url]</code> - removes the clip with [url] from the queue{' '}
               <strong>
                 <span className="text-purple-400">NEW</span>
               </strong>
-              <br />
-              <code>!queuesoftlimit [number]</code> - sets soft clip limit to [number]
             </p>
           </li>
         </ul>

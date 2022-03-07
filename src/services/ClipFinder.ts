@@ -1,4 +1,4 @@
-import { Clip } from '../models';
+import { Clip, ClipInfo } from '../models';
 import TwitchClipProvider from './providers/twitch-clip';
 import TwitchVodProvider from './providers/twitch-vod';
 import YouTubeProvider from './providers/youtube';
@@ -22,8 +22,21 @@ const findByUrl = async (url: string): Promise<Clip | undefined> => {
   return undefined;
 };
 
+const getInfoByUrl = (url: string): ClipInfo | undefined => {
+  for (const provider of providers) {
+    const clipInfo = provider.getInfo(url);
+
+    if (clipInfo) {
+      return clipInfo;
+    }
+  }
+
+  return undefined;
+};
+
 const ClipFinder = {
   findByUrl,
+  getInfoByUrl,
 };
 
 export default ClipFinder;

@@ -1,6 +1,6 @@
 import { createState, State } from '@hookstate/core';
 import { Persistence } from '@hookstate/persistence';
-import { Clip } from '../models';
+import { ClipInfo } from '../models';
 
 export function createPersistentState<TState>(
   name: string,
@@ -11,6 +11,6 @@ export function createPersistentState<TState>(
   return state;
 }
 
-export function same(a: Clip, b: Clip) {
+export function same(a: ClipInfo, b: ClipInfo) {
   return a.id === b.id && a.provider === b.provider;
 }

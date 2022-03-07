@@ -71,7 +71,7 @@ function QueuePage() {
           onEnded={() => autoplayEnabled && delayedNextClip()}
         />
         <div className="buttons-container relative">
-          <div className="flex w-full">
+          <div className="flex w-full items-start">
             <Button colour="green" className="mr-2" onClick={() => nextClip()}>
               Next &raquo;
             </Button>
@@ -103,7 +103,7 @@ function QueuePage() {
             <div className="ml-4 font-bold text-xl leading-loose">{statusText}</div>
           </div>
           {advancedVisible && (
-            <div className="absolute flex -top-20 pb-1 pt-7 bg-gray-900 bg-opacity-70">
+            <div className="absolute flex items-start -top-20 pb-1 pt-7 bg-gray-900 bg-opacity-70">
               <Button
                 className="mr-2"
                 title="Change channel to read clips from"

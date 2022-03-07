@@ -3,11 +3,15 @@ export interface ClipSubmitter {
   userName: string;
 }
 
-export interface Clip {
-  hash?: string;
-
+export interface ClipInfo {
   provider?: string;
   id?: string;
+
+  startTime?: string;
+}
+
+export interface Clip extends ClipInfo {
+  hash?: string;
 
   title?: string;
   channel?: string;
@@ -20,6 +24,4 @@ export interface Clip {
   url?: string;
   thumbnailUrl?: string;
   videoUrl?: string;
-
-  startTime?: string;
 }

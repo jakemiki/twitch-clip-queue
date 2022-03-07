@@ -12,8 +12,8 @@ const logger = createLogger('Twitch Chat');
 let client: Client;
 
 const handleMessage = (userstate: Userstate, message: string, self: boolean) => {
-  logger.debug('Userstate', userstate);
   if (message.startsWith('!')) {
+    logger.debug('Userstate', userstate);
     if (!userstate.mod && userstate.badges?.['broadcaster'] !== '1') {
       return;
     }
@@ -26,6 +26,7 @@ const handleMessage = (userstate: Userstate, message: string, self: boolean) => 
     }
 
     command(...args);
+    return;
   }
 
   if (!acceptingClips.get() && !self) {

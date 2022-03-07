@@ -1,6 +1,10 @@
-import { Clip, Provider } from '../../models';
+import { createLogger } from '../../common/logging';
+import { Clip, ClipInfo, Provider } from '../../models';
 import { getMemorizedClip } from '../../store/queue';
 import TwitchApi from '../TwitchApi';
+
+const providerName = 'twitch-vod';
+const logger = createLogger(`${providerName} provider`);
 
 const canHandle = (url: string): boolean => {
   const uri = new URL(url);
@@ -18,16 +22,14 @@ const canHandle = (url: string): boolean => {
 
 const tryGetClip = async (url: string): Promise<Clip | undefined> => {
   try {
-    const uri = new URL(url);
-    if (!canHandle(url)) {
+    const { id, startTime } = getInfo(url) ?? {};
+
+    if (!id) {
       return;
     }
 
-    const idStart = uri.pathname.lastIndexOf('/');
-    const id = uri.pathname.slice(idStart).split('?')[0].slice(1);
-
     const fromMemory = getMemorizedClip({
-      provider: 'twitch-vod',
+      provider: providerName,
       id,
     });
 
@@ -41,19 +43,42 @@ const tryGetClip = async (url: string): Promise<Clip | undefined> => {
       return {
         id,
         channel: clipInfo.user_name,
-        provider: 'twitch-vod',
+        provider: providerName,
         thumbnailUrl: clipInfo.thumbnail_url.replace('%{width}x%{height}', '480x272'),
         title: clipInfo.title,
-        startTime: uri.searchParams.get('t') ?? undefined,
+        startTime: startTime,
         timestamp: clipInfo.created_at,
       };
     }
-  } catch {}
+  } catch(e) {
+    logger.error('tryGetClip', e);
+  }
+};
+
+const getInfo = (url: string): ClipInfo | undefined => {
+  try {
+    const uri = new URL(url);
+    if (!canHandle(url)) {
+      return undefined;
+    }
+
+    const idStart = uri.pathname.lastIndexOf('/');
+    const id = uri.pathname.slice(idStart).split('?')[0].slice(1);
+
+    return {
+      id,
+      provider: providerName,
+      startTime: uri.searchParams.get('t') ?? undefined,
+    }
+  } catch(e) {
+    logger.error('getInfo', e);
+  }
 };
 
 const TwitchVodProvider: Provider = {
   canHandle,
   tryGetClip,
+  getInfo,
 };
 
 export default TwitchVodProvider;

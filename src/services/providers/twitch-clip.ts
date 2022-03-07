@@ -1,7 +1,11 @@
-import { Clip, Provider } from '../../models';
+import { createLogger } from '../../common/logging';
+import { Clip, ClipInfo, Provider } from '../../models';
 import { getGameName } from '../../store/dictionaries';
 import { getMemorizedClip } from '../../store/queue';
 import TwitchApi from '../TwitchApi';
+
+const providerName = 'twitch-clip';
+const logger = createLogger(`${providerName} provider`);
 
 const canHandle = (url: string): boolean => {
   const uri = new URL(url);
@@ -20,16 +24,14 @@ const canHandle = (url: string): boolean => {
 
 const tryGetClip = async (url: string): Promise<Clip | undefined> => {
   try {
-    const uri = new URL(url);
-    if (!canHandle(url)) {
+    const { id } = getInfo(url) ?? {};
+
+    if (!id) {
       return;
     }
 
-    const idStart = uri.pathname.lastIndexOf('/');
-    const id = uri.pathname.slice(idStart).split('?')[0].slice(1);
-
     const fromMemory = getMemorizedClip({
-      provider: 'twitch-clip',
+      provider: providerName,
       id,
     });
 
@@ -44,19 +46,41 @@ const tryGetClip = async (url: string): Promise<Clip | undefined> => {
         id,
         channel: clipInfo.broadcaster_name,
         game: await getGameName(clipInfo.game_id),
-        provider: 'twitch-clip',
+        provider: providerName,
         thumbnailUrl: clipInfo.thumbnail_url,
         videoUrl: clipInfo.thumbnail_url.split('-preview-')[0] + '.mp4',
         title: clipInfo.title,
         timestamp: clipInfo.created_at,
       };
     }
-  } catch {}
+  } catch(e) {
+    logger.error('tryGetClip', e);
+  }
+};
+
+const getInfo = (url: string): ClipInfo | undefined => {
+  try {
+    const uri = new URL(url);
+    if (!canHandle(url)) {
+      return undefined;
+    }
+
+    const idStart = uri.pathname.lastIndexOf('/');
+    const id = uri.pathname.slice(idStart).split('?')[0].slice(1);
+
+    return {
+      id,
+      provider: providerName,
+    }
+  } catch(e) {
+    logger.error('getInfo', e);
+  }
 };
 
 const TwitchClipProvider: Provider = {
   canHandle,
   tryGetClip,
+  getInfo,
 };
 
 export default TwitchClipProvider;

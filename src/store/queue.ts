@@ -1,6 +1,6 @@
 import { createState, none } from '@hookstate/core';
 import { trace } from '../common/analytics';
-import { Clip, ClipSubmitter } from '../models';
+import { Clip, ClipInfo, ClipSubmitter } from '../models';
 import { createPersistentState, same } from './helpers';
 
 export const currentClip = createState({} as Clip);
@@ -60,12 +60,12 @@ export const nextClip = (uncount = false): void => {
   }
 };
 
-export const getMemorizedClip = (clip: Clip): Clip | undefined => {
+export const getMemorizedClip = (clip: ClipInfo): Clip | undefined => {
   const memory = clipMemory.find((c) => same(c.get(), clip));
   return memory?.get();
 };
 
-export const getQueuedClip = (clip: Clip): Clip | undefined => {
+export const getQueuedClip = (clip: ClipInfo): Clip | undefined => {
   const queue = clipQueue.find((c) => same(c.get(), clip));
   return queue?.get();
 };
@@ -79,7 +79,7 @@ export const selectCurrentClip = (clip: Clip): void => {
   }
 };
 
-export const removeClip = (clip: Clip): void => {
+export const removeClip = (clip: ClipInfo): void => {
   const index = clipQueue.findIndex((c) => same(c.get(), clip));
   clipQueue[index].set(none);
   softClipCount.set((c) => Math.max(c - 1, 0));
