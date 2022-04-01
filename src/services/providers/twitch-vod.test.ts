@@ -1,18 +1,12 @@
 import TwitchVodProvider from './twitch-vod';
 
 describe('TwitchVodProvider', () => {
-  it('gets clip info from www.twitch.tv/videos url', () => {
-    expect(TwitchVodProvider.getInfo('https://www.twitch.tv/videos/1409747385')).toEqual({
-      id: '1409747385',
-      provider: 'twitch-vod',
-    });
+  it('does not get clip info from www.twitch.tv/videos url without timestamp', () => {
+    expect(TwitchVodProvider.getInfo('https://www.twitch.tv/videos/1409747385')).toEqual(undefined);
   });
 
-  it('gets clip info from www.twitch.tv/video url', () => {
-    expect(TwitchVodProvider.getInfo('https://www.twitch.tv/video/1409747385')).toEqual({
-      id: '1409747385',
-      provider: 'twitch-vod',
-    });
+  it('does not get clip info from www.twitch.tv/video url without timestamp', () => {
+    expect(TwitchVodProvider.getInfo('https://www.twitch.tv/video/1409747385')).toEqual(undefined);
   });
 
   it('gets clip info from www.twitch.tv/videos url with timestamp', () => {
@@ -31,18 +25,12 @@ describe('TwitchVodProvider', () => {
     });
   });
 
-  it('gets clip info from twitch.tv/videos url', () => {
-    expect(TwitchVodProvider.getInfo('https://www.twitch.tv/videos/1409747385')).toEqual({
-      id: '1409747385',
-      provider: 'twitch-vod',
-    });
+  it('does not get clip info from twitch.tv/videos url without timestamp', () => {
+    expect(TwitchVodProvider.getInfo('https://www.twitch.tv/videos/1409747385')).toEqual(undefined);
   });
 
-  it('gets clip info from twitch.tv/video url', () => {
-    expect(TwitchVodProvider.getInfo('https://www.twitch.tv/video/1409747385')).toEqual({
-      id: '1409747385',
-      provider: 'twitch-vod',
-    });
+  it('does not get clip info from twitch.tv/video url without timestamp', () => {
+    expect(TwitchVodProvider.getInfo('https://www.twitch.tv/video/1409747385')).toEqual(undefined);
   });
 
   it('gets clip info from twitch.tv/videos url with timestamp', () => {

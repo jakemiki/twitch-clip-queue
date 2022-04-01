@@ -64,11 +64,16 @@ const getInfo = (url: string): ClipInfo | undefined => {
 
     const idStart = uri.pathname.lastIndexOf('/');
     const id = uri.pathname.slice(idStart).split('?')[0].slice(1);
+    const startTime = uri.searchParams.get('t');
+
+    if (!startTime) {
+      return undefined;
+    }
 
     return {
       id,
       provider: providerName,
-      startTime: uri.searchParams.get('t') ?? undefined,
+      startTime,
     }
   } catch(e) {
     logger.error('getInfo', e);
