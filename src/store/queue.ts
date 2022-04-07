@@ -13,6 +13,12 @@ export const autoplay = createPersistentState('autoplay', false);
 export const useReactPlayer = createState(false);
 export const autoplayTimeoutHandle = createState(-1);
 
+const addClipToMemory = (clip: Clip): void => {
+  if (clip) {
+    clipMemory.set((memory) => [JSON.parse(JSON.stringify(clip)), ...(memory ?? [])]);
+  }
+}
+
 export const addClip = (clip: Clip): void => {
   const queuedState = clipQueue.find((c) => same(c.get(), clip));
   const queued = queuedState?.get();
@@ -35,7 +41,6 @@ export const addClip = (clip: Clip): void => {
     return;
   }
 
-  clipMemory.set((memory) => [...(memory ?? []), clip]);
   clipQueue.set((queue) => [...(queue ?? []), clip]);
   softClipCount.set((c) => c + 1);
 
@@ -45,6 +50,7 @@ export const addClip = (clip: Clip): void => {
 export const nextClip = (uncount = false): void => {
   const next = clipQueue[0]?.get();
   currentClip.set(JSON.parse(JSON.stringify(next ?? {})));
+  addClipToMemory(next);
   clipQueue[0].set(none);
 
   if (uncount) {
@@ -61,8 +67,15 @@ export const nextClip = (uncount = false): void => {
 };
 
 export const getMemorizedClip = (clip: ClipInfo): Clip | undefined => {
+  const queue = clipQueue.find((c) => same(c.get(), clip));
+  if (queue) {
+    return queue?.get();
+  }
   const memory = clipMemory.find((c) => same(c.get(), clip));
-  return memory?.get();
+  if (memory) {
+    return memory?.get();
+  }
+  return undefined;
 };
 
 export const getQueuedClip = (clip: ClipInfo): Clip | undefined => {
@@ -81,6 +94,7 @@ export const selectCurrentClip = (clip: Clip): void => {
 
 export const removeClip = (clip: ClipInfo): void => {
   const index = clipQueue.findIndex((c) => same(c.get(), clip));
+  addClipToMemory(clipQueue[index].get());
   clipQueue[index].set(none);
   softClipCount.set((c) => Math.max(c - 1, 0));
 };
@@ -94,7 +108,7 @@ export const clearQueue = (): void => {
 };
 
 export const clearMemory = (): void => {
-  clipMemory.set([...(clipQueue.get() ?? [])]);
+  clipMemory.set([]);
 
   trace('purge-memory');
 };

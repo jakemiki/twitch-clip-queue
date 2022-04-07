@@ -44,6 +44,16 @@
   opacity: 0;
 }
 
+.clip .clip-image {
+  min-height: 172px;
+  max-height: 172px;
+  overflow: hidden;
+  background-color: black;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+}
+
 .clip:hover,
 .clip:focus {
   @apply bg-indigo-200;
@@ -54,8 +64,8 @@
   opacity: 1;
 }
 
-.clip:hover > img,
-.clip:focus > img {
+.clip:hover .clip-image,
+.clip:focus .clip-image {
   opacity: 0.9;
 }
 

@@ -32,6 +32,7 @@ import { getUrlFromMessage } from '../../common/utils';
 
 function QueuePage() {
   const [advancedVisible, setAdvancedVisible] = useState(false);
+  const [historyVisible, setHistoryVisible] = useState(false);
 
   const isAcceptingClips = useHookState(acceptingClips).get();
   const clips = useHookState(clipQueue).get();
@@ -168,11 +169,23 @@ function QueuePage() {
         </div>
         <div className="nextup-container">
           <div className="w-full flex border-b-2 mb-2 align-text-bottom">
-            <h2>Next up</h2>
+            <h2
+              className={historyVisible ? 'text-gray-700 hover:text-indigo-50 cursor-pointer' : undefined}
+              onClick={() => setHistoryVisible(false)}
+            >
+              Next up
+            </h2>
+            <div className="flex-grow"></div>
+            <h2
+              className={!historyVisible ? 'text-gray-700 hover:text-indigo-50 cursor-pointer' : undefined}
+              onClick={() => setHistoryVisible(true)}
+            >
+              History
+            </h2>
             <div className="flex-grow"></div>
             <h2>{clips.length}</h2>
           </div>
-          <ClipRoll clips={clips} />
+          {!historyVisible ? <ClipRoll clips={clips} /> : <ClipRoll clips={clipMem} noButtons/>}
         </div>
       </div>
     </Page>
