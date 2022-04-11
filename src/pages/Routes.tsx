@@ -1,13 +1,8 @@
 import { useState } from '@hookstate/core';
 import React from 'react';
 import { Suspense } from 'react';
-import { BrowserRouter, HashRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { isLoggedIn } from '../store/user';
-
-let Router = BrowserRouter;
-if (process.env.REACT_APP_USE_HASHROUTER === 'true') {
-	Router = HashRouter;
-}
 
 const HomePage = React.lazy(() => import('./Home/HomePage'));
 const QueuePage = React.lazy(() => import('./Queue/QueuePage'));
