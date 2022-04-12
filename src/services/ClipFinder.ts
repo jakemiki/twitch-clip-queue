@@ -2,8 +2,17 @@ import { Clip, ClipInfo } from '../models';
 import TwitchClipProvider from './providers/twitch-clip';
 import TwitchVodProvider from './providers/twitch-vod';
 import YouTubeProvider from './providers/youtube';
+import StreamableProvider from './providers/streamable';
+import { createLogger } from '../common/logging';
 
-const providers = [TwitchClipProvider, TwitchVodProvider, YouTubeProvider];
+const logger = createLogger('Clip Finder');
+
+const enabledProviders = process.env.REACT_APP_CLIP_PROVIDERS?.split(',');
+const providers = [TwitchClipProvider, TwitchVodProvider, YouTubeProvider, StreamableProvider].filter((provider) =>
+  enabledProviders?.includes(provider.name)
+);
+
+logger.debug('Enabled providers:', enabledProviders);
 
 const findByUrl = async (url: string): Promise<Clip | undefined> => {
   for (const provider of providers) {

@@ -50,7 +50,7 @@ const tryGetClip = async (url: string): Promise<Clip | undefined> => {
         timestamp: clipInfo.created_at,
       };
     }
-  } catch(e) {
+  } catch (e) {
     logger.error('tryGetClip', e);
   }
 };
@@ -74,8 +74,8 @@ const getInfo = (url: string): ClipInfo | undefined => {
       id,
       provider: providerName,
       startTime,
-    }
-  } catch(e) {
+    };
+  } catch (e) {
     logger.error('getInfo', e);
   }
 };
@@ -84,6 +84,7 @@ const TwitchVodProvider: Provider = {
   canHandle,
   tryGetClip,
   getInfo,
+  name: providerName,
 };
 
 export default TwitchVodProvider;

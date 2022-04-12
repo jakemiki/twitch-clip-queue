@@ -1,18 +1,14 @@
 import { createLogger } from '../../common/logging';
 import { Clip, ClipInfo, Provider } from '../../models';
 import { getMemorizedClip } from '../../store/queue';
-import YoutubeApi from '../YoutubeApi';
+import StreamableApi from '../StreamableApi';
 
-const providerName = 'youtube';
+const providerName = 'streamable';
 const logger = createLogger(`${providerName} provider`);
 
 const canHandle = (url: string): boolean => {
   const uri = new URL(url);
-  if (uri.hostname === 'youtu.be') {
-    return true;
-  }
-
-  if (uri.hostname.endsWith('youtube.com')) {
+  if (uri.hostname.endsWith('streamable.com')) {
     return true;
   }
 
@@ -36,12 +32,12 @@ const tryGetClip = async (url: string): Promise<Clip | undefined> => {
       return { ...fromMemory };
     }
 
-    const clipInfo = await YoutubeApi.getClip(id);
+    const clipInfo = await StreamableApi.getClip(id);
 
     return {
       id,
-      channel: clipInfo?.author_name ?? 'YouTube',
-      thumbnailUrl: clipInfo?.thumbnail_url ?? `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+      channel: clipInfo?.author_name ?? 'Streamable',
+      thumbnailUrl: clipInfo?.thumbnail_url,
       provider: providerName,
       title: clipInfo?.title ?? id,
       startTime,
@@ -58,35 +54,27 @@ const getInfo = (url: string): ClipInfo | undefined => {
       return undefined;
     }
 
-    let id: string | undefined = undefined;
-    if (uri.hostname === 'youtu.be' || uri.pathname.includes('shorts')) {
-      const idStart = uri.pathname.lastIndexOf('/') + 1;
-      id = uri.pathname.slice(idStart).split('?')[0];
-    } else if (uri.hostname.endsWith('youtube.com')) {
-      id = uri.searchParams.get('v') ?? undefined;
-    }
+    const idStart = uri.pathname.lastIndexOf('/') + 1;
+    let id = uri.pathname.slice(idStart).split('?')[0];
 
     if (!id) {
       return undefined;
     }
 
-    const startTime = uri.searchParams.get('t') ?? undefined;
-
     return {
       id,
       provider: providerName,
-      startTime,
     };
   } catch (e) {
     logger.error('getInfo', e);
   }
 };
 
-const YouTubeProvider: Provider = {
+const StreamableProvider: Provider = {
   canHandle,
   tryGetClip,
   getInfo,
   name: providerName,
 };
 
-export default YouTubeProvider;
+export default StreamableProvider;

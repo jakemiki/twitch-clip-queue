@@ -81,6 +81,7 @@ const TwitchClipProvider: Provider = {
   canHandle,
   tryGetClip,
   getInfo,
+  name: providerName,
 };
 
 export default TwitchClipProvider;

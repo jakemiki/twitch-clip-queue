@@ -3,17 +3,15 @@ import { OEmbedVideoResponse } from '../models';
 
 const getClip = async (id: string): Promise<OEmbedVideoResponse | undefined> => {
   try {
-    const { data } = await axios.get(
-      `https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v=${id}`
-    );
+    const { data } = await axios.get(`https://api.streamable.com/oembed.json?url=https://streamable.com/${id}`);
     return data;
   } catch {
     return undefined;
   }
 };
 
-const YoutubeApi = {
+const StreamableApi = {
   getClip,
 };
 
-export default YoutubeApi;
+export default StreamableApi;

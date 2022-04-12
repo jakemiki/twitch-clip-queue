@@ -116,6 +116,17 @@ function PlayerSwitch({ clip, useReactPlayer, onEnded }: PlayerProps) {
           title={clip.title}
         ></iframe>
       );
+    case 'streamable':
+      return (
+        <iframe
+          src={`https://streamable.com/o/${clip.id}`}
+          height="100%"
+          width="100%"
+          className="player"
+          allowFullScreen={true}
+          title={clip.title}
+        ></iframe>
+      );
   }
 
   return <span>Provider not supported: {clip.provider}</span>;
