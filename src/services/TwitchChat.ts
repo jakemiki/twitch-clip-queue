@@ -95,12 +95,14 @@ const connect = () => {
       debug: process.env.REACT_APP_LOG_LEVEL === 'debug',
       skipUpdatingEmotesets: true,
       skipMembership: true,
+      messagesLogLevel: 'debug'
     } as any,
     logger: {
       error: logger.error.bind(logger),
       info: logger.info.bind(logger),
       warn: logger.warn.bind(logger),
-    },
+      debug: logger.debug.bind(logger),
+    } as any,
     identity: {
       username: userName.get() as string,
       password: `oauth:${accessToken.get()}`,

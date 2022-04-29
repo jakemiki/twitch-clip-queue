@@ -3,19 +3,28 @@ import TwitchClipProvider from './providers/twitch-clip';
 import TwitchVodProvider from './providers/twitch-vod';
 import YouTubeProvider from './providers/youtube';
 import StreamableProvider from './providers/streamable';
-import { createLogger } from '../common/logging';
+import { enabledClipProviders } from '../store/user';
 
-const logger = createLogger('Clip Finder');
+const providers = {
+  [TwitchClipProvider.name]: TwitchClipProvider,
+  [TwitchVodProvider.name]: TwitchVodProvider,
+  [YouTubeProvider.name]: YouTubeProvider,
+  [StreamableProvider.name]: StreamableProvider,
+};
 
-const enabledProviders = process.env.REACT_APP_CLIP_PROVIDERS?.split(',');
-const providers = [TwitchClipProvider, TwitchVodProvider, YouTubeProvider, StreamableProvider].filter((provider) =>
-  enabledProviders?.includes(provider.name)
-);
+const getEnabledProviders = () => {
+  return enabledClipProviders.value.split(',').map(p => p.trim());
+}
 
-logger.debug('Enabled providers:', enabledProviders);
 
 const findByUrl = async (url: string): Promise<Clip | undefined> => {
-  for (const provider of providers) {
+  const enabledProviders = getEnabledProviders();
+  for (const providerName of enabledProviders) {
+    const provider = providers[providerName];
+    if (!provider) {
+      continue;
+    }
+
     if (!provider.canHandle(url)) {
       continue;
     }
@@ -32,7 +41,13 @@ const findByUrl = async (url: string): Promise<Clip | undefined> => {
 };
 
 const getInfoByUrl = (url: string): ClipInfo | undefined => {
-  for (const provider of providers) {
+  const enabledProviders = getEnabledProviders();
+  for (const providerName of enabledProviders) {
+    const provider = providers[providerName];
+    if (!provider) {
+      continue;
+    }
+
     const clipInfo = provider.getInfo(url);
 
     if (clipInfo) {

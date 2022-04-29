@@ -34,7 +34,10 @@ function HomePage() {
         <h2>Features</h2>
         <ul>
           <li>
-            <strong>Supports Twitch clip, VOD and YouTube video links</strong>
+            <strong>Supports Twitch clip, VOD, YouTube and Streamable video links</strong>
+            <p>
+              can play clips from any or all of these sources, configurable in settings, only Twitch and Youtube are enabled by default
+            </p>
           </li>
           <li>
             <strong>Integrates with Twitch chat</strong>
@@ -89,7 +92,9 @@ function HomePage() {
               <br />
               <code>!queuesoftlimit [number]</code> - sets soft clip limit to [number]
               <br />
-              <code>!queueremove [url]</code> - removes the clip with [url] from the queue{' '}
+              <code>!queueremove [url]</code> - removes the clip with [url] from the queue
+              <br />
+              <code>!queueproviders [providers]</code> - sets enabled clip providers to [providers]{' '}
               <strong>
                 <span className="text-purple-400">NEW</span>
               </strong>

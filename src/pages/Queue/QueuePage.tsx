@@ -23,7 +23,7 @@ import {
   toggleAutoplay,
   useReactPlayer,
 } from '../../store/queue';
-import { accessToken, changeChannel, userChannel, userName } from '../../store/user';
+import { accessToken, changeChannel, enabledClipProviders, userChannel, userName } from '../../store/user';
 import ClipRoll from './ClipRoll';
 import Player from './Player';
 import './styles.css';
@@ -134,6 +134,28 @@ function QueuePage() {
               </Button>
               <Button
                 className="mr-2"
+                title={`Enabled providers: ${enabledClipProviders.value}`}
+                onClick={() => {
+                  const newEnabledProviders = prompt(
+                    `Comma-separated list of enabled clip providers (like "twitch-clip, twitch-vod, youtube", spaces are ignored).
+
+Available providers:
+- twitch-clip
+- twitch-vod
+- youtube
+- streamable
+`,
+                    enabledClipProviders.value
+                  );
+                  if (newEnabledProviders !== null) {
+                    enabledClipProviders.set(newEnabledProviders);
+                  }
+                }}
+              >
+                Clip providers
+              </Button>
+              <Button
+                className="mr-2"
                 title="Add clip from url"
                 onClick={() => {
                   const message = prompt('Enter clip url', '');
@@ -185,7 +207,7 @@ function QueuePage() {
             <div className="flex-grow"></div>
             <h2>{clips.length}</h2>
           </div>
-          {!historyVisible ? <ClipRoll clips={clips} /> : <ClipRoll clips={clipMem} noButtons/>}
+          {!historyVisible ? <ClipRoll clips={clips} /> : <ClipRoll clips={clipMem} noButtons />}
         </div>
       </div>
     </Page>

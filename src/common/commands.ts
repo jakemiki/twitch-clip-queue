@@ -1,5 +1,14 @@
 import ClipFinder from '../services/ClipFinder';
-import { acceptClips, clearMemory, clearQueue, nextClip, removeClip, setSoftClipLimit, toggleAutoplay } from '../store/queue';
+import {
+  acceptClips,
+  clearMemory,
+  clearQueue,
+  nextClip,
+  removeClip,
+  setSoftClipLimit,
+  toggleAutoplay,
+} from '../store/queue';
+import { enabledClipProviders } from '../store/user';
 
 const queueremove: (url: string) => void = (url) => {
   if (!url) {
@@ -24,4 +33,8 @@ export const commands: Record<string, (...args: string[]) => void> = {
     toggleAutoplay(['1', 'on', 'true'].includes(val) ? true : ['0', 'off', 'false'].includes(val) ? false : undefined),
   queuesoftlimit: (limit) => limit !== null && Number.isInteger(+limit) && setSoftClipLimit(+limit),
   queueremove,
+  queueproviders: (...providers) => {
+    const providerNames = providers.map((p) => p.replaceAll(',', '').trim()).join(', ');
+    enabledClipProviders.set(providerNames);
+  },
 };
