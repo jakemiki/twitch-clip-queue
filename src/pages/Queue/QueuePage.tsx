@@ -29,6 +29,7 @@ import Player from './Player';
 import './styles.css';
 import Page from '../Page';
 import { getUrlFromMessage } from '../../common/utils';
+import { trace } from '../../common/analytics';
 
 function QueuePage() {
   const [advancedVisible, setAdvancedVisible] = useState(false);
@@ -54,6 +55,29 @@ function QueuePage() {
   } else if (softLimit > 0 && limitReached) {
     statusText = 'Clip limit reached. Send clips queued by others to boost them to the top 👆';
   }
+
+  useEffect(() => {
+    const handleErrors = (ev: ErrorEvent) => {
+      if (ev.error?.name) {
+        trace(`error-${ev.error.name}`);
+
+        if (ev.error.name === 'QuotaExceededError') {
+          const message = prompt(
+            `Memory size limit reached. Please, delete some remembered clips to continue.\nClips in memory: ${clipMem.length}\n\nHow many clips should be deleted? (defaults to 10%)`,
+            Math.ceil(clipMem.length * 0.1).toString()
+          );
+          if (message) {
+            const count = parseInt(message);
+            clearMemory(count);
+          }
+        }
+      }
+    };
+    window.addEventListener('error', handleErrors);
+    return () => {
+      window.removeEventListener('error', handleErrors);
+    };
+  });
 
   useEffect(() => {
     TwitchChat.connect();
@@ -181,8 +205,14 @@ Available providers:
                 &times; Clear queue <em>({clips.length})</em>
               </Button>
               <Button
-                onClick={() => clearMemory()}
-                title="Remove all clips from permanent memory, allow all clips to be queued again"
+                onClick={() => {
+                  const result = prompt('How many clips should be deleted?', clipMem.length.toString());
+                  if (result) {
+                    const count = parseInt(result);
+                    clearMemory(count);
+                  }
+                }}
+                title="Delete clips from permanent memory. You'll be able to decide how many to delete."
               >
                 &times; Purge memory <em>({clipMem.length})</em>
               </Button>

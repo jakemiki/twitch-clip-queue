@@ -17,7 +17,7 @@ const addClipToMemory = (clip: Clip): void => {
   if (clip) {
     clipMemory.set((memory) => [JSON.parse(JSON.stringify(clip)), ...(memory ?? [])]);
   }
-}
+};
 
 export const addClip = (clip: Clip): void => {
   const queuedState = clipQueue.find((c) => same(c.get(), clip));
@@ -107,8 +107,12 @@ export const clearQueue = (): void => {
   trace('clear-queue');
 };
 
-export const clearMemory = (): void => {
-  clipMemory.set([]);
+export const clearMemory = (count?: number): void => {
+  if (!count) {
+    clipMemory.set([]);
+  } else {
+    clipMemory.set((m) => m.slice(0, -count));
+  }
 
   trace('purge-memory');
 };
