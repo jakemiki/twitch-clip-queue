@@ -1,17 +1,23 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import TwitchAuth from "./services/TwitchAuth";
+import { createRoot } from 'react-dom/client';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
+import App from './app/App';
+import AppSkeleton from './app/AppSkeleton';
+import { persistor, store } from './app/store';
+import { injectStore } from './common/apis/twitchApi';
+import reportWebVitals from './reportWebVitals';
 
-TwitchAuth.processAuth();
+import './index.scss';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
+injectStore(store);
+
+const root = createRoot(document.getElementById('root') as HTMLElement);
+root.render(
+  <Provider store={store}>
+    <PersistGate loading={<AppSkeleton />} persistor={persistor}>
+      <App />
+    </PersistGate>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

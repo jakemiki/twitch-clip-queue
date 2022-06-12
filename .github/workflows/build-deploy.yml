@@ -16,15 +16,14 @@ jobs:
       REACT_APP_TWITCH_CLIENT_ID: ${{ secrets.REACT_APP_TWITCH_CLIENT_ID }}
       REACT_APP_UMAMI_SRC: ${{ secrets.REACT_APP_UMAMI_SRC }}
       REACT_APP_UMAMI_WEBSITE_ID: ${{ secrets.REACT_APP_UMAMI_WEBSITE_ID }}
-      REACT_APP_TWITCH_REDIRECT_URI: https://jakemiki.github.io/twitch-clip-queue/
+      REACT_APP_TWITCH_REDIRECT_URI: https://jakemiki.github.io/twitch-clip-queue/auth
       REACT_APP_BASEPATH: /twitch-clip-queue/
       REACT_APP_LOG_LEVEL: warn
-      REACT_APP_CLIP_PROVIDERS: twitch-clip,twitch-vod,youtube
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    
+
     - name: Install Node.js
       uses: actions/setup-node@v1
       with:
@@ -34,7 +33,7 @@ jobs:
       id: npm-cache-dir
       run: |
         echo "::set-output name=dir::$(npm config get cache)"
-        
+
     - name: Setup npm cache
       uses: actions/cache@v3
       id: npm-cache
@@ -46,10 +45,10 @@ jobs:
 
     - name: Install NPM packages
       run: npm ci
-    
+
     - name: Build project
       run: npm run build
-    
+
     - name: Run tests
       run: npm run test
 
@@ -58,13 +57,13 @@ jobs:
       with:
         name: production-files
         path: ./build
-  
+
   deploy:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    
+
     steps:
     - name: Download artifact
       uses: actions/download-artifact@v2
