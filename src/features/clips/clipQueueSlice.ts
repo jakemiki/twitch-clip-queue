@@ -116,8 +116,10 @@ const addClipToHistory = (state: ClipQueueState, id?: string) => {
 };
 
 const advanceQueue = (state: ClipQueueState) => {
-  addClipToHistory(state, state.currentId);
   state.currentId = state.queueIds.shift();
+  if (state.currentId) {
+    addClipToHistory(state, state.currentId);
+  }
 };
 
 const updateClip = (state: ClipQueueState, id: string | undefined, clipUpdate: Partial<Clip>) => {
@@ -203,8 +205,8 @@ const clipQueueSlice = createSlice({
       if (index > -1) {
         state.queueIds.splice(index, 1);
 
-        if (state.currentId) {
-          addClipToHistory(state, state.currentId);
+        if (payload) {
+          addClipToHistory(state, payload);
         }
 
         state.currentId = payload;
@@ -212,6 +214,11 @@ const clipQueueSlice = createSlice({
         updateClip(state, state.currentId, { status: 'watched' });
         state.autoplayTimoutHandle = undefined;
       }
+    },
+    currentClipForceReplaced: (state, { payload }: PayloadAction<Clip>) => {
+      state.byId[payload.id] = payload;
+      state.currentId = payload.id;
+      state.autoplayTimoutHandle = undefined;
     },
     isOpenChanged: (state, { payload }: PayloadAction<boolean>) => {
       state.isOpen = payload;
@@ -310,6 +317,7 @@ export const {
   currentClipWatched,
   currentClipSkipped,
   currentClipReplaced,
+  currentClipForceReplaced,
   clipStubReceived,
   clipDetailsReceived,
   clipDetailsFailed,

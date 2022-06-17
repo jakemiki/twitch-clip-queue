@@ -1,7 +1,9 @@
 import { isAnyOf, Middleware } from '@reduxjs/toolkit';
+import { formatISO } from 'date-fns';
 import { REHYDRATE } from 'redux-persist';
 import { RootState, AppMiddlewareAPI } from '../../app/store';
 import { createLogger } from '../../common/logging';
+import { authenticateWithToken } from '../auth/authSlice';
 import { settingsChanged } from '../settings/settingsSlice';
 import { urlDeleted, urlReceived } from '../twitchChat/actions';
 import {
@@ -16,6 +18,7 @@ import {
   currentClipSkipped,
   queueCleared,
 } from './clipQueueSlice';
+import { applyCustomizations } from './customization/customization';
 import clipProvider from './providers/providers';
 
 const logger = createLogger('ClipQueueMiddleware');
@@ -33,7 +36,7 @@ const createClipQueueMiddleware = (): Middleware<{}, RootState> => {
           if (id) {
             const clip: Clip | undefined = storeAPI.getState().clipQueue.byId[id];
 
-            storeAPI.dispatch(clipStubReceived({ id, submitters: [sender], timestamp: new Date().toISOString() }));
+            storeAPI.dispatch(clipStubReceived({ id, submitters: [sender], timestamp: formatISO(new Date()) }));
 
             if (!clip) {
               clipProvider
@@ -78,6 +81,8 @@ const createClipQueueMiddleware = (): Middleware<{}, RootState> => {
       } else if (isAnyOf(currentClipWatched, currentClipReplaced, currentClipSkipped, queueCleared)(action)) {
         const handle = storeAPI.getState().clipQueue.autoplayTimoutHandle;
         clearTimeout(handle);
+      } else if (authenticateWithToken.fulfilled.match(action)) {
+        applyCustomizations(storeAPI);
       }
 
       return next(action);
