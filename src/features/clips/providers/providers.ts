@@ -70,10 +70,6 @@ class CombinedClipProvider implements ClipProvider {
 
   private getProviderAndId(id: string): [ClipProvider | undefined, string] {
     const [providerName, idPart] = id.split(':');
-    if (!this.enabledProviders.includes(providerName)) {
-      return [undefined, idPart];
-    }
-
     const provider = this.providers[providerName];
 
     return [provider, idPart];
