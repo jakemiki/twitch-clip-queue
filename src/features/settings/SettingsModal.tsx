@@ -76,6 +76,7 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
                   <Chip value="twitch-vod">Twitch Videos / VODs</Chip>
                   <Chip value="youtube">YouTube</Chip>
                   <Chip value="streamable">Streamable</Chip>
+                  <Chip value="afreeca-clip">Afreeca Clips</Chip>
                 </Chips>
               </Stack>
               <NumberInput
