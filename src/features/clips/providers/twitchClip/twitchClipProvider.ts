@@ -54,12 +54,8 @@ class TwitchClipProvider implements ClipProvider {
     return `https://clips.twitch.tv/embed?clip=${id}&autoplay=true&parent=${window.location.hostname}`;
   }
 
-  getAutoplayUrl(id: string, clip: Clip): string | undefined {
-    if (clip.thumbnailUrl) {
-      return clip.thumbnailUrl.split('-preview-')[0] + '.mp4';
-    } else {
-      return this.getUrl(id);
-    }
+  async getAutoplayUrl(id: string): Promise<string | undefined> {
+    return await twitchApi.getDirectUrl(id);
   }
 
   private extractIdFromPathname(pathname: string): string | undefined {

@@ -89,7 +89,7 @@ class YoutubeProvider implements ClipProvider {
     return `https://www.youtube.com/embed/${idPart}?autoplay=1&start=${startTime}`;
   }
 
-  getAutoplayUrl(id: string, clip: Clip): string | undefined {
+  async getAutoplayUrl(id: string): Promise<string | undefined> {
     return this.getUrl(id);
   }
 }

@@ -5,6 +5,7 @@ import {
   autoplayTimeoutHandleChanged,
   selectAutoplayEnabled,
   selectAutoplayTimeoutHandle,
+  selectAutoplayUrl,
   selectCurrentClip,
   selectNextId,
 } from '../clipQueueSlice';
@@ -21,11 +22,11 @@ function Player({ className }: PlayerProps) {
   const nextClipId = useAppSelector(selectNextId);
   const autoplayEnabled = useAppSelector(selectAutoplayEnabled);
   const autoplayTimeoutHandle = useAppSelector(selectAutoplayTimeoutHandle);
+  const autoplayUrl = useAppSelector(selectAutoplayUrl);
 
   let player = undefined;
   if (currentClip) {
     if (autoplayEnabled) {
-      const autoplayUrl = clipProvider.getAutoplayUrl(currentClip.id, currentClip);
       if (autoplayUrl && ReactPlayer.canPlay(autoplayUrl)) {
         player = (
           <ReactPlayer

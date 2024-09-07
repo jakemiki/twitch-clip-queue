@@ -17,6 +17,8 @@ import {
   currentClipReplaced,
   currentClipSkipped,
   queueCleared,
+  autoplayUrlFailed,
+  autoplayUrlReceived,
 } from './clipQueueSlice';
 import { applyCustomizations } from './customization/customization';
 import clipProvider from './providers/providers';
@@ -74,12 +76,33 @@ const createClipQueueMiddleware = (): Middleware<{}, RootState> => {
             }, delay);
             action.payload.handle = handle as any;
           } else {
-            const handle = storeAPI.getState().clipQueue.autoplayTimoutHandle;
+            const handle = storeAPI.getState().clipQueue.autoplayTimeoutHandle;
             clearTimeout(handle);
           }
         }
       } else if (isAnyOf(currentClipWatched, currentClipReplaced, currentClipSkipped, queueCleared)(action)) {
-        const handle = storeAPI.getState().clipQueue.autoplayTimoutHandle;
+        const handle = storeAPI.getState().clipQueue.autoplayTimeoutHandle;
+        clearTimeout(handle);
+
+        const { autoplay, queueIds } = storeAPI.getState().clipQueue;
+        const nextId = queueIds[0];
+        if (autoplay && nextId) {
+          clipProvider
+            .getAutoplayUrl(nextId)
+            .then((url) => {
+              if (url) {
+                storeAPI.dispatch(autoplayUrlReceived(url));
+              } else {
+                storeAPI.dispatch(autoplayUrlFailed());
+              }
+            })
+            .catch((e) => {
+              logger.error(e);
+              storeAPI.dispatch(autoplayUrlFailed());
+            });
+        }
+      } else if (isAnyOf(autoplayUrlFailed)(action)) {
+        const handle = storeAPI.getState().clipQueue.autoplayTimeoutHandle;
         clearTimeout(handle);
       } else if (authenticateWithToken.fulfilled.match(action)) {
         applyCustomizations(storeAPI);

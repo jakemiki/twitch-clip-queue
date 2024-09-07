@@ -47,7 +47,7 @@ class AfreecaClipProvider implements ClipProvider {
     return `https://vod.afreecatv.com/player/${id}/embed?showChat=false&autoPlay=true&mutePlay=false`;
   }
 
-  getAutoplayUrl(id: string, clip: Clip): string | undefined {
+  async getAutoplayUrl(id: string): Promise<string | undefined> {
     return this.getUrl(id);
   }
 }

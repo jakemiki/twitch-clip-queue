@@ -47,7 +47,7 @@ class StreamableProvider implements ClipProvider {
     return `https://streamable.com/o/${id}`;
   }
 
-  getAutoplayUrl(id: string, clip: Clip): string | undefined {
+  async getAutoplayUrl(id: string): Promise<string | undefined> {
     return this.getUrl(id);
   }
 }

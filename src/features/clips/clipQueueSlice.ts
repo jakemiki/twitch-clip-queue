@@ -37,7 +37,8 @@ interface ClipQueueState {
   providers: string[];
   layout: string;
 
-  autoplayTimoutHandle?: number;
+  autoplayTimeoutHandle?: number;
+  autoplayUrl?: string;
 }
 
 const initialState: ClipQueueState = {
@@ -145,7 +146,7 @@ const clipQueueSlice = createSlice({
         delete state.byId[id];
       });
       state.currentId = undefined;
-      state.autoplayTimoutHandle = undefined;
+      state.autoplayTimeoutHandle = undefined;
       state.queueIds = [];
       state.watchedClipCount = 0;
     },
@@ -167,12 +168,12 @@ const clipQueueSlice = createSlice({
         state.watchedClipCount += 1;
       }
       updateClip(state, state.currentId, { status: 'watched' });
-      state.autoplayTimoutHandle = undefined;
+      state.autoplayTimeoutHandle = undefined;
     },
     currentClipSkipped: (state) => {
       advanceQueue(state);
       updateClip(state, state.currentId, { status: 'watched' });
-      state.autoplayTimoutHandle = undefined;
+      state.autoplayTimeoutHandle = undefined;
     },
     clipStubReceived: (state, { payload: clip }: PayloadAction<Clip>) => addClipToQueue(state, clip),
     clipDetailsReceived: (state, { payload: clip }: PayloadAction<Clip>) => {
@@ -212,13 +213,13 @@ const clipQueueSlice = createSlice({
         state.currentId = payload;
         state.watchedClipCount += 1;
         updateClip(state, state.currentId, { status: 'watched' });
-        state.autoplayTimoutHandle = undefined;
+        state.autoplayTimeoutHandle = undefined;
       }
     },
     currentClipForceReplaced: (state, { payload }: PayloadAction<Clip>) => {
       state.byId[payload.id] = payload;
       state.currentId = payload.id;
-      state.autoplayTimoutHandle = undefined;
+      state.autoplayTimeoutHandle = undefined;
     },
     isOpenChanged: (state, { payload }: PayloadAction<boolean>) => {
       state.isOpen = payload;
@@ -233,7 +234,15 @@ const clipQueueSlice = createSlice({
       state,
       { payload }: PayloadAction<{ set: boolean; handle?: number | undefined }>
     ) => {
-      state.autoplayTimoutHandle = payload.handle;
+      state.autoplayTimeoutHandle = payload.handle;
+    },
+    autoplayUrlReceived: (state, { payload }: PayloadAction<string | undefined>) => {
+      state.autoplayUrl = payload;
+    },
+    autoplayUrlFailed: (state) => {
+      state.autoplay = false;
+      state.autoplayUrl = undefined;
+      state.autoplayTimeoutHandle = undefined;
     },
   },
   extraReducers: (builder) => {
@@ -287,8 +296,9 @@ export const selectAutoplayEnabled = (state: RootState) => state.clipQueue.autop
 export const selectClipLimit = (state: RootState) => state.clipQueue.clipLimit;
 export const selectProviders = (state: RootState) => state.clipQueue.providers;
 export const selectLayout = (state: RootState) => state.clipQueue.layout;
-export const selectAutoplayTimeoutHandle = (state: RootState) => state.clipQueue.autoplayTimoutHandle;
+export const selectAutoplayTimeoutHandle = (state: RootState) => state.clipQueue.autoplayTimeoutHandle;
 export const selectAutoplayDelay = (state: RootState) => state.clipQueue.autoplayDelay;
+export const selectAutoplayUrl = (state: RootState) => state.clipQueue.autoplayUrl;
 
 export const selectClipById = (id: string) => (state: RootState) => state.clipQueue.byId[id];
 
@@ -326,6 +336,8 @@ export const {
   isOpenChanged,
   autoplayChanged,
   autoplayTimeoutHandleChanged,
+  autoplayUrlReceived,
+  autoplayUrlFailed
 } = clipQueueSlice.actions;
 
 const clipQueueReducer = persistReducer(

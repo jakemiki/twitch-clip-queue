@@ -52,7 +52,7 @@ class TwitchVodProvider implements ClipProvider {
 
     return `https://player.twitch.tv/?video=${idPart}&autoplay=true&parent=${window.location.hostname}&time=${startTime}`;
   }
-  getAutoplayUrl(id: string, clip: Clip): string | undefined {
+  async getAutoplayUrl(id: string): Promise<string | undefined> {
     return this.getUrl(id);
   }
 
