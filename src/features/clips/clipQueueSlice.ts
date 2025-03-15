@@ -17,7 +17,6 @@ export interface Clip {
   author?: string;
   createdAt?: string;
   category?: string;
-  url?: string;
 
   thumbnailUrl?: string;
 }
@@ -338,7 +337,7 @@ export const {
   autoplayChanged,
   autoplayTimeoutHandleChanged,
   autoplayUrlReceived,
-  autoplayUrlFailed,
+  autoplayUrlFailed
 } = clipQueueSlice.actions;
 
 const clipQueueReducer = persistReducer(

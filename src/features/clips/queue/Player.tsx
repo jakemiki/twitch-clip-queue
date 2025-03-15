@@ -1,8 +1,6 @@
 import { Stack } from '@mantine/core';
-import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import AutoplayOverlay from './AutoplayOverlay';
-import VideoPlayer from './VideoPlayer';
 import {
   autoplayTimeoutHandleChanged,
   selectAutoplayEnabled,
@@ -25,22 +23,9 @@ function Player({ className }: PlayerProps) {
   const autoplayEnabled = useAppSelector(selectAutoplayEnabled);
   const autoplayTimeoutHandle = useAppSelector(selectAutoplayTimeoutHandle);
   const autoplayUrl = useAppSelector(selectAutoplayUrl);
-  const [videoSrc, setVideoSrc] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    if (!currentClip) return;
-
-    const fetchVideoUrl = async () => {
-      const url = await clipProvider.getAutoplayUrl(currentClip.id);
-      setVideoSrc(url);
-    };
-
-    fetchVideoUrl();
-  }, [currentClip]);
 
   let player = undefined;
   if (currentClip) {
-    const isKickClip = currentClip.id.includes('clip_');
     if (autoplayEnabled) {
       if (autoplayUrl && ReactPlayer.canPlay(autoplayUrl)) {
         player = (
@@ -62,25 +47,23 @@ function Player({ className }: PlayerProps) {
     }
 
     if (!player) {
-      if (isKickClip) {
-        player = <VideoPlayer key={currentClip.id} src={currentClip.url} />;
-      } else {
-        const embedUrl = clipProvider.getEmbedUrl(currentClip.id);
-        player = (
-          <iframe
-            key={currentClip.id}
-            src={embedUrl}
-            title={currentClip.title}
-            style={{ height: '100%', width: '100%' }}
-            frameBorder="0"
-            allow="autoplay"
-            allowFullScreen
-          ></iframe>
-        );
-      }
+      const embedUrl = clipProvider.getEmbedUrl(currentClip.id);
+      player = (
+        <iframe
+          key={currentClip.id}
+          src={embedUrl}
+          title={currentClip.title}
+          style={{
+            height: '100%',
+            width: '100%',
+          }}
+          frameBorder="0"
+          allow="autoplay"
+          allowFullScreen
+        ></iframe>
+      );
     }
   }
-
   return (
     <Stack
       align="center"
