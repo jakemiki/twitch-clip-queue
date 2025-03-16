@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/twitch-clip-queue/static/css/main.4eca5b12.css",
-    "main.js": "/twitch-clip-queue/static/js/main.c9cda123.js",
+    "main.js": "/twitch-clip-queue/static/js/main.4689777e.js",
     "reactPlayerYouTube.js": "/twitch-clip-queue/static/js/reactPlayerYouTube.ea0a90f5.chunk.js",
     "reactPlayerSoundCloud.js": "/twitch-clip-queue/static/js/reactPlayerSoundCloud.0745c534.chunk.js",
     "reactPlayerVimeo.js": "/twitch-clip-queue/static/js/reactPlayerVimeo.6fee80b0.chunk.js",
@@ -18,7 +18,7 @@
     "static/js/453.da9cc74e.chunk.js": "/twitch-clip-queue/static/js/453.da9cc74e.chunk.js",
     "index.html": "/twitch-clip-queue/index.html",
     "main.4eca5b12.css.map": "/twitch-clip-queue/static/css/main.4eca5b12.css.map",
-    "main.c9cda123.js.map": "/twitch-clip-queue/static/js/main.c9cda123.js.map",
+    "main.4689777e.js.map": "/twitch-clip-queue/static/js/main.4689777e.js.map",
     "reactPlayerYouTube.ea0a90f5.chunk.js.map": "/twitch-clip-queue/static/js/reactPlayerYouTube.ea0a90f5.chunk.js.map",
     "reactPlayerSoundCloud.0745c534.chunk.js.map": "/twitch-clip-queue/static/js/reactPlayerSoundCloud.0745c534.chunk.js.map",
     "reactPlayerVimeo.6fee80b0.chunk.js.map": "/twitch-clip-queue/static/js/reactPlayerVimeo.6fee80b0.chunk.js.map",
@@ -36,6 +36,6 @@
   },
   "entrypoints": [
     "static/css/main.4eca5b12.css",
-    "static/js/main.c9cda123.js"
+    "static/js/main.4689777e.js"
   ]
 }
