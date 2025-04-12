@@ -12,6 +12,7 @@ import {
 import clipProvider from '../providers/providers';
 import AutoplayOverlay from './AutoplayOverlay';
 import VideoPlayer from './VideoPlayer';
+
 interface PlayerProps {
   className?: string;
 }
@@ -62,16 +63,38 @@ function Player({ className }: PlayerProps) {
   const autoplayEnabled = useAppSelector(selectAutoplayEnabled);
   const autoplayTimeoutHandle = useAppSelector(selectAutoplayTimeoutHandle);
   const [videoSrc, setVideoSrc] = useState<string | undefined>(undefined);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!currentClip) return;
+    if (!currentClip) {
+      setVideoSrc(undefined);
+      setError(null);
+      return;
+    }
+
+    setVideoSrc(undefined);
+    let Flag = true;
 
     const fetchVideoUrl = async () => {
-      const url = await clipProvider.getAutoplayUrl(currentClip.id);
-      setVideoSrc(url);
+      try {
+        const url = await clipProvider.getAutoplayUrl(currentClip.id);
+        if (Flag) {
+          setVideoSrc(url);
+          setError(null);
+        }
+      } catch (err) {
+        if (Flag) {
+          setError('Failed to load video');
+          setVideoSrc(undefined);
+        }
+      }
     };
 
     fetchVideoUrl();
+
+    return () => {
+      Flag = false;
+    };
   }, [currentClip]);
 
   const player = getPlayerComponent(currentClip, videoSrc, autoplayEnabled, nextClipId, dispatch);
@@ -82,7 +105,7 @@ function Player({ className }: PlayerProps) {
       sx={{ background: 'black', height: '100%', aspectRatio: '16 / 9', position: 'relative' }}
       className={className}
     >
-      {player}
+      {error ? <div style={{ color: 'red' }}>{error}</div> : videoSrc || !autoplayEnabled ? player : <div></div>}
       <AutoplayOverlay
         visible={!!autoplayTimeoutHandle}
         onCancel={() => dispatch(autoplayTimeoutHandleChanged({ set: false }))}
