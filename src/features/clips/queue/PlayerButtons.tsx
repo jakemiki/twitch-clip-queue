@@ -1,5 +1,5 @@
 import { Group, Button, Switch } from '@mantine/core';
-import { PlayerSkipForward, PlayerTrackNext } from 'tabler-icons-react';
+import { PlayerSkipForward, PlayerTrackNext, PlayerTrackPrev } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import {
   autoplayChanged,
@@ -8,7 +8,7 @@ import {
   selectClipLimit,
   selectNextId,
 } from '../clipQueueSlice';
-import { currentClipWatched, selectCurrentId } from '../clipQueueSlice';
+import { currentClipWatched, selectCurrentId, previousClipWatched, selectHasPrevious } from '../clipQueueSlice';
 
 function PlayerButtons({ className }: { className?: string }) {
   const dispatch = useAppDispatch();
@@ -16,6 +16,7 @@ function PlayerButtons({ className }: { className?: string }) {
   const nextClipId = useAppSelector(selectNextId);
   const clipLimit = useAppSelector(selectClipLimit);
   const autoplayEnabled = useAppSelector(selectAutoplayEnabled);
+  const hasPrevious = useAppSelector(selectHasPrevious);
   return (
     <Group align="flex-start" className={className}>
       <Group>
@@ -35,6 +36,14 @@ function PlayerButtons({ className }: { className?: string }) {
           </Button>
         )}
       </Group>
+      <Button
+        //prettier-ignore
+        leftIcon={<PlayerTrackPrev />}
+        onClick={() => dispatch(previousClipWatched())}
+        disabled={!hasPrevious}
+      >
+        Previous
+      </Button>
       <Button
         rightIcon={<PlayerTrackNext />}
         onClick={() => dispatch(currentClipWatched())}

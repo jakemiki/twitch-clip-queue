@@ -30,12 +30,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, onEnded }) => {
       fluid: true,
       responsive: true,
       aspectRatio: '16:9',
+      bigPlayButton: false,
+      preload: 'auto',
       sources: YouTube
         ? [{ src, type: 'video/youtube' }]
         : [{ src, type: src.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4' }],
       techOrder: YouTube ? ['youtube', 'html5'] : ['html5'],
-      bigPlayButton: false,
-      preload: 'auto',
     });
 
     const player = playerRef.current;

@@ -41,6 +41,7 @@ interface ClipQueueState {
 
   autoplayTimeoutHandle?: number;
   autoplayUrl?: string;
+  watchedHistory: string[];
 }
 
 const initialState: ClipQueueState = {
@@ -53,6 +54,7 @@ const initialState: ClipQueueState = {
   isOpen: false,
   autoplay: false,
   autoplayDelay: 5000,
+  watchedHistory: [],
 };
 
 const addClipToQueue = (state: ClipQueueState, clip: Clip) => {
@@ -151,6 +153,7 @@ const clipQueueSlice = createSlice({
       state.autoplayTimeoutHandle = undefined;
       state.queueIds = [];
       state.watchedClipCount = 0;
+      state.watchedHistory = [];
     },
     memoryPurged: (state) => {
       const memory = state.byId;
@@ -168,14 +171,34 @@ const clipQueueSlice = createSlice({
       advanceQueue(state);
       if (state.currentId) {
         state.watchedClipCount += 1;
+        state.watchedHistory.push(state.currentId);
       }
       updateClip(state, state.currentId, { status: 'watched' });
       state.autoplayTimeoutHandle = undefined;
     },
+    previousClipWatched: (state) => {
+      const currentId = state.currentId;
+      if (currentId) {
+        state.watchedHistory.pop();
+      }
+      const previousId = state.watchedHistory[state.watchedHistory.length - 1];
+      if (previousId) {
+        state.currentId = previousId;
+        if (currentId) {
+          state.queueIds.unshift(currentId);
+          state.watchedClipCount -= 1;
+          state.historyIds = state.historyIds.filter((id) => id !== currentId);
+        }
+      }
+    },
+
     currentClipSkipped: (state) => {
       advanceQueue(state);
       updateClip(state, state.currentId, { status: 'watched' });
       state.autoplayTimeoutHandle = undefined;
+      if (state.currentId) {
+        state.watchedHistory.push(state.currentId);
+      }
     },
     clipStubReceived: (state, { payload: clip }: PayloadAction<Clip>) => addClipToQueue(state, clip),
     clipDetailsReceived: (state, { payload: clip }: PayloadAction<Clip>) => {
@@ -210,6 +233,7 @@ const clipQueueSlice = createSlice({
 
         if (payload) {
           addClipToHistory(state, payload);
+          state.watchedHistory.push(payload);
         }
 
         state.currentId = payload;
@@ -222,11 +246,13 @@ const clipQueueSlice = createSlice({
       state.byId[payload.id] = payload;
       state.currentId = payload.id;
       state.autoplayTimeoutHandle = undefined;
+      state.watchedHistory.push(payload.id);
     },
     isOpenChanged: (state, { payload }: PayloadAction<boolean>) => {
       state.isOpen = payload;
       if (payload) {
         state.watchedClipCount = 0;
+        state.watchedHistory = [];
       }
     },
     autoplayChanged: (state, { payload }: PayloadAction<boolean>) => {
@@ -301,9 +327,7 @@ export const selectLayout = (state: RootState) => state.clipQueue.layout;
 export const selectAutoplayTimeoutHandle = (state: RootState) => state.clipQueue.autoplayTimeoutHandle;
 export const selectAutoplayDelay = (state: RootState) => state.clipQueue.autoplayDelay;
 export const selectAutoplayUrl = (state: RootState) => state.clipQueue.autoplayUrl;
-
 export const selectClipById = (id: string) => (state: RootState) => state.clipQueue.byId[id];
-
 export const selectNextId = createSelector([selectQueueIds], (queueIds) => queueIds[0]);
 export const selectCurrentClip = createSelector([selectByIds, selectCurrentId], (byIds, id) =>
   id ? byIds[id] : undefined
@@ -322,6 +346,10 @@ export const selectClipHistoryIdsPage = createSelector(
     totalPages: Math.ceil(historyIds.length / perPage),
   })
 );
+export const selectHasPrevious = (state: RootState) => {
+  const { watchedHistory, currentId } = state.clipQueue;
+  return currentId && watchedHistory.length > 1;
+};
 
 export const {
   queueCleared,
@@ -340,6 +368,7 @@ export const {
   autoplayTimeoutHandleChanged,
   autoplayUrlReceived,
   autoplayUrlFailed,
+  previousClipWatched,
 } = clipQueueSlice.actions;
 
 const clipQueueReducer = persistReducer(
@@ -351,5 +380,4 @@ const clipQueueReducer = persistReducer(
   },
   clipQueueSlice.reducer
 );
-
 export default clipQueueReducer;
