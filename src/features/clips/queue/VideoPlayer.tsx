@@ -53,7 +53,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, onEnded }) => {
       });
 
       player.on('loadedmetadata', () => {
-        player.play();
+        if (!player.paused()) return;
+        player.play()?.catch((err) => {
+          console.warn('Play failed:', err);
+        });
       });
 
       if (onEnded) {

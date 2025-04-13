@@ -189,6 +189,7 @@ const clipQueueSlice = createSlice({
           state.watchedClipCount -= 1;
           state.historyIds = state.historyIds.filter((id) => id !== currentId);
         }
+        state.watchedHistory = state.watchedHistory.filter((id) => state.historyIds.includes(id));
       }
     },
 
@@ -252,7 +253,9 @@ const clipQueueSlice = createSlice({
       state.isOpen = payload;
       if (payload) {
         state.watchedClipCount = 0;
-        state.watchedHistory = [];
+        if (state.queueIds.length === 0) {
+          state.watchedHistory = [];
+        }
       }
     },
     autoplayChanged: (state, { payload }: PayloadAction<boolean>) => {
@@ -347,8 +350,8 @@ export const selectClipHistoryIdsPage = createSelector(
   })
 );
 export const selectHasPrevious = (state: RootState) => {
-  const { watchedHistory, currentId } = state.clipQueue;
-  return currentId && watchedHistory.length > 1;
+  const { watchedHistory, currentId, historyIds } = state.clipQueue;
+  return currentId && historyIds && watchedHistory.length > 1;
 };
 
 export const {
