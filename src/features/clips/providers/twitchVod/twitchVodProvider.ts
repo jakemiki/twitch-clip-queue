@@ -41,32 +41,32 @@ class TwitchVodProvider implements ClipProvider {
       thumbnailUrl: clipInfo.thumbnail_url?.replace('%{width}x%{height}', '480x272'),
       createdAt: clipInfo.created_at,
       Platform: 'Twitch',
+      url: `https://twitch.tv/videos/${idPart}`,
     };
   }
 
   getUrl(id: string): string | undefined {
     const [idPart, startTime = ''] = id.split(';');
-    return `https://twitch.tv/videos/${idPart}?t=${startTime}`;
+    return `https://twitch.tv/videos/${idPart}${startTime ? `?t=${startTime}` : ''}`;
   }
+
   getEmbedUrl(id: string): string | undefined {
     const [idPart, startTime = ''] = id.split(';');
-
-    return `https://player.twitch.tv/?video=${idPart}&autoplay=true&parent=${window.location.hostname}&time=${startTime}`;
+    return `https://player.twitch.tv/?video=${idPart}&autoplay=true&parent=${window.location.hostname}${
+      startTime ? `&time=${startTime}` : ''
+    }`;
   }
+
   async getAutoplayUrl(id: string): Promise<string | undefined> {
     return this.getUrl(id);
   }
 
   private extractId(pathname: string, searchParams: URLSearchParams): string | undefined {
     const idStart = pathname.lastIndexOf('/');
-    const id = pathname.slice(idStart).split('?')[0].slice(1);
+    const id = pathname.slice(idStart + 1);
     const startTime = searchParams.get('t');
 
-    if (!startTime) {
-      return undefined;
-    }
-
-    return `${id};${startTime}`;
+    return startTime ? `${id};${startTime}` : id;
   }
 }
 
