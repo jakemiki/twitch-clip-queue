@@ -64,9 +64,9 @@ class TwitchVodProvider implements ClipProvider {
   private extractId(pathname: string, searchParams: URLSearchParams): string | undefined {
     const idStart = pathname.lastIndexOf('/');
     const id = pathname.slice(idStart + 1);
+    if (!id) return undefined;
     const startTime = searchParams.get('t');
-
-    return startTime ? `${id};${startTime}` : id;
+    return `${id};${startTime || '0s'}`;
   }
 }
 
