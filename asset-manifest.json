@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/twitch-clip-queue/static/css/main.33dad143.css",
-    "main.js": "/twitch-clip-queue/static/js/main.2dfa695f.js",
-    "static/js/453.da9cc74e.chunk.js": "/twitch-clip-queue/static/js/453.da9cc74e.chunk.js",
+    "main.css": "/twitch-clip-queue/static/css/main.c7eed26e.css",
+    "main.js": "/twitch-clip-queue/static/js/main.9081ba50.js",
+    "static/js/453.72b444ba.chunk.js": "/twitch-clip-queue/static/js/453.72b444ba.chunk.js",
     "index.html": "/twitch-clip-queue/index.html",
-    "main.33dad143.css.map": "/twitch-clip-queue/static/css/main.33dad143.css.map",
-    "main.2dfa695f.js.map": "/twitch-clip-queue/static/js/main.2dfa695f.js.map",
-    "453.da9cc74e.chunk.js.map": "/twitch-clip-queue/static/js/453.da9cc74e.chunk.js.map"
+    "main.c7eed26e.css.map": "/twitch-clip-queue/static/css/main.c7eed26e.css.map",
+    "main.9081ba50.js.map": "/twitch-clip-queue/static/js/main.9081ba50.js.map",
+    "453.72b444ba.chunk.js.map": "/twitch-clip-queue/static/js/453.72b444ba.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.33dad143.css",
-    "static/js/main.2dfa695f.js"
+    "static/css/main.c7eed26e.css",
+    "static/js/main.9081ba50.js"
   ]
 }
