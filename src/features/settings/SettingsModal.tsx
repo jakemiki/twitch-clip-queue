@@ -1,4 +1,4 @@
-import { Button, Chip, Chips, Group, Stack, TextInput, Text, NumberInput, Tabs, Select, Code } from '@mantine/core';
+import { Button, Chip, Chips, Group, Stack, TextInput, Text, NumberInput, Tabs, Select, Code, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import { useModals } from '@mantine/modals';
 import { History, Settings, Slideshow } from 'tabler-icons-react';
@@ -10,7 +10,7 @@ import {
   selectLayout,
   selectProviders,
 } from '../clips/clipQueueSlice';
-import { selectChannel, selectCommandPrefix, settingsChanged } from './settingsSlice';
+import { selectChannel, selectCommandPrefix, selectIgnoredChatters, settingsChanged } from './settingsSlice';
 
 function SettingsModal({ closeModal }: { closeModal: () => void }) {
   const dispatch = useAppDispatch();
@@ -20,9 +20,10 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
   const enabledProviders = useAppSelector(selectProviders);
   const layout = useAppSelector(selectLayout);
   const historyIds = useAppSelector(selectHistoryIds);
+  const ignoredChatters = useAppSelector(selectIgnoredChatters).join('\n');
 
   const form = useForm({
-    initialValues: { channel, commandPrefix, clipLimit, enabledProviders, layout },
+    initialValues: { channel, commandPrefix, clipLimit, enabledProviders, layout, ignoredChatters },
   });
 
   return (
@@ -95,6 +96,16 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
                 step={1}
                 value={form.values.clipLimit ?? undefined}
                 onChange={(event) => form.setFieldValue('clipLimit', event ?? null)}
+              />
+              <Textarea
+                label="Ignored chatters"
+                description="Chat names of chatters to ignore messages from, one per line. They won't be able to submit clips and use chat commands."
+                minRows={4}
+                autoComplete='off'
+                autoCapitalize='off'
+                autoCorrect='off'
+                spellCheck={false}
+                {...form.getInputProps('ignoredChatters')}
               />
             </Stack>
           </Tabs.Tab>

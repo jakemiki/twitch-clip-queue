@@ -11,12 +11,14 @@ interface SettingsState {
   channel?: string;
   commandPrefix: string;
   volume: number;
+  ignoredChatters: string[]
 }
 
 const initialState: SettingsState = {
   colorScheme: null,
   commandPrefix: '!queue',
   volume: 1,
+  ignoredChatters: ['streamlabs', 'nightbot', 'streamelements', 'fossabot', 'moobot', 'sery_bot', 'wizebot', 'kofistreambot']
 };
 
 const settingsSlice = createSlice({
@@ -39,9 +41,18 @@ const settingsSlice = createSlice({
       if (payload.commandPrefix) {
         state.commandPrefix = payload.commandPrefix;
       }
+      if (payload.ignoredChatters || payload.ignoredChatters === '') {
+        state.ignoredChatters = payload.ignoredChatters.split('\n').map(x => x.trim()).filter(c => !!c);
+      }
     },
-    setVolume: (state, action) => {
+    setVolume: (state, action: PayloadAction<number>) => {
       state.volume = action.payload;
+    },
+    addIgnoredChatter: (state, action: PayloadAction<string>) => {
+      state.ignoredChatters = [...state.ignoredChatters, action.payload.trim()].filter(c => !!c);
+    },
+    removeIgnoredChatter: (state, action: PayloadAction<string>) => {
+      state.ignoredChatters = state.ignoredChatters.filter(c => c !== action.payload.trim()).filter(c => !!c);
     },
   },
   extraReducers: (builder) => {
@@ -61,13 +72,14 @@ const settingsSlice = createSlice({
 const selectSettings = (state: RootState): SettingsState => state.settings;
 export const selectChannel = (state: RootState) => state.settings.channel;
 export const selectCommandPrefix = (state: RootState) => state.settings.commandPrefix;
+export const selectIgnoredChatters = (state: RootState) => state.settings.ignoredChatters;
 
 export const selectColorScheme = createSelector(
   [selectSettings, (_, defaultColorScheme: ColorScheme) => defaultColorScheme],
   (state, defaultColorScheme) => state.colorScheme ?? defaultColorScheme
 );
 
-export const { colorSchemeToggled, channelChanged, settingsChanged } = settingsSlice.actions;
+export const { colorSchemeToggled, channelChanged, settingsChanged, addIgnoredChatter, removeIgnoredChatter } = settingsSlice.actions;
 
 const settingsReducer = persistReducer(
   {

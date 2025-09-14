@@ -7,7 +7,7 @@ import {
   memoryPurged,
   queueCleared,
 } from '../clips/clipQueueSlice';
-import { settingsChanged } from '../settings/settingsSlice';
+import { addIgnoredChatter, removeIgnoredChatter, settingsChanged } from '../settings/settingsSlice';
 import { createLogger } from '../../common/logging';
 import { urlDeleted, Userstate } from './actions';
 
@@ -53,6 +53,8 @@ const commands: Record<string, CommmandFunction> = {
       dispatch(settingsChanged({ clipLimit: parsedLimit }));
     }
   },
+  'ignore+': (dispatch, [name]) => dispatch(addIgnoredChatter(name)),
+  'ignore-': (dispatch, [name]) => dispatch(removeIgnoredChatter(name)),
 };
 
 export function processCommand(dispatch: Dispatch, { command, args, userstate }: ChatCommandPayload) {

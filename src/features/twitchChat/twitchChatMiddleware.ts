@@ -40,7 +40,11 @@ const createClient = ({ token, username }: { token: string; username: string }) 
 
 const handleMessage =
   (storeApi: AppMiddlewareAPI) => (channel: string, chatUserstate: ChatUserstate, message: string, self: boolean) => {
-    const { commandPrefix } = storeApi.getState().settings;
+    const { commandPrefix, ignoredChatters } = storeApi.getState().settings;
+
+    const ignored = ignoredChatters.map(c => c.toLowerCase());
+
+    if (ignored.includes(chatUserstate.username?.toLowerCase()!) || ignored.includes(chatUserstate['display-name']?.toLowerCase()!)) return;
 
     const userstate: Userstate = {
       username: chatUserstate['display-name'] ?? chatUserstate.username ?? 'Twitch Chat User',
