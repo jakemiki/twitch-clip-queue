@@ -12,4 +12,7 @@ export interface AllSettings {
   clipLimit?: number | null;
   layout?: string;
   initialQueueOpen?: 'true' | 'false';
+
+  soraCameoUsernames?: string;
+  soraAcceptNoCameos?: boolean;
 }

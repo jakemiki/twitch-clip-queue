@@ -2,6 +2,13 @@ import axios from 'axios';
 
 const CORS_PROXY = 'https://corsproxy.io/?';
 
+interface SoraCameoProfile {
+  username: string;
+  display_name?: string;
+  user_id: string;
+  verified?: boolean;
+}
+
 interface SoraPost {
   id: string;
   text: string;
@@ -14,6 +21,7 @@ interface SoraPost {
       };
     };
   }>;
+  cameo_profiles?: SoraCameoProfile[] | null;
 }
 
 interface SoraProfile {

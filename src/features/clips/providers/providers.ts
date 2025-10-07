@@ -1,5 +1,6 @@
 import { createLogger } from '../../../common/logging';
 import { Clip } from '../clipQueueSlice';
+import type { RootState } from '../../../app/store';
 import afreecaClipProvider from './afreecaClip/afreecaClipProvider';
 import streamableProvider from './streamable/streamableProvider';
 import twitchClipProvider from './twitchClip/twitchClipProvider';
@@ -16,6 +17,7 @@ export interface ClipProvider {
   getUrl(id: string): string | undefined;
   getEmbedUrl(id: string): string | undefined;
   getAutoplayUrl(id: string): Promise<string | undefined>;
+  shouldAcceptClip?(id: string, state: RootState): Promise<boolean>;
 }
 
 class CombinedClipProvider implements ClipProvider {
@@ -66,6 +68,14 @@ class CombinedClipProvider implements ClipProvider {
   async getAutoplayUrl(id: string): Promise<string | undefined> {
     const [provider, idPart] = this.getProviderAndId(id);
     return await provider?.getAutoplayUrl(idPart);
+  }
+
+  async shouldAcceptClip(id: string, state: RootState): Promise<boolean> {
+    const [provider, idPart] = this.getProviderAndId(id);
+    if (provider?.shouldAcceptClip) {
+      return await provider.shouldAcceptClip(idPart, state);
+    }
+    return true;
   }
 
   setProviders(providers: string[]) {

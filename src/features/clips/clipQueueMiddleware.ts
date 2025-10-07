@@ -43,8 +43,15 @@ const createClipQueueMiddleware = (): Middleware<{}, RootState> => {
             if (!clip) {
               clipProvider
                 .getClipById(id)
-                .then((clip) => {
+                .then(async (clip) => {
                   if (clip) {
+                    // Apply provider-specific filtering
+                    const shouldAccept = await clipProvider.shouldAcceptClip(id, storeAPI.getState());
+                    if (!shouldAccept) {
+                      storeAPI.dispatch(clipDetailsFailed(id));
+                      return;
+                    }
+
                     storeAPI.dispatch(clipDetailsReceived(clip));
                   } else {
                     storeAPI.dispatch(clipDetailsFailed(id));

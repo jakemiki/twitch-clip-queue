@@ -11,6 +11,7 @@ import {
   Select,
   Code,
   Textarea,
+  Checkbox,
 } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import { useModals } from '@mantine/modals';
@@ -28,6 +29,8 @@ import {
   selectCommandPrefix,
   selectIgnoredChatters,
   selectInitialQueueOpen,
+  selectSoraCameoUsernames,
+  selectSoraAcceptNoCameos,
   settingsChanged,
 } from './settingsSlice';
 
@@ -41,11 +44,13 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
   const historyIds = useAppSelector(selectHistoryIds);
   const initialQueueOpen: 'true' | 'false' = `${useAppSelector(selectInitialQueueOpen)}`;
   const ignoredChatters = useAppSelector(selectIgnoredChatters).join('\n');
+  const soraCameoUsernames = useAppSelector(selectSoraCameoUsernames).join(', ');
+  const soraAcceptNoCameos = useAppSelector(selectSoraAcceptNoCameos);
 
   console.log(initialQueueOpen);
 
   const form = useForm({
-    initialValues: { channel, commandPrefix, clipLimit, enabledProviders, layout, ignoredChatters, initialQueueOpen },
+    initialValues: { channel, commandPrefix, clipLimit, enabledProviders, layout, ignoredChatters, initialQueueOpen, soraCameoUsernames, soraAcceptNoCameos },
   });
 
   return (
@@ -114,6 +119,28 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
                   <Chip value="sora">Sora</Chip>
                 </Chips>
               </Stack>
+              {form.values.enabledProviders?.includes('sora') && (
+                <Stack spacing="xs">
+                  <Text size="sm" weight={500}>
+                    Sora Filtering
+                  </Text>
+                  <Stack spacing={4}>
+                    <Checkbox
+                      label="Accept videos without cameos"
+                      {...form.getInputProps('soraAcceptNoCameos', { type: 'checkbox' })}
+                    />
+                    <Text size="xs" color="gray" pl="xl">
+                      When unchecked, videos without any persona/cameo are rejected
+                    </Text>
+                  </Stack>
+                  <TextInput
+                    label="Allowed cameo usernames"
+                    description="When a video has cameos, only accept these usernames. Comma-separated. Leave empty to allow all cameos."
+                    placeholder=""
+                    {...form.getInputProps('soraCameoUsernames')}
+                  />
+                </Stack>
+              )}
               <NumberInput
                 label="Clip limit"
                 description={

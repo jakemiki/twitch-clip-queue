@@ -13,6 +13,8 @@ interface SettingsState {
   volume: number | undefined;
   ignoredChatters: string[];
   initialQueueOpen: boolean;
+  soraCameoUsernames: string[];
+  soraAcceptNoCameos: boolean;
 }
 
 const initialState: SettingsState = {
@@ -20,7 +22,9 @@ const initialState: SettingsState = {
   commandPrefix: '!queue',
   volume: 1,
   ignoredChatters: ['streamlabs', 'nightbot', 'streamelements', 'fossabot', 'moobot', 'sery_bot', 'wizebot', 'kofistreambot'],
-  initialQueueOpen: false
+  initialQueueOpen: false,
+  soraCameoUsernames: [],
+  soraAcceptNoCameos: true,
 };
 
 const settingsSlice = createSlice({
@@ -48,6 +52,12 @@ const settingsSlice = createSlice({
       }
       if (payload.initialQueueOpen !== undefined) {
         state.initialQueueOpen = payload.initialQueueOpen === 'true';
+      }
+      if (payload.soraCameoUsernames || payload.soraCameoUsernames === '') {
+        state.soraCameoUsernames = payload.soraCameoUsernames.split(',').map(x => x.trim().toLowerCase()).filter(c => !!c);
+      }
+      if (payload.soraAcceptNoCameos !== undefined) {
+        state.soraAcceptNoCameos = payload.soraAcceptNoCameos;
       }
     },
     setVolume: (state, action: PayloadAction<number | undefined>) => {
@@ -79,6 +89,8 @@ export const selectChannel = (state: RootState) => state.settings.channel;
 export const selectCommandPrefix = (state: RootState) => state.settings.commandPrefix;
 export const selectIgnoredChatters = (state: RootState) => state.settings.ignoredChatters;
 export const selectInitialQueueOpen = (state: RootState) => state.settings.initialQueueOpen;
+export const selectSoraCameoUsernames = (state: RootState) => state.settings.soraCameoUsernames;
+export const selectSoraAcceptNoCameos = (state: RootState) => state.settings.soraAcceptNoCameos;
 
 export const selectColorScheme = createSelector(
   [selectSettings, (_, defaultColorScheme: ColorScheme) => defaultColorScheme],

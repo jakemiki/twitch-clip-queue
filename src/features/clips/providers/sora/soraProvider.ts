@@ -1,6 +1,11 @@
 import soraApi from '../../../../common/apis/soraApi';
 import type { Clip } from '../../clipQueueSlice';
 import type { ClipProvider } from '../providers';
+import type { RootState } from '../../../../app/store';
+import { selectSoraCameoUsernames, selectSoraAcceptNoCameos } from '../../../settings/settingsSlice';
+import { createLogger } from '../../../../common/logging';
+
+const logger = createLogger('SoraProvider');
 
 class SoraProvider implements ClipProvider {
   name = 'sora';
@@ -60,6 +65,38 @@ class SoraProvider implements ClipProvider {
 
   async getAutoplayUrl(id: string): Promise<string | undefined> {
     return await soraApi.getVideoUrl(id);
+  }
+
+  async shouldAcceptClip(id: string, state: RootState): Promise<boolean> {
+    const allowedCameos = selectSoraCameoUsernames(state);
+    const acceptNoCameos = selectSoraAcceptNoCameos(state);
+
+    // No filtering enabled
+    if (allowedCameos.length === 0 && acceptNoCameos) {
+      return true;
+    }
+
+    const response = await soraApi.getPost(id);
+    const cameoProfiles = response?.post?.cameo_profiles || [];
+
+    // Filter: reject videos without cameos if setting is disabled
+    if (!acceptNoCameos && cameoProfiles.length === 0) {
+      logger.info(`Rejecting Sora video ${id}: no cameos found`);
+      return false;
+    }
+
+    // Filter: check allowed cameo usernames (only if video has cameos)
+    if (allowedCameos.length > 0 && cameoProfiles.length > 0) {
+      const hasCameoMatch = cameoProfiles.some((cameo) =>
+        allowedCameos.includes(cameo.username.toLowerCase())
+      );
+      if (!hasCameoMatch) {
+        logger.info(`Rejecting Sora video ${id}: no matching cameos`);
+        return false;
+      }
+    }
+
+    return true;
   }
 }
 
