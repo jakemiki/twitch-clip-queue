@@ -18,6 +18,8 @@ const Platform: React.FC<BrandPlatformsProps> = ({ platform }) => {
       return null;
     case 'Streamable':
       return null;
+    case 'Sora':
+      return null;
     default:
       return null;
   }

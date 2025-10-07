@@ -1,4 +1,4 @@
-export type PlatformType = 'Twitch' | 'Kick' | 'YouTube' | 'Afreeca' | 'Streamable' | undefined;
+export type PlatformType = 'Twitch' | 'Kick' | 'YouTube' | 'Afreeca' | 'Streamable' | 'Sora' | undefined;
 
 export const getUrlFromMessage = (message: string) => {
   const urlStart = message.indexOf('http');

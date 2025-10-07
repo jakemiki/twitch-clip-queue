@@ -27,6 +27,7 @@ const getPlayerComponent = (
   if (!currentClip) return null;
 
   const KickClip = currentClip.Platform === 'Kick';
+  const SoraClip = currentClip.Platform === 'Sora';
 
   if (autoplayEnabled && currentClip.id) {
     return (
@@ -40,6 +41,10 @@ const getPlayerComponent = (
 
   if (KickClip) {
     return <VideoPlayer key={currentClip.id} src={currentClip.url} />;
+  }
+
+  if (SoraClip) {
+    return <VideoPlayer key={currentClip.id} src={videoSrc} />;
   }
 
   const embedUrl = clipProvider.getEmbedUrl(currentClip.id);

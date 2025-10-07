@@ -16,7 +16,7 @@ function FeaturesSection() {
       >
         <List.Item>
           <strong>
-            Supports Twitch Clips, Kick Clips, Afreeca Clips, Twitch VODs, YouTube and Streamable video links.
+            Supports Twitch Clips, Kick Clips, Afreeca Clips, Twitch VODs, YouTube, Streamable, and Sora video links.
           </strong>
         </List.Item>
         <List.Item>

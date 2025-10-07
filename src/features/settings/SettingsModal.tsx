@@ -111,6 +111,7 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
                   <Chip value="youtube">YouTube</Chip>
                   <Chip value="streamable">Streamable</Chip>
                   <Chip value="afreeca-clip">Afreeca Clips</Chip>
+                  <Chip value="sora">Sora</Chip>
                 </Chips>
               </Stack>
               <NumberInput
