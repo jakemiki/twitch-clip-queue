@@ -48,6 +48,7 @@ class SoraProvider implements ClipProvider {
       id,
       title: post.text || 'Sora Video',
       author: profile?.display_name || profile?.username,
+      cameos: post.cameo_profiles?.map((c) => c.display_name || c.username) || [],
       thumbnailUrl: post.attachments?.[0]?.encodings?.thumbnail?.path,
       submitters: [],
       Platform: 'Sora',

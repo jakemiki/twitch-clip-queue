@@ -19,6 +19,7 @@ export interface Clip {
   category?: string;
   url?: string;
   Platform?: PlatformType;
+  cameos?: string[];
 
   thumbnailUrl?: string;
 }

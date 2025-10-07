@@ -21,6 +21,17 @@ function PlayerTitle({ className }: PlayerTitleProps) {
       <Text sx={{ display: 'flex', alignItems: 'center', gap: '.25rem' }} color="dimmed" size="sm" lineClamp={1}>
         <Platform platform={currentClip?.Platform} />
         <strong>{currentClip?.author ?? _nbsp}</strong>
+        {currentClip?.cameos && currentClip.cameos.length > 0 && (
+          <>
+            , with{' '}
+            {currentClip.cameos.map((cameo, i) => (
+              <span key={cameo}>
+                {i > 0 && ', '}
+                <strong>@{cameo}</strong>
+              </span>
+            ))}
+          </>
+        )}
         {currentClip?.category && (
           <>
             {' ('}
