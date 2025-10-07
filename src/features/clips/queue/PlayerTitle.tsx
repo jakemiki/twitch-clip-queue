@@ -15,7 +15,7 @@ function PlayerTitle({ className }: PlayerTitleProps) {
 
   return (
     <Box className={className} sx={{ strong: { fontWeight: 600 } }}>
-      <Text size="xl" weight={700} lineClamp={1}>
+      <Text size="xl" weight={700} lineClamp={1} title={currentClip?.title}>
         {currentClip?.title ?? _nbsp}
       </Text>
       <Text sx={{ display: 'flex', alignItems: 'center', gap: '.25rem' }} color="dimmed" size="sm" lineClamp={1}>
