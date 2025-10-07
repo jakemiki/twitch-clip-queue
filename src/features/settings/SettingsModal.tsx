@@ -57,7 +57,7 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
     >
       <Stack spacing="md">
         <Tabs>
-          <Tabs.Tab label="General" icon={<Settings size={16} />}>
+          <Tabs.Tab label="General" icon={<Settings size={16} />} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             <Stack>
               <TextInput
                 label="Twitch channel"
@@ -90,7 +90,7 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
             </Stack>
           </Tabs.Tab>
 
-          <Tabs.Tab label="Clip queue" icon={<Slideshow size={16} />}>
+          <Tabs.Tab label="Clip queue" icon={<Slideshow size={16} />} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             <Stack>
               <Select
                 required
@@ -142,7 +142,7 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
             </Stack>
           </Tabs.Tab>
 
-          <Tabs.Tab label="Clip memory" icon={<History size={16} />}>
+          <Tabs.Tab label="Clip memory" icon={<History size={16} />} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             <Stack>
               <Text size="sm">
                 Here, soon, you'll be able to setup for how long watched clips should be remembered before they can be
