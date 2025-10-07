@@ -1,4 +1,4 @@
-import { Title, List, ThemeIcon, Code, Box } from '@mantine/core';
+import { Title, List, ThemeIcon, Code, Box, Text } from '@mantine/core';
 import { CircleCheck } from 'tabler-icons-react';
 
 function FeaturesSection() {
@@ -51,9 +51,13 @@ function FeaturesSection() {
         <List.Item>
           <strong>Respects privacy</strong>
           <br />
-          does not store any personal data, does not communicate with any third party services
+          does not store any personal data
           <br />
           requires permission only to get your username and read chat
+          <br />
+          <Text size="xs" color="dimmed">
+            Note: Sora videos use a third-party CORS proxy for technical reasons
+          </Text>
         </List.Item>
         <List.Item>
           <strong>Allows channel moderators to control the queue using chat commands</strong>
