@@ -9,39 +9,33 @@ import type { PlatformType } from '../../common/utils';
 export interface Clip {
   id: string;
   submitters: string[];
-
   status?: 'watched' | 'removed';
   timestamp?: string;
-
   title?: string;
   author?: string;
   createdAt?: string;
   category?: string;
   url?: string;
   Platform?: PlatformType;
-
   thumbnailUrl?: string;
 }
 
 interface ClipQueueState {
   byId: Record<string, Clip>;
-
   currentId?: string;
   queueIds: string[];
   historyIds: string[];
   watchedClipCount: number;
-
   isOpen: boolean;
-
   autoplay: boolean;
   autoplayDelay: number;
   clipLimit?: number | null;
   providers: string[];
   layout: string;
-
   autoplayTimeoutHandle?: number;
   autoplayUrl?: string;
   watchedHistory: string[];
+  chatReplayEnabled: boolean;
 }
 
 const initialState: ClipQueueState = {
@@ -55,6 +49,7 @@ const initialState: ClipQueueState = {
   autoplay: false,
   autoplayDelay: 5000,
   watchedHistory: [],
+  chatReplayEnabled: false,
 };
 
 const addClipToQueue = (state: ClipQueueState, clip: Clip) => {
@@ -100,6 +95,7 @@ const addClipToQueue = (state: ClipQueueState, clip: Clip) => {
 const removeClipFromQueue = (state: ClipQueueState, id: string) => {
   if (state.currentId === id) {
     state.currentId = undefined;
+    state.chatReplayEnabled = false;
   } else {
     const index = state.queueIds.indexOf(id);
     if (index > -1) {
@@ -112,9 +108,7 @@ const addClipToHistory = (state: ClipQueueState, id?: string) => {
   if (!id) {
     return;
   }
-
   const clip = state.byId[id];
-
   if (clip) {
     state.historyIds.unshift(id);
   }
@@ -175,6 +169,7 @@ const clipQueueSlice = createSlice({
       }
       updateClip(state, state.currentId, { status: 'watched' });
       state.autoplayTimeoutHandle = undefined;
+      state.chatReplayEnabled = false;
     },
     previousClipWatched: (state) => {
       const currentId = state.currentId;
@@ -191,6 +186,7 @@ const clipQueueSlice = createSlice({
         }
         state.watchedHistory = state.watchedHistory.filter((id) => state.historyIds.includes(id));
       }
+      state.chatReplayEnabled = false;
     },
 
     currentClipSkipped: (state) => {
@@ -226,6 +222,9 @@ const clipQueueSlice = createSlice({
       removeClipFromQueue(state, payload);
       state.historyIds = state.historyIds.filter((id) => id !== payload);
       delete state.byId[payload];
+      if (state.currentId === payload) {
+        state.chatReplayEnabled = false;
+      }
     },
     currentClipReplaced: (state, { payload }: PayloadAction<string>) => {
       const index = state.queueIds.indexOf(payload);
@@ -274,6 +273,9 @@ const clipQueueSlice = createSlice({
       state.autoplay = false;
       state.autoplayUrl = undefined;
       state.autoplayTimeoutHandle = undefined;
+    },
+    chatReplayToggled: (state) => {
+      state.chatReplayEnabled = !state.chatReplayEnabled;
     },
   },
   extraReducers: (builder) => {
@@ -341,6 +343,7 @@ const calculateTotalQueueLength = (watchedCount: number, queueIds: string[]) => 
   return watchedCount + queueIds.length;
 };
 export const selectTotalQueueLength = createSelector([selectWatchedCount, selectQueueIds], calculateTotalQueueLength);
+export const selectChatReplayEnabled = (state: RootState) => state.clipQueue.chatReplayEnabled;
 
 export const selectClipHistoryIdsPage = createSelector(
   [selectHistoryIds, (_, page: number, perPage: number) => ({ page, perPage })],
@@ -372,6 +375,7 @@ export const {
   autoplayUrlReceived,
   autoplayUrlFailed,
   previousClipWatched,
+  chatReplayToggled,
 } = clipQueueSlice.actions;
 
 const clipQueueReducer = persistReducer(

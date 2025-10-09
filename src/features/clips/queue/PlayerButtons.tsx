@@ -1,5 +1,5 @@
 import { Group, Button, Switch } from '@mantine/core';
-import { PlayerSkipForward, PlayerTrackNext, PlayerTrackPrev } from 'tabler-icons-react';
+import { PlayerSkipForward, PlayerTrackNext, PlayerTrackPrev, Messages } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import {
   autoplayChanged,
@@ -7,6 +7,8 @@ import {
   selectAutoplayEnabled,
   selectClipLimit,
   selectNextId,
+  chatReplayToggled,
+  selectCurrentClip,
 } from '../clipQueueSlice';
 import { currentClipWatched, selectCurrentId, previousClipWatched, selectHasPrevious } from '../clipQueueSlice';
 
@@ -17,6 +19,7 @@ function PlayerButtons({ className }: { className?: string }) {
   const clipLimit = useAppSelector(selectClipLimit);
   const autoplayEnabled = useAppSelector(selectAutoplayEnabled);
   const hasPrevious = useAppSelector(selectHasPrevious);
+  const currentClip = useAppSelector(selectCurrentClip);
   return (
     <Group align="flex-start" className={className}>
       <Group>
@@ -25,6 +28,16 @@ function PlayerButtons({ className }: { className?: string }) {
           checked={autoplayEnabled}
           onChange={(event) => dispatch(autoplayChanged(event.currentTarget.checked))}
         />
+        {
+          <Button
+            leftIcon={<Messages />}
+            onClick={() => dispatch(chatReplayToggled())}
+            size="sm"
+            disabled={currentClip?.Platform !== 'Twitch'}
+          >
+            Chat
+          </Button>
+        }
         {clipLimit && (
           <Button
             variant="default"

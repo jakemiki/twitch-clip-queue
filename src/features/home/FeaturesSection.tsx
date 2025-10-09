@@ -20,6 +20,12 @@ function FeaturesSection() {
           </strong>
         </List.Item>
         <List.Item>
+          <strong>Chat Replay System</strong>
+          <br />
+          Gets the Chat Message for clips with available VODs and displays it alongside the clip, With Support for 7TV
+          BTTV FFZ Emotes
+        </List.Item>
+        <List.Item>
           <strong>Integrates with Twitch chat</strong>
           <br />
           gathers links from messages to build the queue, by default from your chat but can join arbitrary channels
@@ -51,9 +57,14 @@ function FeaturesSection() {
         <List.Item>
           <strong>Respects privacy</strong>
           <br />
-          does not store any personal data, does not communicate with any third party services
+          does not store any personal data
           <br />
           requires permission only to get your username and read chat
+          <br />
+          <span>
+            Chat Replay System uses publicly available chat logs from Public ChatLogs Services to display Chat messages
+            - no private data is accessed
+          </span>
         </List.Item>
         <List.Item>
           <strong>Allows channel moderators to control the queue using chat commands</strong>

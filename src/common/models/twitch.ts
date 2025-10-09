@@ -40,6 +40,7 @@ export interface TwitchClip {
   created_at: string;
   thumbnail_url: string;
   duration: number;
+  vod_offset?: number;
 }
 
 export interface TwitchVideo {
@@ -60,4 +61,75 @@ export interface TwitchGame {
   box_art_url: string;
   id: string;
   name: string;
+}
+export interface TwitchBadge {
+  id: string;
+  version: string;
+  title: string;
+  imageUrl: string;
+}
+
+export interface TwitchEmote {
+  name: string;
+  url: string;
+  type: 'twitch' | 'bttv' | 'ffz' | '7tv';
+}
+export interface ChatMessageFragment {
+  text: string;
+  emote?: TwitchEmote;
+}
+
+export interface ChatCommenter {
+  displayName: string;
+  login: string;
+  color?: string;
+  badges?: TwitchBadge[];
+}
+
+export interface ChatMessage {
+  id: string;
+  message: {
+    fragments: ChatMessageFragment[];
+  };
+  commenter: ChatCommenter;
+  contentOffsetSeconds: number;
+  createdAt: string;
+}
+export interface JustlogMessageTags {
+  emotes?: string;
+  color?: string;
+  badges?: string;
+  'display-name'?: string;
+  'user-type'?: string;
+  subscriber?: string;
+  mod?: string;
+  turbo?: string;
+  'user-id'?: string;
+}
+export interface JustlogMessage {
+  text: string;
+  displayName: string;
+  timestamp: string;
+  id: string;
+  tags: JustlogMessageTags;
+}
+export interface JustlogResponse {
+  messages: JustlogMessage[];
+}
+export interface ChatReplayConfig {
+  videoId: string;
+  offsetSeconds: number;
+  duration: number;
+  channelLogin: string;
+  channelId?: string;
+  vodStartTime: Date;
+}
+export interface VODInfo {
+  videoId?: string;
+  offsetSeconds: number;
+  hasVod: boolean;
+  clipCreatedAt?: string;
+  vodCreatedAt?: string;
+  channelId?: string;
+  channelLogin?: string;
 }
