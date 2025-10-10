@@ -1,5 +1,8 @@
 :root {
   --initial-background-color: #ffffff;
+  --control-bar-bg: rgba(0, 0, 0, 0.5);
+  --control-bar-duration: 0.3s;
+  --control-bar-easing: cubic-bezier(0.5, 0, 0.2, 1);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -12,26 +15,36 @@ html {
   background: var(--initial-background-color);
 }
 
+.video-js {
+  overflow: hidden !important;
+}
+
 .vjs-control-bar {
-  background-color: rgba(0, 0, 0, 0.5) !important;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease-in-out !important;
+  background-color: var(--control-bar-bg) !important;
+  transition: transform var(--control-bar-duration) var(--control-bar-easing) !important;
   user-select: none !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  opacity: 1 !important;
 }
 
 .video-js .vjs-control-bar {
   transform: translateY(0) !important;
-  opacity: 1 !important;
 }
 
-.video-js.vjs-user-inactive .vjs-control-bar,
+.video-js.video-js.vjs-user-inactive .vjs-control-bar {
+  transform: translateY(100%) !important;
+  opacity: 1 !important;
+  transition: transform var(--control-bar-duration) var(--control-bar-easing) !important;
+}
+
 .video-js:not(:hover):not(.vjs-paused) .vjs-control-bar {
   transform: translateY(100%) !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
 }
 
-.video-js.vjs-paused .vjs-control-bar {
+.video-js.vjs-paused .vjs-control-bar,
+.video-js:hover .vjs-control-bar,
+.video-js.vjs-user-active .vjs-control-bar {
   transform: translateY(0) !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
 }
