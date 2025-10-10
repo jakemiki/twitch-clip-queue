@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Box, Paper, Text, ScrollArea, Loader, Stack, Badge, Group } from '@mantine/core';
 import { useAppSelector } from '../../../app/hooks';
 import { selectCurrentClip } from '../clipQueueSlice';
@@ -93,7 +93,7 @@ const EmoteComponent: React.FC<{ emote: TwitchEmote; name: string }> = ({ emote,
 const ChatMessageItemComponent: React.FC<{
   message: ChatMessage;
   emoteMap: Map<string, TwitchEmote>;
-}> = ({ message, emoteMap }) => {
+}> = React.memo(({ message, emoteMap }) => {
   const messageText = message.message.fragments.map((fragment) => fragment.text).join('');
   const parsedContent = parseEmotesInText(messageText, emoteMap);
   const renderMessageContent = () => {
@@ -138,8 +138,8 @@ const ChatMessageItemComponent: React.FC<{
           sx={(theme) => ({
             color: theme.colorScheme === 'dark' ? theme.colors.gray[3] : theme.colors.dark[7],
             fontSize: CHAT_STYLES.fontSize,
+            wordBreak: 'break-word',
             flex: 1,
-            display: 'inline',
           })}
           component="div"
         >
@@ -148,7 +148,7 @@ const ChatMessageItemComponent: React.FC<{
       </Group>
     </Box>
   );
-};
+});
 
 const ChatReplayHeaderComponent: React.FC<{
   vodAvailable: boolean | null;
