@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Paper, Text, ScrollArea, Loader, Stack, Badge, Group } from '@mantine/core';
 import { useAppSelector } from '../../../app/hooks';
 import { selectCurrentClip } from '../clipQueueSlice';
