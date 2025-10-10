@@ -33,7 +33,13 @@ html {
   transform: translateY(0) !important;
 }
 
-.video-js.video-js.vjs-user-inactive .vjs-control-bar {
+.video-js.vjs-paused .vjs-control-bar {
+  transform: translateY(0) !important;
+  opacity: 1 !important;
+  transition: transform var(--control-bar-duration) var(--control-bar-easing) !important;
+}
+
+.video-js.vjs-user-inactive:not(.vjs-paused) .vjs-control-bar {
   transform: translateY(100%) !important;
   opacity: 1 !important;
   transition: transform var(--control-bar-duration) var(--control-bar-easing) !important;
@@ -43,7 +49,6 @@ html {
   transform: translateY(100%) !important;
 }
 
-.video-js.vjs-paused .vjs-control-bar,
 .video-js:hover .vjs-control-bar,
 .video-js.vjs-user-active .vjs-control-bar {
   transform: translateY(0) !important;
