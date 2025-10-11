@@ -92,11 +92,6 @@ export const parseTwitchBadges = async (
   return badges;
 };
 
-// i want to Add Kick Support. but gonna be a little bit.
-export const parseKickBadges = async (badgeString: string, channelId?: string): Promise<TwitchBadge[]> => {
-  return [];
-};
-
 export const clearBadgeCache = () => {
   channelBadgeCache.clear();
 };

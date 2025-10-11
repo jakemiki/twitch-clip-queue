@@ -22,7 +22,7 @@ function FeaturesSection() {
         <List.Item>
           <strong>Chat Replay System</strong>
           <br />
-          Gets the Chat Message for clips with available VODs and displays it alongside the clip, With Support for 7TV
+          Gets the chat message for clips with available VODs and displays it alongside the clip, With Support for 7TV
           BTTV FFZ Emotes
         </List.Item>
         <List.Item>
@@ -62,7 +62,7 @@ function FeaturesSection() {
           requires permission only to get your username and read chat
           <br />
           <span>
-            Chat Replay System uses publicly available chat logs from Public ChatLogs Services to display Chat messages
+            Chat Replay system uses publicly available chat logs from public chat logs services to display Chat messages
             - no private data is accessed
           </span>
         </List.Item>

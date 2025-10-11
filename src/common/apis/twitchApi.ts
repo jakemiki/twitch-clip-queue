@@ -119,7 +119,7 @@ const getClipWithVodInfo = async (clipId: string): Promise<VODInfo> => {
 
 const getChatReplay = async (config: ChatReplayConfig): Promise<ChatMessage[]> => {
   const { fetchChatMessages } = await import('../Services/Services');
-  const { parseTwitchBadges } = await import('../Services/BadgeService');
+  const { parseTwitchBadges } = await import('../Services/Badges');
 
   const badgeParser = (badgeString: string, channelId?: string) =>
     parseTwitchBadges(badgeString, channelId, twitchApiClient);

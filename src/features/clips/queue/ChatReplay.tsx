@@ -304,7 +304,7 @@ const ChatReplay: React.FC<ChatReplayProps> = ({ visible }) => {
 
         if (!fetchedVodInfo.hasVod) {
           setVodAvailable(false);
-          setError(`Chat replay unavailable - VOD has expired or doesn't exist`);
+          setError(`Chat Replay unavailable - VOD has expired or doesn't exist`);
           return;
         }
 

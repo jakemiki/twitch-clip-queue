@@ -35,7 +35,7 @@ function PlayerButtons({ className }: { className?: string }) {
             size="sm"
             disabled={currentClip?.Platform !== 'Twitch'}
           >
-            Chat
+            Chat Replay
           </Button>
         }
         {clipLimit && (
