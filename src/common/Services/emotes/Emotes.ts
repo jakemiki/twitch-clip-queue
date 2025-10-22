@@ -1,8 +1,8 @@
 import { TwitchEmote } from '../../models/twitch';
 import { fetchAllTwitchEmotes } from './GlobalEmotes';
-import { fetchAll7TVEmotes } from './SevenTV';
-import { fetchAllBTTVEmotes } from './BetterTV';
-import { fetchAllFFZEmotes } from './FrankerFaceZ';
+import { fetchAll7TVEmotes, get7TVEmoteUrl } from './SevenTV';
+import { fetchAllBTTVEmotes, getBTTVEmoteUrl } from './BetterTV';
+import { fetchAllFFZEmotes, getFFZEmoteUrl } from './FrankerFaceZ';
 
 export const fetchAllEmotes = async (channelId?: string): Promise<TwitchEmote[]> => {
   try {
@@ -46,4 +46,32 @@ export const parseEmotesInText = (
     }
   });
   return fragments;
+};
+
+const extractEmoteId = (emote: TwitchEmote): string | null => {
+  switch (emote.type) {
+    case '7tv':
+      return emote.url.split('/emote/')[1]?.split('/')[0] || null;
+    case 'bttv':
+      return emote.url.split('/emote/')[1]?.split('/')[0] || null;
+    case 'ffz':
+      return emote.url.split('/')[1]?.split('.')[0] || null;
+    default:
+      return null;
+  }
+};
+
+export const getEmoteUrl = (emote: TwitchEmote): string | null => {
+  const emoteId = extractEmoteId(emote);
+  if (!emoteId) return null;
+  switch (emote.type) {
+    case '7tv':
+      return get7TVEmoteUrl(emoteId);
+    case 'bttv':
+      return getBTTVEmoteUrl(emoteId);
+    case 'ffz':
+      return getFFZEmoteUrl(emoteId, emote.name);
+    default:
+      return null;
+  }
 };

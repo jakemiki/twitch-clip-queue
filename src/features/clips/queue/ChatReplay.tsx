@@ -4,6 +4,7 @@ import { useAppSelector } from '../../../app/hooks';
 import { selectCurrentClip } from '../clipQueueSlice';
 import { ChatMessage, ChatReplayConfig, TwitchBadge, TwitchEmote } from '../../../common/models/twitch';
 import { fetchAllEmotes, createEmoteMap, parseEmotesInText } from '../../../common/Services/emotes/Emotes';
+import { useChatReplayActions } from '../useChatReplayActions';
 import twitchApi from '../../../common/apis/twitchApi';
 
 const CHAT_STYLES = {
@@ -31,7 +32,9 @@ const useAutoScroll = (scrollAreaRef: React.RefObject<HTMLDivElement>, messageCo
   }, [messageCount, scrollAreaRef]);
 };
 
-const ChatBadgeComponent: React.FC<{ badge: TwitchBadge }> = ({ badge }) => (
+const ChatBadgeComponent: React.FC<{
+  badge: TwitchBadge;
+}> = ({ badge }) => (
   <Box
     title={badge.title}
     sx={{
@@ -55,7 +58,9 @@ const ChatBadgeComponent: React.FC<{ badge: TwitchBadge }> = ({ badge }) => (
   </Box>
 );
 
-const ChatUsernameComponent: React.FC<{ commenter: ChatMessage['commenter'] }> = ({ commenter }) => (
+const ChatUsernameComponent: React.FC<{
+  commenter: ChatMessage['commenter'];
+}> = ({ commenter }) => (
   <Text
     size="xs"
     weight={700}
@@ -69,17 +74,23 @@ const ChatUsernameComponent: React.FC<{ commenter: ChatMessage['commenter'] }> =
   </Text>
 );
 
-const EmoteComponent: React.FC<{ emote: TwitchEmote; name: string }> = ({ emote, name }) => (
+const EmoteComponent: React.FC<{
+  emote: TwitchEmote;
+  name: string;
+  onEmoteClick: (emote: TwitchEmote) => void;
+}> = ({ emote, name, onEmoteClick }) => (
   <img
+    onClick={() => onEmoteClick(emote)}
     src={emote.url}
     alt={name}
-    title={name}
+    title={`click to Copy Emote ${name} URL to clipboard`}
     style={{
       height: '20px',
       width: 'auto',
       verticalAlign: 'middle',
       margin: '0 1px',
       display: 'inline-block',
+      cursor: 'pointer',
     }}
     onError={(e) => {
       const target = e.target as HTMLImageElement;
@@ -93,13 +104,31 @@ const EmoteComponent: React.FC<{ emote: TwitchEmote; name: string }> = ({ emote,
 const ChatMessageItemComponent: React.FC<{
   message: ChatMessage;
   emoteMap: Map<string, TwitchEmote>;
-}> = React.memo(({ message, emoteMap }) => {
+  onEmoteClick: (emote: TwitchEmote) => void;
+}> = React.memo(({ message, emoteMap, onEmoteClick }) => {
   const messageText = message.message.fragments.map((fragment) => fragment.text).join('');
   const parsedContent = parseEmotesInText(messageText, emoteMap);
   const renderMessageContent = () => {
     return parsedContent.map((segment, index) => {
       if (segment.emote) {
-        return <EmoteComponent key={`emote-${index}`} emote={segment.emote} name={segment.text} />;
+        return (
+          <EmoteComponent
+            key={`emote-${index}`}
+            emote={segment.emote}
+            name={segment.text}
+            onEmoteClick={onEmoteClick}
+          />
+        );
+      }
+      if (segment.emote) {
+        return (
+          <EmoteComponent
+            key={`emote-${index}`}
+            emote={segment.emote}
+            name={segment.text}
+            onEmoteClick={onEmoteClick}
+          />
+        );
       }
       return (
         <span key={`text-${index}`} style={{ wordBreak: 'break-word' }}>
@@ -153,18 +182,9 @@ const ChatMessageItemComponent: React.FC<{
 const ChatReplayHeaderComponent: React.FC<{
   vodAvailable: boolean | null;
   vodInfo: any;
-  onRefresh: () => void;
-}> = ({ vodAvailable, vodInfo, onRefresh }) => {
-  const handleVodClick = () => {
-    const adjustedOffset = Math.max(0, vodInfo.offsetSeconds - 60);
-    const vodUrl = `https://www.twitch.tv/videos/${vodInfo.videoId}?t=${adjustedOffset}s`;
-    if (vodUrl) {
-      window.open(vodUrl, '_blank');
-    } else {
-      console.warn('No VOD URL found in:', vodInfo);
-    }
-  };
-
+  onVodClick: (vodInfo: any) => void;
+  onRefreshClick: () => void;
+}> = ({ vodAvailable, vodInfo, onVodClick, onRefreshClick }) => {
   return (
     <Group position="apart" align="center" py="xs">
       <Group spacing="xs">
@@ -186,7 +206,7 @@ const ChatReplayHeaderComponent: React.FC<{
               '&:hover': { backgroundColor: `${theme.colors.green[6]}`, color: 'white' },
             })}
             component="button"
-            onClick={handleVodClick}
+            onClick={() => onVodClick(vodInfo)}
             title="Open VOD in new tab"
           >
             Go To VOD
@@ -219,7 +239,7 @@ const ChatReplayHeaderComponent: React.FC<{
             transition: 'background 0.3s',
             '&:hover': { backgroundColor: `${theme.colors.blue[6]}`, color: 'white' },
           })}
-          onClick={onRefresh}
+          onClick={onRefreshClick}
           title="Refresh chat data"
         >
           Refresh
@@ -274,6 +294,7 @@ const ChatReplay: React.FC<ChatReplayProps> = ({ visible }) => {
     setEmoteMap(new Map());
     setRefreshKey((prev) => prev + 1);
   };
+  const { handleEmoteClick, handleVodClick, handleRefreshClick } = useChatReplayActions(forceRefresh);
 
   useEffect(() => {
     const loadEmotes = async (channelId?: string) => {
@@ -282,7 +303,7 @@ const ChatReplay: React.FC<ChatReplayProps> = ({ visible }) => {
         const emoteMapping = createEmoteMap(allEmotes);
         setEmoteMap(emoteMapping);
       } catch (err) {
-        console.error('❌ Failed to load emotes:', err);
+        console.error('Failed to load emotes:', err);
       }
     };
 
@@ -334,7 +355,7 @@ const ChatReplay: React.FC<ChatReplayProps> = ({ visible }) => {
         setReplayStartTime(Date.now());
         setVisibleMessages([]);
       } catch (err) {
-        console.error('❌ Failed to fetch chat replay:', err);
+        console.error('Failed to fetch chat replay:', err);
         setError('Failed to load chat replay');
       } finally {
         setLoading(false);
@@ -371,7 +392,12 @@ const ChatReplay: React.FC<ChatReplayProps> = ({ visible }) => {
       })}
     >
       <Stack spacing="xs" style={{ height: '100%' }}>
-        <ChatReplayHeaderComponent vodAvailable={vodAvailable} vodInfo={vodInfo} onRefresh={forceRefresh} />
+        <ChatReplayHeaderComponent
+          vodAvailable={vodAvailable}
+          vodInfo={vodInfo}
+          onVodClick={handleVodClick}
+          onRefreshClick={handleRefreshClick}
+        />
 
         {loading && (
           <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
@@ -408,7 +434,12 @@ const ChatReplay: React.FC<ChatReplayProps> = ({ visible }) => {
           >
             <Stack spacing={0}>
               {visibleMessages.map((message) => (
-                <ChatMessageItemComponent key={message.id} message={message} emoteMap={emoteMap} />
+                <ChatMessageItemComponent
+                  key={message.id}
+                  message={message}
+                  emoteMap={emoteMap}
+                  onEmoteClick={handleEmoteClick}
+                />
               ))}
             </Stack>
           </ScrollArea>

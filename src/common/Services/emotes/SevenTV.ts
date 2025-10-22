@@ -3,6 +3,7 @@ import { TwitchEmote } from '../../models/twitch';
 
 const SEVENTV_API_BASE = 'https://7tv.io/v3';
 const SEVENTV_CDN_BASE = 'https://cdn.7tv.app/emote';
+const SEVENTV_EMOTE_BASE = 'https://7tv.app/emotes';
 
 export const fetch7TVGlobalEmotes = async (): Promise<TwitchEmote[]> => {
   try {
@@ -46,6 +47,6 @@ export const fetchAll7TVEmotes = async (channelId?: string): Promise<TwitchEmote
   return [...globalEmotes, ...channelEmotes];
 };
 
-export const get7TVEmoteUrl = (emoteId: string, format: string = 'webp', size: number = 1): string => {
-  return `${SEVENTV_CDN_BASE}/${emoteId}/${size}x.${format}`;
+export const get7TVEmoteUrl = (emoteId: string): string => {
+  return `${SEVENTV_EMOTE_BASE}/${emoteId}`;
 };

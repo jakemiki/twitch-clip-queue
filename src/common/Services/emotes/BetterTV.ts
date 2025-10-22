@@ -3,6 +3,7 @@ import { TwitchEmote } from '../../models/twitch';
 
 const BTTV_API_BASE = 'https://api.betterttv.net/3';
 const BTTV_CDN_BASE = 'https://cdn.betterttv.net/emote';
+const BTTV_EMOTE_BASE = 'https://betterttv.com/emotes';
 
 export const fetchBTTVGlobalEmotes = async (): Promise<TwitchEmote[]> => {
   try {
@@ -47,4 +48,8 @@ export const fetchAllBTTVEmotes = async (channelId?: string): Promise<TwitchEmot
     channelId ? fetchBTTVChannelEmotes(channelId) : Promise.resolve([]),
   ]);
   return [...globalEmotes, ...channelEmotes];
+};
+
+export const getBTTVEmoteUrl = (emoteId: string): string => {
+  return `${BTTV_EMOTE_BASE}/${emoteId}`;
 };

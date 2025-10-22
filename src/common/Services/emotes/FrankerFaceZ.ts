@@ -2,6 +2,7 @@ import axios from 'axios';
 import { TwitchEmote } from '../../models/twitch';
 
 const FFZ_API_BASE = 'https://api.frankerfacez.com/v1';
+const FFZ_EMOTE_BASE = 'https://www.frankerfacez.com/emoticons';
 
 export const fetchFFZGlobalEmotes = async (): Promise<TwitchEmote[]> => {
   try {
@@ -60,4 +61,8 @@ export const fetchAllFFZEmotes = async (channelId?: string): Promise<TwitchEmote
     channelId ? fetchFFZChannelEmotes(channelId) : Promise.resolve([]),
   ]);
   return [...globalEmotes, ...channelEmotes];
+};
+
+export const getFFZEmoteUrl = (emoteId: string, emoteName: string): string => {
+  return `${FFZ_EMOTE_BASE}/${emoteId}-${emoteName}`;
 };
