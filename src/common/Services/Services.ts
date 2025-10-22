@@ -67,7 +67,7 @@ export const fetchChatMessages = async (
       }
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
-      console.error(`❌ Service ${i + 1} failed: ${errorMsg}`);
+      console.error(`Service ${i + 1} failed: ${errorMsg}`);
       continue;
     }
   }

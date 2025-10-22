@@ -22,7 +22,7 @@ function FeaturesSection() {
         <List.Item>
           <strong>Chat Replay System</strong>
           <br />
-          Gets the chat message for clips with available VODs and displays it alongside the clip, With Support for 7TV
+          Gets the chat message for clips with available VODs and displays it along side the clip, With Support for 7TV
           BTTV FFZ Emotes
         </List.Item>
         <List.Item>
