@@ -51,6 +51,10 @@ class TwitchClipProvider implements ClipProvider {
     return `https://clips.twitch.tv/${id}`;
   }
 
+  getFallbackM3u8Url(id: string): string | undefined {
+    return twitchApi.getFallbackM3u8Url(id);
+  }
+
   getEmbedUrl(id: string): string | undefined {
     return `https://clips.twitch.tv/embed?clip=${id}&autoplay=true&parent=${window.location.hostname}`;
   }

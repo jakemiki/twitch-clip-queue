@@ -84,8 +84,11 @@ function Player({ className }: PlayerProps) {
         }
       } catch (err) {
         if (Flag) {
-          setError('Failed to load video');
-          setVideoSrc(undefined);
+          console.warn('API fetch failed, attempting m3u8 fallback:', err);
+          const fallbackUrl = clipProvider.getFallbackM3u8Url(currentClip.id);
+          console.warn('Using fallback m3u8 URL:', fallbackUrl);
+          setVideoSrc(fallbackUrl);
+          setError(null);
         }
       }
     };

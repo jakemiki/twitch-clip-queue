@@ -8,6 +8,7 @@ export const injectStore = (_store: AppMiddlewareAPI) => {
 };
 
 const TWITCH_CLIENT_ID = process.env.REACT_APP_TWITCH_CLIENT_ID ?? '';
+const TWITCH_CLIPS_CDN = 'https://clips-media-assets2.twitch.tv';
 
 const twitchApiClient = axios.create({
   baseURL: 'https://api.twitch.tv/helix/',
@@ -26,14 +27,14 @@ const twitchGqlClient = axios.create({
 const getDirectUrl = async (id: string): Promise<string | undefined> => {
   const data = [
     {
-      operationName: 'ClipsDownloadButton',
+      operationName: 'VideoAccessToken_Clip',
       variables: {
         slug: id,
       },
       extensions: {
         persistedQuery: {
           version: 1,
-          sha256Hash: '6e465bb8446e2391644cf079851c0cb1b96928435a240f07ed4b240f0acc6f1b',
+          sha256Hash: '36b89d2507fce29e5ca551df756d27c1cfe079e2609642b4390aa4c35796eb11',
         },
       },
     },
@@ -41,6 +42,15 @@ const getDirectUrl = async (id: string): Promise<string | undefined> => {
 
   const resp = await twitchGqlClient.post('', data);
   const [respData] = resp.data;
+
+  if (!respData.data.clip) {
+    throw new Error('Clip not found');
+  }
+
+  if (!respData.data.clip.videoQualities || respData.data.clip.videoQualities.length === 0) {
+    throw new Error('No video qualities available');
+  }
+
   const playbackAccessToken = respData.data.clip.playbackAccessToken;
   const url =
     respData.data.clip.videoQualities[0].sourceURL +
@@ -79,11 +89,16 @@ const getGame = async (id: string): Promise<TwitchGame> => {
   return data.data[0];
 };
 
+const getFallbackM3u8Url = (clipId: string): string => {
+  return `${TWITCH_CLIPS_CDN}/${clipId}/AT-cm%7C${clipId}.m3u8`;
+};
+
 const twitchApi = {
   getClip,
   getVideo,
   getGame,
   getDirectUrl,
+  getFallbackM3u8Url,
 };
 
 export default twitchApi;
