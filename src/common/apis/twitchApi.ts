@@ -89,8 +89,8 @@ const getGame = async (id: string): Promise<TwitchGame> => {
   return data.data[0];
 };
 
-const getFallbackM3u8Url = (clipId: string): string => {
-  return `${TWITCH_CLIPS_CDN}/${clipId}/AT-cm%7C${clipId}.m3u8`;
+const getFallbackM3u8Url = (id: string): string => {
+  return `${TWITCH_CLIPS_CDN}/${id}/AT-cm%7C${id}.m3u8`;
 };
 
 const twitchApi = {
