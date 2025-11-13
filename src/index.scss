@@ -33,19 +33,20 @@ html {
   transform: translateY(0) !important;
 }
 
-.video-js.vjs-paused .vjs-control-bar {
+.video-js.vjs-paused .vjs-control-bar,
+.video-js.vjs-waiting .vjs-control-bar {
   transform: translateY(0) !important;
   opacity: 1 !important;
   transition: transform var(--control-bar-duration) var(--control-bar-easing) !important;
 }
 
-.video-js.vjs-user-inactive:not(.vjs-paused) .vjs-control-bar {
+.video-js.vjs-user-inactive:not(.vjs-paused):not(.vjs-waiting) .vjs-control-bar {
   transform: translateY(100%) !important;
   opacity: 1 !important;
   transition: transform var(--control-bar-duration) var(--control-bar-easing) !important;
 }
 
-.video-js:not(:hover):not(.vjs-paused) .vjs-control-bar {
+.video-js:not(:hover):not(.vjs-paused):not(.vjs-waiting) .vjs-control-bar {
   transform: translateY(100%) !important;
 }
 
