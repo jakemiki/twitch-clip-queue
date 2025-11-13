@@ -16,6 +16,7 @@ export interface ClipProvider {
   getEmbedUrl(id: string): string | undefined;
   getAutoplayUrl(id: string): Promise<string | undefined>;
   getFallbackM3u8Url?(id: string): string | undefined;
+  getChannelUrl?(id: string, clipInfo: Clip): string | undefined;
 }
 
 class CombinedClipProvider implements ClipProvider {
@@ -69,6 +70,10 @@ class CombinedClipProvider implements ClipProvider {
   getFallbackM3u8Url(id: string): string | undefined {
     const [provider, idPart] = this.getProviderAndId(id);
     return provider?.getFallbackM3u8Url?.(idPart);
+  }
+  getChannelUrl(id: string, clipInfo: Clip): string | undefined {
+    const [provider, idPart] = this.getProviderAndId(id);
+    return provider?.getChannelUrl?.(idPart, clipInfo);
   }
 
   setProviders(providers: string[]) {

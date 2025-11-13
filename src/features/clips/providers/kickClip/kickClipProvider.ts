@@ -51,6 +51,10 @@ class KickClipProvider implements ClipProvider {
     return this.clipCache.get(id);
   }
 
+  getChannelUrl(id: string, clipInfo: Clip): string | undefined {
+    return `https://kick.com/${clipInfo.author}/clips/${id}`;
+  }
+
   getEmbedUrl(id: string): string | undefined {
     return this.getUrl(id);
   }

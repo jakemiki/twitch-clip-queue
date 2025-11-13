@@ -21,7 +21,7 @@ function MemoryPage() {
             {clipObjects.map((clip) => (
               <Grid.Col span={2} key={clip!.id}>
                 <Anchor
-                  href={clipProvider.getUrl(clip!.id)}
+                  href={clipProvider.getUrl(clip!.id) || clipProvider.getChannelUrl(clip!.id, clip!)}
                   target="_blank"
                   referrerPolicy="no-referrer"
                   underline={false}

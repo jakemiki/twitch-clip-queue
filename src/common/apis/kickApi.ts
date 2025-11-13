@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { KickClip } from '../models/kick';
 
-export async function getClip(id: string): Promise<KickClip | undefined> {
+export const getClip = async (id: string): Promise<KickClip | undefined> => {
   if (id.length <= 0) {
     return;
   }
@@ -12,16 +12,16 @@ export async function getClip(id: string): Promise<KickClip | undefined> {
     console.error('Failed to Get Kick clip:', id, e);
     return;
   }
-}
+};
 
-export async function getDirectUrl(id: string): Promise<string | undefined> {
+export const getDirectUrl = async (id: string): Promise<string | undefined> => {
   const clip = await getClip(id);
   if (!clip || !clip.video_url) {
     console.error('Invalid clip or missing playback URL');
     return;
   }
   return clip.video_url;
-}
+};
 
 const kickApi = {
   getClip,
