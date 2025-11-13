@@ -64,15 +64,18 @@ function Player({ className }: PlayerProps) {
   const autoplayTimeoutHandle = useAppSelector(selectAutoplayTimeoutHandle);
   const [videoSrc, setVideoSrc] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
+  const [isFallback, setIsFallback] = useState(false);
 
   useEffect(() => {
     if (!currentClip) {
       setVideoSrc(undefined);
       setError(null);
+      setIsFallback(false);
       return;
     }
 
     setVideoSrc(undefined);
+    setIsFallback(false);
     let Flag = true;
 
     const fetchVideoUrl = async () => {
@@ -81,12 +84,14 @@ function Player({ className }: PlayerProps) {
         if (Flag) {
           setVideoSrc(url);
           setError(null);
+          setIsFallback(false);
         }
       } catch (err) {
         if (Flag) {
           const fallbackUrl = clipProvider.getFallbackM3u8Url(currentClip.id);
           setVideoSrc(fallbackUrl);
           setError(null);
+          setIsFallback(true);
         } else {
           setError('Failed to load video. Please make an Issue Request on GitHub. Thank you!');
         }
@@ -100,7 +105,8 @@ function Player({ className }: PlayerProps) {
     };
   }, [currentClip]);
 
-  const player = getPlayerComponent(currentClip, videoSrc, autoplayEnabled, nextClipId, dispatch);
+  const effectAutoPlay = autoplayEnabled && !isFallback;
+  const player = getPlayerComponent(currentClip, videoSrc, effectAutoPlay, nextClipId, dispatch);
 
   return (
     <Stack
