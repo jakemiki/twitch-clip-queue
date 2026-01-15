@@ -42,9 +42,13 @@ const handleMessage =
   (storeApi: AppMiddlewareAPI) => (channel: string, chatUserstate: ChatUserstate, message: string, self: boolean) => {
     const { commandPrefix, ignoredChatters } = storeApi.getState().settings;
 
-    const ignored = ignoredChatters.map(c => c.toLowerCase());
+    const ignored = ignoredChatters.map((c) => c.toLowerCase());
 
-    if (ignored.includes(chatUserstate.username?.toLowerCase()!) || ignored.includes(chatUserstate['display-name']?.toLowerCase()!)) return;
+    if (
+      ignored.includes(chatUserstate.username?.toLowerCase()!) ||
+      ignored.includes(chatUserstate['display-name']?.toLowerCase()!)
+    )
+      return;
 
     const userstate: Userstate = {
       username: chatUserstate['display-name'] ?? chatUserstate.username ?? 'Twitch Chat User',
@@ -56,7 +60,7 @@ const handleMessage =
 
     if (message.startsWith(commandPrefix)) {
       const [command, ...args] = message.substring(commandPrefix.length).split(' ');
-      processCommand(storeApi.dispatch, { command, args, userstate });
+      processCommand(storeApi, { command, args, userstate });
       return;
     }
 

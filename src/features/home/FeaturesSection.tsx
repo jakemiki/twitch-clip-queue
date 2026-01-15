@@ -74,7 +74,8 @@ function FeaturesSection() {
           <br />
           <Code>limit [number]</Code> - sets clip limit to [number]
           <br />
-          <Code>remove [url]</Code> - removes the clip with [url] from the queue
+          <Code>remove [url]</Code> - removes the clip with [url] from the queue, can be used by clip submitters as well
+          for their own submitted clips
           <br />
           <Code>providers [providers]</Code> - sets enabled clip providers to [providers]
         </List.Item>
