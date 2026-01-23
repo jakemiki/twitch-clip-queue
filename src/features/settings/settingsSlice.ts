@@ -13,14 +13,25 @@ interface SettingsState {
   volume: number | undefined;
   ignoredChatters: string[];
   initialQueueOpen: boolean;
+  platformIconMode: 'colored' | 'grayscale' | 'disabled';
 }
 
 const initialState: SettingsState = {
   colorScheme: null,
   commandPrefix: '!queue',
+  platformIconMode: 'colored',
   volume: 1,
-  ignoredChatters: ['streamlabs', 'nightbot', 'streamelements', 'fossabot', 'moobot', 'sery_bot', 'wizebot', 'kofistreambot'],
-  initialQueueOpen: false
+  ignoredChatters: [
+    'streamlabs',
+    'nightbot',
+    'streamelements',
+    'fossabot',
+    'moobot',
+    'sery_bot',
+    'wizebot',
+    'kofistreambot',
+  ],
+  initialQueueOpen: false,
 };
 
 const settingsSlice = createSlice({
@@ -44,20 +55,26 @@ const settingsSlice = createSlice({
         state.commandPrefix = payload.commandPrefix;
       }
       if (payload.ignoredChatters || payload.ignoredChatters === '') {
-        state.ignoredChatters = payload.ignoredChatters.split('\n').map(x => x.trim()).filter(c => !!c);
+        state.ignoredChatters = payload.ignoredChatters
+          .split('\n')
+          .map((x) => x.trim())
+          .filter((c) => !!c);
       }
       if (payload.initialQueueOpen !== undefined) {
         state.initialQueueOpen = payload.initialQueueOpen === 'true';
+      }
+      if (payload.platformIconMode) {
+        state.platformIconMode = payload.platformIconMode;
       }
     },
     setVolume: (state, action: PayloadAction<number | undefined>) => {
       state.volume = action.payload;
     },
     addIgnoredChatter: (state, action: PayloadAction<string>) => {
-      state.ignoredChatters = [...state.ignoredChatters, action.payload.trim()].filter(c => !!c);
+      state.ignoredChatters = [...state.ignoredChatters, action.payload.trim()].filter((c) => !!c);
     },
     removeIgnoredChatter: (state, action: PayloadAction<string>) => {
-      state.ignoredChatters = state.ignoredChatters.filter(c => c !== action.payload.trim()).filter(c => !!c);
+      state.ignoredChatters = state.ignoredChatters.filter((c) => c !== action.payload.trim()).filter((c) => !!c);
     },
   },
   extraReducers: (builder) => {
@@ -75,17 +92,20 @@ const settingsSlice = createSlice({
 });
 
 const selectSettings = (state: RootState): SettingsState => state.settings;
+export const { setVolume } = settingsSlice.actions;
 export const selectChannel = (state: RootState) => state.settings.channel;
 export const selectCommandPrefix = (state: RootState) => state.settings.commandPrefix;
 export const selectIgnoredChatters = (state: RootState) => state.settings.ignoredChatters;
 export const selectInitialQueueOpen = (state: RootState) => state.settings.initialQueueOpen;
+export const selectPlatformIconMode = (state: RootState) => state.settings.platformIconMode;
 
 export const selectColorScheme = createSelector(
   [selectSettings, (_, defaultColorScheme: ColorScheme) => defaultColorScheme],
   (state, defaultColorScheme) => state.colorScheme ?? defaultColorScheme
 );
 
-export const { colorSchemeToggled, channelChanged, settingsChanged, addIgnoredChatter, removeIgnoredChatter } = settingsSlice.actions;
+export const { colorSchemeToggled, channelChanged, settingsChanged, addIgnoredChatter, removeIgnoredChatter } =
+  settingsSlice.actions;
 
 const settingsReducer = persistReducer(
   {
@@ -96,5 +116,4 @@ const settingsReducer = persistReducer(
   settingsSlice.reducer
 );
 
-export const { setVolume } = settingsSlice.actions;
 export default settingsReducer;

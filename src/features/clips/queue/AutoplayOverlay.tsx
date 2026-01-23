@@ -67,7 +67,7 @@ function AutoplayOverlay({ visible, onCancel }: AutoplayOverlayProps) {
           <Text size="lg" weight={700}>
             Next up
           </Text>
-          <Clip platform={nextClip?.Platform || undefined} clipId={nextClipId} />
+          <Clip platform={nextClip?.Platform || 'Unknown'} clipId={nextClipId} />
         </Stack>
       }
     />

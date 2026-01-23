@@ -21,7 +21,7 @@ function Queue({ wrapper, card }: QueueProps) {
       {clips.map((clip) => (
         <Wrapper key={clip!.id}>
           <Clip
-            platform={clip!.Platform || undefined}
+            platform={clip!.Platform || 'Unknown'}
             key={clip!.id}
             clipId={clip!.id}
             card={card}
