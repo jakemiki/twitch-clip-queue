@@ -7,9 +7,10 @@ class KickClipProvider implements ClipProvider {
   private clipCache: Map<string, string> = new Map();
 
   getIdFromUrl(url: string): string | undefined {
+    const KICK_WHITELISTED_HOSTNAMES = ['kick.com', 'www.kick.com', 'clkick.com'];
     try {
       const uri = new URL(url);
-      if (uri.hostname === 'kick.com' || uri.hostname === 'www.kick.com') {
+      if (KICK_WHITELISTED_HOSTNAMES.includes(uri.hostname)) {
         const id = uri.searchParams.get('clip');
         if (id) {
           return id;
