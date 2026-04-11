@@ -18,8 +18,8 @@ function PlayerTitle({ className }: PlayerTitleProps) {
       <Text size="xl" weight={700} lineClamp={1}>
         {currentClip?.title ?? _nbsp}
       </Text>
-      <Text sx={{ display: 'flex', alignItems: 'center', gap: '.25rem' }} color="dimmed" size="sm" lineClamp={1}>
-        <Platform platform={currentClip?.Platform} />
+      <Text sx={{ display: 'inline-flex', gap: 2 }} color="dimmed" size="sm" lineClamp={1}>
+        <Platform platform={currentClip?.Platform || 'Unknown'} />
         <strong>{currentClip?.author ?? _nbsp}</strong>
         {currentClip?.category && (
           <>

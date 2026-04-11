@@ -24,6 +24,7 @@ import {
   selectProviders,
 } from '../clips/clipQueueSlice';
 import {
+  selectPlatformIconMode,
   selectChannel,
   selectCommandPrefix,
   selectIgnoredChatters,
@@ -41,11 +42,21 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
   const historyIds = useAppSelector(selectHistoryIds);
   const initialQueueOpen: 'true' | 'false' = `${useAppSelector(selectInitialQueueOpen)}`;
   const ignoredChatters = useAppSelector(selectIgnoredChatters).join('\n');
+  const platformIconMode = useAppSelector(selectPlatformIconMode);
 
   console.log(initialQueueOpen);
 
   const form = useForm({
-    initialValues: { channel, commandPrefix, clipLimit, enabledProviders, layout, ignoredChatters, initialQueueOpen },
+    initialValues: {
+      channel,
+      commandPrefix,
+      clipLimit,
+      enabledProviders,
+      layout,
+      ignoredChatters,
+      initialQueueOpen,
+      platformIconMode,
+    },
   });
 
   return (
@@ -101,6 +112,16 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
                   { value: 'fullscreen', label: 'Fullscreen with popup (experimental)' },
                 ]}
                 {...form.getInputProps('layout')}
+              />
+              <Select
+                required
+                label="Platform icons"
+                data={[
+                  { value: 'colored', label: 'Platform Icons (Colored)' },
+                  { value: 'grayscale', label: 'Platform Icons (Grayscale)' },
+                  { value: 'disabled', label: 'Platform Icons Off' },
+                ]}
+                {...form.getInputProps('platformIconMode')}
               />
               <Stack spacing="sm">
                 <Text size="sm">Clip providers</Text>

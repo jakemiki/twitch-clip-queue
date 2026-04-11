@@ -27,7 +27,7 @@ function MemoryPage() {
                   underline={false}
                 >
                   <Clip
-                    platform={clip!.Platform || undefined}
+                    platform={clip!.Platform || 'Unknown'}
                     card
                     clipId={clip!.id}
                     onClick={() => {}}
