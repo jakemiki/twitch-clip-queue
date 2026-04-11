@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/twitch-clip-queue/static/css/main.04a0f2d0.css",
-    "main.js": "/twitch-clip-queue/static/js/main.20f2bf79.js",
+    "main.js": "/twitch-clip-queue/static/js/main.adcab1b4.js",
     "static/js/453.72b444ba.chunk.js": "/twitch-clip-queue/static/js/453.72b444ba.chunk.js",
     "index.html": "/twitch-clip-queue/index.html",
     "main.04a0f2d0.css.map": "/twitch-clip-queue/static/css/main.04a0f2d0.css.map",
-    "main.20f2bf79.js.map": "/twitch-clip-queue/static/js/main.20f2bf79.js.map",
+    "main.adcab1b4.js.map": "/twitch-clip-queue/static/js/main.adcab1b4.js.map",
     "453.72b444ba.chunk.js.map": "/twitch-clip-queue/static/js/453.72b444ba.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.04a0f2d0.css",
-    "static/js/main.20f2bf79.js"
+    "static/js/main.adcab1b4.js"
   ]
 }
