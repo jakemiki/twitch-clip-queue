@@ -1,6 +1,6 @@
 import { ActionIcon, ActionIconProps, Button, Group, Header, Space, Text, ThemeIcon } from '@mantine/core';
 import { PropsWithChildren } from 'react';
-import { DeviceTv } from 'tabler-icons-react';
+import { DeviceTv, Settings } from 'tabler-icons-react';
 import ColorSchemeSwitch from '../common/components/ColorSchemeSwitch';
 import { NavLinkProps, useLocation } from 'react-router-dom';
 import NavLink from '../common/components/NavLink';
@@ -9,6 +9,7 @@ import IfAuthenticated from '../features/auth/IfAuthenticated';
 import { useAppDispatch } from './hooks';
 import { login } from '../features/auth/authSlice';
 import AppMenu from './AppMenu';
+import useSettingsModal from '../features/settings/SettingsModal';
 
 export function TitleIcon() {
   return (
@@ -55,6 +56,7 @@ function NavBarButton({ children, type, className, style, ...props }: PropsWithC
 function AppHeader({ noNav = false }: { noNav?: boolean }) {
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const { openSettingsModal } = useSettingsModal();
 
   return (
     <Header height={60} px="lg">
@@ -66,7 +68,7 @@ function AppHeader({ noNav = false }: { noNav?: boolean }) {
           {!noNav && (
             <Group spacing={0}>
               <NavBarButton to="/">Home</NavBarButton>
-              <IfAuthenticated>
+              <IfAuthenticated allowKick>
                 <NavBarButton to="queue">Queue</NavBarButton>
                 <NavBarButton to="history">History</NavBarButton>
               </IfAuthenticated>
@@ -77,6 +79,9 @@ function AppHeader({ noNav = false }: { noNav?: boolean }) {
           otherwise={
             <Group>
               <ColorSchemeSwitch component={NavBarIcon} />
+              <NavBarIcon aria-label="Settings" onClick={openSettingsModal}>
+                <Settings size={20} />
+              </NavBarIcon>
               <Button onClick={() => dispatch(login(location.pathname))}>Login with Twitch</Button>
             </Group>
           }

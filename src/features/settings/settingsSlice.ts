@@ -5,10 +5,12 @@ import type { RootState } from '../../app/store';
 import { authenticateWithToken } from '../auth/authSlice';
 import { legacyDataMigrated } from '../migration/legacyMigration';
 import { AllSettings, ColorScheme } from './models';
+import { ChatChannel, channelKey, normalizeChannel } from '../chat/models';
 
 interface SettingsState {
   colorScheme: ColorScheme | null;
   channel?: string;
+  chatChannels?: ChatChannel[];
   commandPrefix: string;
   volume: number | undefined;
   ignoredChatters: string[];
@@ -43,10 +45,47 @@ const settingsSlice = createSlice({
     },
     channelChanged: (state, { payload }: PayloadAction<string>) => {
       state.channel = payload;
+
+      if (state.chatChannels) {
+        state.chatChannels = [...state.chatChannels.filter((c) => c.platform !== 'twitch')];
+        if (payload) state.chatChannels.push({ platform: 'twitch', name: payload.toLowerCase() });
+      }
     },
     settingsChanged: (state, { payload }: PayloadAction<AllSettings>) => {
-      if (payload.channel) {
+      if (payload.chatChannels) {
+        const seen = new Set<string>();
+        state.chatChannels = payload.chatChannels.flatMap((channel) => {
+          const name = normalizeChannel(channel.name, channel.platform);
+          if (!name) return [];
+
+          const normalized = { ...channel, name };
+          const key = channelKey(normalized);
+          if (seen.has(key)) return [];
+
+          seen.add(key);
+
+          return [normalized];
+        });
+        state.channel = state.chatChannels.find((c) => c.platform === 'twitch')?.name;
+      }
+
+      if (payload.channel !== undefined) {
         state.channel = payload.channel;
+
+        if (state.chatChannels) {
+          const name = normalizeChannel(payload.channel, 'twitch');
+          const index = state.chatChannels.findIndex((channel) => channel.platform === 'twitch');
+
+          if (index > -1) {
+            if (name) {
+              state.chatChannels[index] = { platform: 'twitch', name };
+            } else {
+              state.chatChannels.splice(index, 1);
+            }
+          } else if (name) {
+            state.chatChannels.unshift({ platform: 'twitch', name });
+          }
+        }
       }
       if (payload.colorScheme) {
         state.colorScheme = payload.colorScheme;
@@ -79,7 +118,7 @@ const settingsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(authenticateWithToken.fulfilled, (state, { payload }) => {
-      if (!state.channel) {
+      if (!state.channel && state.chatChannels === undefined) {
         state.channel = payload.username;
       }
     });
@@ -94,6 +133,11 @@ const settingsSlice = createSlice({
 const selectSettings = (state: RootState): SettingsState => state.settings;
 export const { setVolume } = settingsSlice.actions;
 export const selectChannel = (state: RootState) => state.settings.channel;
+export const selectChatChannels = createSelector(
+  [selectSettings],
+  (settings): ChatChannel[] =>
+    settings.chatChannels ?? (settings.channel ? [{ platform: 'twitch', name: settings.channel.toLowerCase() }] : [])
+);
 export const selectCommandPrefix = (state: RootState) => state.settings.commandPrefix;
 export const selectIgnoredChatters = (state: RootState) => state.settings.ignoredChatters;
 export const selectInitialQueueOpen = (state: RootState) => state.settings.initialQueueOpen;

@@ -63,7 +63,7 @@ const getDirectUrl = async (id: string): Promise<string | undefined> => {
 };
 
 twitchApiClient.interceptors.request.use((request) => {
-  const { token } = store?.getState().auth;
+  const token = store?.getState().auth.token;
   if (token) {
     request.headers = { Authorization: `Bearer ${token}`, ...request.headers };
   }
@@ -71,7 +71,28 @@ twitchApiClient.interceptors.request.use((request) => {
   return request;
 });
 
-const getClip = async (id: string): Promise<TwitchClip> => {
+const getClip = async (
+  id: string
+): Promise<Pick<TwitchClip, 'id' | 'broadcaster_name' | 'title' | 'thumbnail_url' | 'created_at'> | undefined> => {
+  if (!store?.getState().auth.token) {
+    const { data } = await twitchGqlClient.post('', {
+      query:
+        'query ClipQueueMetadata($slug: ID!) { clip(slug: $slug) { id title createdAt thumbnailURL broadcaster { displayName } } }',
+      variables: { slug: id },
+    });
+    const clip = data.data?.clip;
+
+    return clip
+      ? {
+          id,
+          broadcaster_name: clip.broadcaster?.displayName,
+          title: clip.title,
+          thumbnail_url: clip.thumbnailURL,
+          created_at: clip.createdAt,
+        }
+      : undefined;
+  }
+
   const { data } = await twitchApiClient.get<{ data: TwitchClip[] }>(`clips?id=${id}`);
 
   return data.data[0];

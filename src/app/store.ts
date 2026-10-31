@@ -7,11 +7,14 @@ import clipQueueReducer from '../features/clips/clipQueueSlice';
 import { tryMigrateLegacyData } from '../features/migration/legacyMigration';
 import settingsReducer from '../features/settings/settingsSlice';
 import createTwitchChatMiddleware from '../features/twitchChat/twitchChatMiddleware';
+import createKickChatMiddleware from '../features/kickChat/kickChatMiddleware';
+import chatReducer from '../features/chat/chatSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   settings: settingsReducer,
   clipQueue: clipQueueReducer,
+  chat: chatReducer,
 });
 
 export const store = configureStore({
@@ -21,9 +24,13 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(createTwitchChatMiddleware(), createClipQueueMiddleware(), createAnalyticsMiddleware()),
+    }).concat(
+      createTwitchChatMiddleware(),
+      createKickChatMiddleware(),
+      createClipQueueMiddleware(),
+      createAnalyticsMiddleware()
+    ),
 });
-
 
 export const persistor = persistStore(store, undefined, () => {
   tryMigrateLegacyData(store.dispatch);
