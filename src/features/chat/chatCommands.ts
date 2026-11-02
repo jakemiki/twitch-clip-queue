@@ -11,6 +11,7 @@ import { addIgnoredChatter, removeIgnoredChatter, settingsChanged } from '../set
 import { createLogger } from '../../common/logging';
 import { urlDeleted, Userstate } from './actions';
 import clipProvider from '../clips/providers/providers';
+import { chatterKey } from './models';
 
 const logger = createLogger('Chat Command');
 
@@ -29,6 +30,7 @@ const isModOrBroadcaster = (userstate: Userstate): boolean => {
 const requireModOrBroadcaster = (handler: CommandHandler): CommandHandler => {
   return (storeApi, args, userstate) => {
     if (!isModOrBroadcaster(userstate)) return;
+
     handler(storeApi, args, userstate);
   };
 };
@@ -60,7 +62,8 @@ const commands: Record<string, CommandHandler> = {
     const clip = state.clipQueue.byId[id];
 
     const isMod = isModOrBroadcaster(userstate);
-    const isSubmitter = clip?.submitters.includes(userstate.username);
+    const identities = clip?.submitterIds ?? clip?.submitters.map((name) => chatterKey(name));
+    const isSubmitter = identities?.includes(chatterKey(userstate.login ?? userstate.username, userstate.platform));
 
     if (isMod || isSubmitter) {
       storeApi.dispatch(urlDeleted(url));
@@ -98,10 +101,14 @@ const commands: Record<string, CommandHandler> = {
   }),
 
   'ignore+': requireModOrBroadcaster((storeApi, [name]) => {
+    if (!name) return;
+
     storeApi.dispatch(addIgnoredChatter(name));
   }),
 
   'ignore-': requireModOrBroadcaster((storeApi, [name]) => {
+    if (!name) return;
+
     storeApi.dispatch(removeIgnoredChatter(name));
   }),
 };

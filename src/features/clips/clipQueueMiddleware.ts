@@ -5,7 +5,7 @@ import { RootState, AppMiddlewareAPI } from '../../app/store';
 import { createLogger } from '../../common/logging';
 import { authenticateWithToken } from '../auth/authSlice';
 import { settingsChanged } from '../settings/settingsSlice';
-import { urlDeleted, urlReceived } from '../twitchChat/actions';
+import { urlDeleted, urlReceived } from '../chat/actions';
 import {
   clipStubReceived,
   queueClipRemoved,
@@ -19,17 +19,26 @@ import {
   queueCleared,
   autoplayUrlFailed,
   autoplayUrlReceived,
+  isOpenChanged,
+  autoplayChanged,
+  previousClipWatched,
+  currentClipForceReplaced,
 } from './clipQueueSlice';
 import { applyCustomizations } from './customization/customization';
 import clipProvider from './providers/providers';
+import { chatterKey } from '../chat/models';
 
 const logger = createLogger('ClipQueueMiddleware');
 
 const createClipQueueMiddleware = (): Middleware<{}, RootState> => {
   return (storeAPI: AppMiddlewareAPI) => {
     return (next) => (action) => {
-      if (action.type === REHYDRATE && action.key === 'clipQueue' && action.payload) {
-        clipProvider.setProviders(action.payload.providers);
+      if (action.type === REHYDRATE && action.key === 'clipQueue') {
+        clipProvider.setProviders(action.payload?.providers ?? storeAPI.getState().clipQueue.providers);
+      } else if (action.type === REHYDRATE && action.key === 'settings') {
+        storeAPI.dispatch(
+          isOpenChanged(action.payload?.initialQueueOpen ?? storeAPI.getState().settings.initialQueueOpen)
+        );
       } else if (urlReceived.match(action)) {
         const { url, userstate } = action.payload;
         const sender = userstate.username;
@@ -38,9 +47,16 @@ const createClipQueueMiddleware = (): Middleware<{}, RootState> => {
           if (id) {
             const clip: Clip | undefined = storeAPI.getState().clipQueue.byId[id];
 
-            storeAPI.dispatch(clipStubReceived({ id, submitters: [sender], timestamp: formatISO(new Date()) }));
+            storeAPI.dispatch(
+              clipStubReceived({
+                id,
+                submitters: [sender],
+                submitterIds: [chatterKey(userstate.login ?? sender, userstate.platform)],
+                timestamp: formatISO(new Date()),
+              })
+            );
 
-            if (!clip) {
+            if (!clip && storeAPI.getState().clipQueue.byId[id]) {
               clipProvider
                 .getClipById(id)
                 .then((clip) => {
@@ -80,10 +96,25 @@ const createClipQueueMiddleware = (): Middleware<{}, RootState> => {
             clearTimeout(handle);
           }
         }
-      } else if (isAnyOf(currentClipWatched, currentClipReplaced, currentClipSkipped, queueCleared)(action)) {
+      } else if (autoplayChanged.match(action) && !action.payload) {
+        storeAPI.dispatch(autoplayTimeoutHandleChanged({ set: false }));
+      } else if (
+        isAnyOf(
+          currentClipWatched,
+          currentClipReplaced,
+          currentClipSkipped,
+          previousClipWatched,
+          currentClipForceReplaced,
+          queueCleared
+        )(action)
+      ) {
         const handle = storeAPI.getState().clipQueue.autoplayTimeoutHandle;
         clearTimeout(handle);
 
+        if (previousClipWatched.match(action) || currentClipForceReplaced.match(action)) {
+          storeAPI.dispatch(autoplayTimeoutHandleChanged({ set: false }));
+          return next(action);
+        }
         const { autoplay, queueIds } = storeAPI.getState().clipQueue;
         const nextId = queueIds[0];
         if (autoplay && nextId) {

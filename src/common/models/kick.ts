@@ -35,7 +35,25 @@ export interface KickClip {
   view_count: number;
   likes_count: number;
   is_live: boolean;
-  category: KickCategory;
+  category: KickCategory | null;
   creator: KickChannel;
   channel: KickChannel;
+}
+
+export interface KickChatChannel {
+  id: number;
+  user_id: number;
+  slug: string;
+  chatroom: { id: number };
+}
+
+export interface KickChatMessage {
+  id: string;
+  content: string;
+  sender: {
+    id: number;
+    username: string;
+    slug?: string;
+    identity?: { badges?: { type: string }[] };
+  };
 }

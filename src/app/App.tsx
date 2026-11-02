@@ -4,8 +4,9 @@ import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
+import { BrowserRouter } from 'react-router-dom';
 import { selectAccessToken, authenticateWithToken, selectAuthState } from '../features/auth/authSlice';
-import { colorSchemeToggled, selectColorScheme } from '../features/settings/settingsSlice';
+import { colorSchemeToggled, selectColorScheme, selectChatChannels } from '../features/settings/settingsSlice';
 import { selectIsOpen } from '../features/clips/clipQueueSlice';
 import { useAppDispatch, useAppSelector } from './hooks';
 import Router from './Router';
@@ -17,6 +18,9 @@ function App() {
   const preferredColorScheme = useColorScheme();
   const colorScheme = useAppSelector((state) => selectColorScheme(state, preferredColorScheme));
   const isOpen = useAppSelector(selectIsOpen);
+  const hasKickChannel = useAppSelector((state) =>
+    selectChatChannels(state).some((channel) => channel.platform === 'kick')
+  );
 
   useEffect(() => {
     if (accessToken) {
@@ -27,7 +31,7 @@ function App() {
 
   return (
     <>
-      {authState === 'authenticated' && (
+      {(authState === 'authenticated' || hasKickChannel) && (
         <>
           {isOpen ? (
             <Helmet>
@@ -48,12 +52,14 @@ function App() {
         toggleColorScheme={() => dispatch(colorSchemeToggled(preferredColorScheme))}
       >
         <MantineProvider theme={{ colorScheme, primaryColor: 'indigo' }} withNormalizeCSS withGlobalStyles>
-          <ModalsProvider>
-            <NotificationsProvider>
-              <Router />
-              <LoadingOverlay loaderProps={{ size: 'xl' }} visible={authState === 'authenticating'} />
-            </NotificationsProvider>
-          </ModalsProvider>
+          <BrowserRouter basename={process.env.REACT_APP_BASEPATH}>
+            <ModalsProvider>
+              <NotificationsProvider>
+                <Router />
+                <LoadingOverlay loaderProps={{ size: 'xl' }} visible={authState === 'authenticating'} />
+              </NotificationsProvider>
+            </ModalsProvider>
+          </BrowserRouter>
         </MantineProvider>
       </ColorSchemeProvider>
     </>

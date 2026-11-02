@@ -10,6 +10,10 @@ function QuickstartSection() {
         sent anywhere but Twitch. By default you'll join your channel's chat, but you can change the channel afterwards.
         The only thing left to do is to <Text component="span" weight="bold">open the queue</Text> and wait for some clip links to be posted in chat.
       </Text>
+      <Text component="p">
+        For <Text component="span" weight="bold">Kick</Text>, open Settings, enter your channel name or URL, click Add Kick channel then Save. You don't need to log
+        in with Twitch to use Kick.
+      </Text>
     </Box>
   );
 }

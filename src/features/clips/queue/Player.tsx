@@ -26,7 +26,7 @@ const getPlayerComponent = (
 ) => {
   if (!currentClip) return null;
 
-  const KickClip = currentClip.Platform === 'Kick';
+  const KickClip = currentClip.Platform === 'Kick' || currentClip.id.startsWith('kick-clip:');
 
   if (autoplayEnabled && currentClip.id) {
     return (
@@ -39,7 +39,7 @@ const getPlayerComponent = (
   }
 
   if (KickClip) {
-    return <VideoPlayer key={currentClip.id} src={currentClip.url} />;
+    return <VideoPlayer key={currentClip.id} src={videoSrc} />;
   }
 
   const embedUrl = clipProvider.getEmbedUrl(currentClip.id);
@@ -59,54 +59,65 @@ const getPlayerComponent = (
 function Player({ className }: PlayerProps) {
   const dispatch = useAppDispatch();
   const currentClip = useAppSelector(selectCurrentClip);
+  const isKickClip = currentClip?.Platform === 'Kick' || !!currentClip?.id.startsWith('kick-clip:');
   const nextClipId = useAppSelector(selectNextId);
   const autoplayEnabled = useAppSelector(selectAutoplayEnabled);
   const autoplayTimeoutHandle = useAppSelector(selectAutoplayTimeoutHandle);
   const [videoSrc, setVideoSrc] = useState<string | undefined>(undefined);
+  const [videoClipId, setVideoClipId] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [isFallback, setIsFallback] = useState(false);
 
   useEffect(() => {
     if (!currentClip) {
       setVideoSrc(undefined);
+      setVideoClipId(undefined);
       setError(null);
       setIsFallback(false);
       return;
     }
 
     setVideoSrc(undefined);
+    setVideoClipId(undefined);
+    setError(null);
     setIsFallback(false);
-    let Flag = true;
+    let active = true;
 
     const fetchVideoUrl = async () => {
       try {
         const url = await clipProvider.getAutoplayUrl(currentClip.id);
-        if (Flag) {
+        if (active) {
+          setVideoClipId(currentClip.id);
           setVideoSrc(url);
-          setError(null);
+          setError(
+            !url && isKickClip ? 'Failed to load video. Please make an Issue Request on GitHub. Thank you!' : null
+          );
           setIsFallback(false);
         }
-      } catch (err) {
-        if (Flag) {
-          const fallbackUrl = clipProvider.getFallbackM3u8Url(currentClip.id);
-          setVideoSrc(fallbackUrl);
-          setError(null);
-          setIsFallback(true);
-        } else {
-          setError('Failed to load video. Please make an Issue Request on GitHub. Thank you!');
-        }
+      } catch {
+        if (!active) return;
+
+        const fallbackUrl = clipProvider.getFallbackM3u8Url(currentClip.id);
+        setVideoClipId(currentClip.id);
+        setVideoSrc(fallbackUrl);
+        setError(
+          !fallbackUrl && isKickClip ? 'Failed to load video. Please make an Issue Request on GitHub. Thank you!' : null
+        );
+        setIsFallback(true);
       }
     };
 
     fetchVideoUrl();
 
     return () => {
-      Flag = false;
+      active = false;
     };
-  }, [currentClip]);
+  }, [currentClip, isKickClip]);
 
   const effectAutoPlay = autoplayEnabled && !isFallback;
-  const player = getPlayerComponent(currentClip, videoSrc, effectAutoPlay, nextClipId, dispatch);
+  const isCurrentVideo = videoClipId === currentClip?.id;
+  const currentVideoSrc = isCurrentVideo ? videoSrc : undefined;
+  const player = getPlayerComponent(currentClip, currentVideoSrc, effectAutoPlay, nextClipId, dispatch);
 
   return (
     <Stack
@@ -114,7 +125,13 @@ function Player({ className }: PlayerProps) {
       sx={{ background: 'black', height: '100%', aspectRatio: '16 / 9', position: 'relative' }}
       className={className}
     >
-      {error ? <div style={{ color: 'red' }}>{error}</div> : videoSrc || !autoplayEnabled ? player : <div></div>}
+      {error && isCurrentVideo ? (
+        <div style={{ color: 'red' }}>{error}</div>
+      ) : currentVideoSrc || (!autoplayEnabled && !isKickClip) ? (
+        player
+      ) : (
+        <div></div>
+      )}
       <AutoplayOverlay
         visible={!!autoplayTimeoutHandle}
         onCancel={() => dispatch(autoplayTimeoutHandleChanged({ set: false }))}

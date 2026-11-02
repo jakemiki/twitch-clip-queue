@@ -4,63 +4,74 @@ import type { ClipProvider } from '../providers';
 
 class KickClipProvider implements ClipProvider {
   name = 'kick-clip';
-  private clipCache: Map<string, string> = new Map();
+  private clipCache = new Map<string, { source: string; playback: string }>();
 
   getIdFromUrl(url: string): string | undefined {
-    const KICK_WHITELISTED_HOSTNAMES = ['kick.com', 'www.kick.com', 'clkick.com'];
     try {
       const uri = new URL(url);
-      if (KICK_WHITELISTED_HOSTNAMES.includes(uri.hostname)) {
-        const id = uri.searchParams.get('clip');
-        if (id) {
-          return id;
-        }
-        if (uri.pathname.includes('/clips/')) {
-          const idStart = uri.pathname.lastIndexOf('/');
-          return uri.pathname.slice(idStart).split('?')[0]?.slice(1);
-        }
-      }
-      return undefined;
+
+      if (
+        !['https:', 'http:'].includes(uri.protocol) ||
+        !['kick.com', 'www.kick.com', 'clkick.com', 'www.clkick.com'].includes(uri.hostname)
+      )
+        return;
+
+      const match = uri.pathname.match(/^\/(?:[^/]+\/)?clips\/(clip_[a-zA-Z0-9]+)\/?$/);
+      const id = match?.[1] ?? uri.searchParams.get('clip');
+
+      return id && /^clip_[a-zA-Z0-9]+$/.test(id) ? id : undefined;
     } catch {
       return undefined;
     }
   }
 
   async getClipById(id: string): Promise<Clip | undefined> {
-    if (!id) return undefined;
+    if (!/^clip_[a-zA-Z0-9]+$/.test(id)) return;
 
     const clipInfo = await kickApi.getClip(id);
-    const clipCache: Record<string, string> = {};
-    if (!clipInfo || !clipInfo.video_url) return undefined;
+    const playback = clipInfo?.video_url || clipInfo?.clip_url;
 
-    clipCache[id] = clipInfo.video_url;
+    if (!clipInfo || !playback) return;
+
+    const source = this.getClipUrl(id, clipInfo.channel.slug || clipInfo.channel.username.toLowerCase());
+
+    this.clipCache.set(id, { source, playback });
+
+    if (this.clipCache.size > 100) this.clipCache.delete(this.clipCache.keys().next().value);
 
     return {
-      id: clipInfo.id,
+      id,
       title: clipInfo.title,
       author: clipInfo.channel.username,
-      category: clipInfo.category.name,
-      url: clipInfo.video_url,
+      category: clipInfo.category?.name,
+      url: playback,
+      sourceUrl: source,
       createdAt: clipInfo.created_at,
-      thumbnailUrl: clipInfo.thumbnail_url.replace('%{width}x%{height}', '480x272'),
+      thumbnailUrl: clipInfo.thumbnail_url?.replace('%{width}x%{height}', '480x272'),
       submitters: [],
       Platform: 'Kick',
     };
   }
 
   getUrl(id: string): string | undefined {
-    return this.clipCache.get(id);
+    return this.clipCache.get(id)?.source;
   }
 
   getChannelUrl(id: string, clipInfo: Clip): string | undefined {
-    return `https://kick.com/${clipInfo.author}/clips/${id}`;
+    return clipInfo.sourceUrl ?? (clipInfo.author ? this.getClipUrl(id, clipInfo.author.toLowerCase()) : undefined);
   }
 
   getEmbedUrl(id: string): string | undefined {
-    return this.getUrl(id);
+    return this.clipCache.get(id)?.playback;
   }
+
   async getAutoplayUrl(id: string): Promise<string | undefined> {
-    return await kickApi.getDirectUrl(id);
+    const clip = await this.getClipById(id);
+    return clip?.url;
+  }
+
+  private getClipUrl(id: string, channel: string): string {
+    return `https://kick.com/${encodeURIComponent(channel)}/clips/${id}`;
   }
 }
 

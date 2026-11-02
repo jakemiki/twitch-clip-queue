@@ -25,15 +25,18 @@ import {
 } from '../clips/clipQueueSlice';
 import {
   selectPlatformIconMode,
+  selectChatChannels,
   selectChannel,
   selectCommandPrefix,
   selectIgnoredChatters,
   selectInitialQueueOpen,
   settingsChanged,
 } from './settingsSlice';
+import { normalizeChannel } from '../chat/models';
 
 function SettingsModal({ closeModal }: { closeModal: () => void }) {
   const dispatch = useAppDispatch();
+  const chatChannels = useAppSelector(selectChatChannels);
   const channel = useAppSelector(selectChannel);
   const commandPrefix = useAppSelector(selectCommandPrefix);
   const clipLimit = useAppSelector(selectClipLimit);
@@ -48,6 +51,7 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
 
   const form = useForm({
     initialValues: {
+      chatChannels,
       channel,
       commandPrefix,
       clipLimit,
@@ -58,6 +62,27 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
       platformIconMode,
     },
   });
+
+  const kickChannelForm = useForm({
+    initialValues: { channel: '' },
+  });
+
+  const kickChannels = form.values.chatChannels.filter((channel) => channel.platform === 'kick');
+
+  const addKickChannel = () => {
+    const name = normalizeChannel(kickChannelForm.values.channel, 'kick');
+    if (!name) return kickChannelForm.setFieldError('channel', 'Enter a valid Kick channel name or URL.');
+    if (kickChannels.some((channel) => channel.name === name)) {
+      return kickChannelForm.setFieldError('channel', 'This Kick channel is already added.');
+    }
+
+    if (!kickChannels.length && !form.values.enabledProviders.includes('kick-clip')) {
+      form.setFieldValue('enabledProviders', [...form.values.enabledProviders, 'kick-clip']);
+    }
+
+    form.setFieldValue('chatChannels', [...form.values.chatChannels, { platform: 'kick', name }]);
+    kickChannelForm.reset();
+  };
 
   return (
     <form
@@ -73,9 +98,49 @@ function SettingsModal({ closeModal }: { closeModal: () => void }) {
               <TextInput
                 label="Twitch channel"
                 description="Twitch chat channel to join"
-                required
+                required={!kickChannels.length}
                 {...form.getInputProps('channel')}
               />
+              <Stack spacing="sm">
+                <Text size="sm">Kick channels</Text>
+                <Group align="flex-start" spacing="xs">
+                  <TextInput
+                    aria-label="Kick channel"
+                    placeholder="Kick channel name or URL"
+                    {...kickChannelForm.getInputProps('channel')}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        event.preventDefault();
+                        addKickChannel();
+                      }
+                    }}
+                    sx={{ flex: 1, minWidth: 140 }}
+                  />
+                  <Button disabled={!kickChannelForm.values.channel.trim()} onClick={addKickChannel}>
+                    Add Kick channel
+                  </Button>
+                </Group>
+                {kickChannels.length > 0 && (
+                  <Chips
+                    multiple
+                    value={kickChannels.map((channel) => channel.name)}
+                    onChange={(names) =>
+                      form.setFieldValue(
+                        'chatChannels',
+                        form.values.chatChannels.filter(
+                          (channel) => channel.platform !== 'kick' || names.includes(channel.name)
+                        )
+                      )
+                    }
+                  >
+                    {kickChannels.map((channel) => (
+                      <Chip key={channel.name} value={channel.name}>
+                        {channel.name}
+                      </Chip>
+                    ))}
+                  </Chips>
+                )}
+              </Stack>
               <Stack spacing={4}>
                 <TextInput
                   label="Command prefix"

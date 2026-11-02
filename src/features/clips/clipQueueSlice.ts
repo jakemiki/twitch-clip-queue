@@ -4,11 +4,14 @@ import storage from 'redux-persist-indexeddb-storage';
 import type { RootState } from '../../app/store';
 import { legacyDataMigrated } from '../migration/legacyMigration';
 import { settingsChanged } from '../settings/settingsSlice';
-import { userTimedOut } from '../twitchChat/actions';
+import { userTimedOut } from '../chat/actions';
 import type { PlatformType } from '../../common/utils';
+import { chatterKey } from '../chat/models';
+
 export interface Clip {
   id: string;
   submitters: string[];
+  submitterIds?: string[];
 
   status?: 'watched' | 'removed';
   timestamp?: string;
@@ -18,6 +21,7 @@ export interface Clip {
   createdAt?: string;
   category?: string;
   url?: string;
+  sourceUrl?: string;
   Platform?: PlatformType;
 
   thumbnailUrl?: string;
@@ -49,7 +53,7 @@ const initialState: ClipQueueState = {
   queueIds: [],
   historyIds: [],
   watchedClipCount: 0,
-  providers: ['twitch-clip', 'twitch-vod', 'youtube'],
+  providers: ['twitch-clip', 'twitch-vod', 'kick-clip', 'youtube'],
   layout: 'classic',
   isOpen: false,
   autoplay: false,
@@ -60,14 +64,17 @@ const initialState: ClipQueueState = {
 const addClipToQueue = (state: ClipQueueState, clip: Clip) => {
   const id = clip.id;
   const submitter = clip.submitters[0];
+  const submitterId = clip.submitterIds?.[0] ?? chatterKey(submitter);
 
   if (state.byId[id]) {
     let rememberedClip = state.byId[id];
     if (state.queueIds.includes(id)) {
-      if (!rememberedClip.submitters.includes(submitter)) {
+      const submitterIds = rememberedClip.submitterIds ?? rememberedClip.submitters.map((name) => chatterKey(name));
+      if (!submitterIds.includes(submitterId)) {
         rememberedClip = {
           ...rememberedClip,
           submitters: [...rememberedClip.submitters, submitter],
+          submitterIds: [...submitterIds, submitterId],
         };
         state.byId[id] = rememberedClip;
 
@@ -93,7 +100,7 @@ const addClipToQueue = (state: ClipQueueState, clip: Clip) => {
 
   if (!state.clipLimit || calculateTotalQueueLength(state.watchedClipCount, state.queueIds) < state.clipLimit) {
     state.queueIds.push(id);
-    state.byId[id] = clip;
+    state.byId[id] = { ...state.byId[id], ...clip };
   }
 };
 
@@ -205,9 +212,11 @@ const clipQueueSlice = createSlice({
     clipDetailsReceived: (state, { payload: clip }: PayloadAction<Clip>) => {
       if (state.byId[clip.id]) {
         const submitters = state.byId[clip.id].submitters;
+        const submitterIds = state.byId[clip.id].submitterIds;
         updateClip(state, clip.id, {
           ...clip,
           submitters,
+          submitterIds,
         });
       }
     },
@@ -278,11 +287,16 @@ const clipQueueSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(userTimedOut, (state, { payload }) => {
+      const bannedId = chatterKey(payload.username, payload.platform);
+
       for (const id of state.queueIds) {
         const clip = state.byId[id];
+        const identities = clip.submitterIds ?? clip.submitters.map((name) => chatterKey(name));
+
         state.byId[id] = {
           ...clip,
-          submitters: clip.submitters.filter((submitter) => submitter.toLowerCase() !== payload),
+          submitters: clip.submitters.filter((_, index) => identities[index] !== bannedId),
+          submitterIds: identities.filter((identity) => identity !== bannedId),
         };
       }
 

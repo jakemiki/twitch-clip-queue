@@ -14,17 +14,23 @@ interface VideoPlayerProps {
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, onEnded }) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const playerRef = useRef<VideoJSPlayer | null>(null);
   const dispatch = useDispatch();
   const volume = useSelector((state: RootState) => state.settings.volume);
+  const onEndedRef = useRef(onEnded);
+  onEndedRef.current = onEnded;
 
   useEffect(() => {
-    if (!videoRef.current || !src) return;
+    if (!containerRef.current || !src) return;
+
+    const video = document.createElement('video-js');
+    video.classList.add('video-js', 'vjs-default-skin');
+    containerRef.current.appendChild(video);
 
     const YouTube = src.includes('youtube.com') || src.includes('youtu.be');
 
-    playerRef.current = videojs(videoRef.current, {
+    playerRef.current = videojs(video, {
       controls: true,
       autoplay: true,
       fluid: true,
@@ -54,14 +60,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, onEnded }) => {
 
       player.on('loadedmetadata', () => {
         if (!player.paused()) return;
+
         player.play()?.catch((err) => {
           console.warn('Play failed:', err);
         });
       });
 
-      if (onEnded) {
-        player.on('ended', onEnded);
-      }
+      player.on('ended', () => onEndedRef.current?.());
     }
 
     return () => {
@@ -79,11 +84,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, onEnded }) => {
 
   if (!src) return null;
 
-  return (
-    <div data-vjs-player>
-      <video ref={videoRef} className="video-js vjs-default-skin" />
-    </div>
-  );
+  return <div data-vjs-player ref={containerRef} style={{ width: '100%', height: '100%' }} />;
 };
 
 export default VideoPlayer;
