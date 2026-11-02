@@ -56,7 +56,7 @@ function QueueQuickMenu() {
 
   return (
     <>
-      <Menu>
+      <Menu transition="fade">
         <Menu.Item
           icon={<Tallymarks size={14} />}
           rightSection={<Badge color="indigo">{clipLimit ?? 'off'}</Badge>}

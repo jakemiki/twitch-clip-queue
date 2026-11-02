@@ -51,7 +51,11 @@ function Popup({ children }: PropsWithChildren<{}>) {
     }
   }, [containerEl]);
 
-  return <Portal target={containerEl}>{children}</Portal>;
+  return (
+    <Portal target={containerEl} position="relative">
+      {children}
+    </Portal>
+  );
 }
 
 function PopupContent() {

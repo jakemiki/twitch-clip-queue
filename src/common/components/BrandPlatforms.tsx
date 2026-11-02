@@ -46,6 +46,7 @@ const Platform: React.FC<BrandPlatformsProps> = ({ platform: Platform, size = 15
     <Tooltip
       label={config.label}
       position="top"
+      transition="fade"
       disabled={isUnknown}
       styles={{
         body: {
