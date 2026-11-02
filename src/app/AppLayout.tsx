@@ -1,4 +1,4 @@
-import { AppShell, Box } from '@mantine/core';
+import { AppShell, ScrollArea } from '@mantine/core';
 import { PropsWithChildren } from 'react';
 import AppHeader from './AppHeader';
 
@@ -16,14 +16,14 @@ function AppLayout({ children, noNav = false }: PropsWithChildren<{ noNav?: bool
         },
       }}
     >
-      <Box
+      <ScrollArea
         sx={{
           height: '100%',
-          overflow: 'auto',
         }}
+        styles={{ viewport: { '& > div': { display: 'block !important', height: '100%' } } }}
       >
         {children}
-      </Box>
+      </ScrollArea>
     </AppShell>
   );
 }

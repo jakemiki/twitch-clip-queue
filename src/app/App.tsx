@@ -47,7 +47,12 @@ function App() {
         colorScheme={colorScheme}
         toggleColorScheme={() => dispatch(colorSchemeToggled(preferredColorScheme))}
       >
-        <MantineProvider theme={{ colorScheme, primaryColor: 'indigo' }} withNormalizeCSS withGlobalStyles>
+        <MantineProvider
+          theme={{ colorScheme, primaryColor: 'indigo' }}
+          defaultProps={{ Portal: { position: 'fixed' } }}
+          withNormalizeCSS
+          withGlobalStyles
+        >
           <ModalsProvider>
             <NotificationsProvider>
               <Router />
